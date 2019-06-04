@@ -1,0 +1,8 @@
+Progress:
+
+Current assessment: poor. (1/5)
+
+1. Am I implementing the "Unix 'cat' program" or https://esolangs.org/wiki/Cat_program. I assume the latter.
+
+2. I feel I need to understand effects and handlers first. I am trying to get my head around these. I feel maybe a chat around these may be useful.
+
