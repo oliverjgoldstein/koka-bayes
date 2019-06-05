@@ -12,3 +12,8 @@ Current assessment: poor. (1/5)
 
 4. I understand the amb handler as well as the input handler.
 I am trying to understand the state handler.
+
+5. I am trying to understand cat as implemented in a c program and how that relates to the cat that could be implemented in a functional language like Haskell. They have different type signatures.
+
+putChar :: Char → IO ()
+getChar :: IO Char
