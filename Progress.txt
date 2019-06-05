@@ -17,3 +17,5 @@ I am trying to understand the state handler.
 
 putChar :: Char → IO ()
 getChar :: IO Char
+
+6. Looking into the state effect handler as ultimately put and get resemble get and set.

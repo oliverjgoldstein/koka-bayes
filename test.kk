@@ -80,11 +80,6 @@ val amb = handler {
   flip() -> resume(1) + resume(2)
 }
 
-/* fun random-bool() : ndet { */
-
-/* } */
-
-
 
 
 
