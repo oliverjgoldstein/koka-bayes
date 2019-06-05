@@ -19,3 +19,9 @@ putChar :: Char → IO ()
 getChar :: IO Char
 
 6. Looking into the state effect handler as ultimately put and get resemble get and set.
+
+Satori:
+7. So the handler swallows up an action and changes the semantics of particular functions within the action such as return and raise? 
+
+
+
