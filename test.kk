@@ -81,6 +81,74 @@ val amb = handler {
 }
 
 
+effect state<s> {
+  fun get() : s
+  fun put( x : s ) : ()
+}
+
+fun test() : state<int> int {
+  val i = get()
+  val j = 5
+  /* println(j) */
+  put(j);
+  val k = get()
+  5
+  /* println(k : string) */
+}
+
+fun counter() {
+val i = get()
+if (i <= 0) then () else {
+println("hi")
+put(i - 1);
+counter()
+}
+}
+
+/* Question 1:  Why is the state handler not working? */
+/* Question 2:  How to pattern match on the maybe monad? */
+
+val state = handler(s) {
+  return x -> (x,s)
+  get() -> resume(s,s)
+  put(s') -> resume(s',())
+}
+
+/* state(2,counter) */
+
+
+/* effect yield<a> {
+  yield( item : a ) : ()
+} */
+
+
+
+
+
+effect exc {
+  fun raise (s : string) : a
+}
+
+fun test2() {
+  raise("ERROR")
+  6
+}
+
+val to-maybe = handler {
+  return x -> Just(x)
+  raise(_s) -> Nothing
+}
+
+fun show (mi : maybe<int>) : string {
+  match(mi) {
+    Just(x : int) -> x.char.string
+    Nothing -> "Nothing"
+  }
+}
+
+
+
+
 
 
 /* effect async {
