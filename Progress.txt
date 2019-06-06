@@ -23,5 +23,5 @@ getChar :: IO Char
 Satori:
 7. So the handler swallows up an action and changes the semantics of particular functions within the action such as return and raise? 
 
-
+8. First solution.
 
