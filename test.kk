@@ -6,25 +6,25 @@ effect readchar<s> {
 }
 
 val readchar = handler {
-  return x = x
+  return x -> x
   read() -> resume(readline())
   put(x) -> resume(println(x))
 }
 
 val doubler = handler {
-  return x = x
+  return x -> x
   read() -> resume(join(map(list(readline()), doubler-func)))
   put(x) -> resume(println(x : string))
 }
 
 val reverser = handler {
-  return x = x
+  return x -> x
   read() -> resume(string(reverse(list(readline()))))
   put(x) -> resume(println(x : string))
 }
 
 val repeater = handler {
-  return x = x
+  return x -> x
   read() -> resume(string-doubler(readline()))
   put(x) -> resume(println(x : string))
 }
