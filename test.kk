@@ -24,15 +24,10 @@ fun string-to-char (xs : list<char>) : char {
 } */
 
 fun readchar(buffer, action) {
-  var s :=
+  var s := buffer
   handle(action) {
     return x -> x
-    read() -> {
-      match (s) {
-        Nil -> {s := list(); resume(string-to-char(s))}
-        Cons(z, zs) -> {resume(z); s := zs; }
-      }}
-
+    read() -> {s := readline(); resume(string-to-char(list(s.head))); s := s.tail;} // If the buffer is full don't readline
     put(y : char) -> {println(y); resume(())}
   }
 }
