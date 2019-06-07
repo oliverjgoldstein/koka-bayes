@@ -16,7 +16,7 @@ fun string-to-char (xs : list<char>) : char {
     Nil -> '\n'
     Cons(a,_) -> a
   }
-}
+}s
 
 fun readchar(action) {
   var s := []
