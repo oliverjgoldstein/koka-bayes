@@ -2,25 +2,46 @@ import std/os/readline
 
 fun main() {
   println("DD")
-  readchar(tester)
+  /* readchar(tester) */
 }
 
-effect readchar<s> {
+effect readchar {
   fun read() : char
   fun put(x : char) : ()
 }
 
-val readchar = handler {
+fun string-to-char (xs : list<char>) : char {
+  match(xs) {
+    Nil -> 'n'
+    Cons(a,_) -> a
+  }
+}
+
+/* val readchar = handler {
   return x -> x
   read() -> resume(readline())
   put(x) -> resume(println(x))
+} */
+
+fun readchar(buffer, action) {
+  var s :=
+  handle(action) {
+    return x -> x
+    read() -> {
+      match (s) {
+        Nil -> {s := list(); resume(string-to-char(s))}
+        Cons(z, zs) -> {resume(z); s := zs; }
+      }}
+
+    put(y : char) -> {println(y); resume(())}
+  }
 }
 
 /* var read = handler {
 
 } */
 
-val doubler = handler {
+/* val doubler = handler {
   return x -> x
   read() -> resume(join(map(list(readline()), doubler-func)))
   put(x) -> resume(println(x : string))
@@ -47,11 +68,11 @@ fun doubler-func(x : char) : string {
 
 fun string-doubler(x : string) : string {
   return (x + "\n" + x)
-}
+} */
 
 fun tester() {
   var c := read()
-  while {c!="aa"} {
+  while {c!='a'} {
     put(c)
     c := read()
   }
