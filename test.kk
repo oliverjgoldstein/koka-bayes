@@ -1,8 +1,13 @@
 import std/os/readline
 
+fun main() {
+  println("DD")
+  readchar(tester)
+}
+
 effect readchar<s> {
-  fun read() : s
-  fun put(x : s) : ()
+  fun read() : char
+  fun put(x : char) : ()
 }
 
 val readchar = handler {
@@ -11,11 +16,17 @@ val readchar = handler {
   put(x) -> resume(println(x))
 }
 
+/* var read = handler {
+
+} */
+
 val doubler = handler {
   return x -> x
   read() -> resume(join(map(list(readline()), doubler-func)))
   put(x) -> resume(println(x : string))
 }
+
+/* readchar type char instead of s */
 
 val reverser = handler {
   return x -> x
@@ -40,7 +51,7 @@ fun string-doubler(x : string) : string {
 
 fun tester() {
   var c := read()
-  while {c!="nnnn"} {
+  while {c!="aa"} {
     put(c)
     c := read()
   }
