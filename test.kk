@@ -23,13 +23,13 @@ fun string-to-char (xs : list<char>) : char {
   put(x) -> resume(println(x))
 } */
 
-fun readchar(buffer, action) {
-  var s := ""
+fun readchar(action) {
+  var s := []
   handle(action) {
     return x -> x
     read() -> {
       match (s) {
-        Nil -> {s := list(); resume(string-to-char(s))}
+        Nil -> {s := list(readline()); resume(string-to-char(s))}
         Cons(z, zs) -> {resume(z); s := zs; }
       }}
 
