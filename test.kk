@@ -24,7 +24,7 @@ fun string-to-char (xs : list<char>) : char {
 } */
 
 fun readchar(buffer, action) {
-  var s :=
+  var s := ""
   handle(action) {
     return x -> x
     read() -> {
