@@ -2,6 +2,7 @@ import std/os/readline
 
 fun main() {
   println("DD")
+  readline()
   /* readchar(tester) */
 }
 
@@ -12,7 +13,7 @@ effect readchar {
 
 fun string-to-char (xs : list<char>) : char {
   match(xs) {
-    Nil -> 'n'
+    Nil -> '\n'
     Cons(a,_) -> a
   }
 }
@@ -30,7 +31,7 @@ fun readchar(action) {
     read() -> {
       match (s) {
         Nil -> {s := list(readline()); resume(string-to-char(s))}
-        Cons(z, zs) -> {resume(z); s := zs; }
+        Cons(z, zs) -> {s := tail(s); resume(string-to-char(zs));}
       }}
 
     put(y : char) -> {println(y); resume(())}
@@ -77,6 +78,8 @@ fun tester() {
     c := read()
   }
   put(c)
+  /* c := read()
+  put(c) */
 }
 
 /* readchar(tester) */
