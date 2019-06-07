@@ -16,7 +16,7 @@ fun string-to-char (xs : list<char>) : char {
     Nil -> '\n'
     Cons(a,_) -> a
   }
-}s
+}
 
 fun readchar(action) {
   var s := []
@@ -29,6 +29,14 @@ fun readchar(action) {
       }}
 
     put(y : char) -> {print(y); resume(())}
+  }
+}
+
+fun doubler(action) {
+  handle(action) {
+    return x -> x
+    read() -> resume('a')
+    put(y:char) -> resume(())
   }
 }
 
