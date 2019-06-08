@@ -54,6 +54,41 @@ fun doubler(action) {
   }
 }
 
+fun doubler-composable(action) {
+  handle(action) {
+    return x -> x
+    read() -> {resume(read());}
+    put(x : char) -> {put(x); put(x); resume(())}
+  }
+}
+
+fun reverser-composable(action) {
+  handle(action) {
+    return x -> x
+    read() -> {resume(read());}
+    put(x : char) -> {
+        resume(())
+        put(x);
+      }
+  }
+}
+
+fun doubler-whole-composable(action) {
+  var string := []
+  handle(action) {
+    return x -> x
+    read() -> {resume(read());}
+    put(x : char) -> {
+        put(x);
+        string := string + [x]
+        resume(())
+        put(head(string, '\n'));
+        string := tail(string)
+      }
+  }
+}
+
+
 fun reverser(action) {
   var s := []
   handle(action) {
@@ -70,7 +105,7 @@ fun reverser(action) {
 
 fun tester() {
   var c := read()
-  while {c!='a'} {
+  while {c!='\n'} {
     put(c)
     c := read()
   }
