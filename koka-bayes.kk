@@ -8,7 +8,7 @@ alias rplus = ddouble
 alias floatfunc = double -> <ndet> double
 alias regression = model<floatfunc>
 alias histogram<a> = list<(exp, a)>
-
+alias histofunc<a,b> = histogram<a> -> histogram<b>
 type exp {
   Exp(i : double)
 }
@@ -102,12 +102,53 @@ fun populate(k : int, model : model<a>) : div histogram<a> {
     loop(0, Nil)
 }
 
-/* fun weighted (initial_weight, action) {
-  handle(action) {
-    fun score(w : rplus) -> fun(g) {resume(()) (g * w)}
-    return x -> fun(w) {(w, x)}
-  }
+/* fun sum_weights(histogram : histogram<a>) : exp {
+  foldl
 } */
+
+/* fun resample(histogram : histogram<a>) : histogram<a> {
+  val n = histogram.length
+  val total_w =
+} */
+
+/* fun smc(particle_num : int, step_num : int, step_size : int, model : model<a>) {
+  with random_sampler handle
+  fun smc-func() {
+    with advance handle
+    with yield_on_score handle
+    model()
+  }
+  val pop = populate(particle_num, smc-func)
+
+  fun loop(i, pop) {
+      if (i < step_num) then {
+        pop (resample)
+      } else {
+
+      }
+  }
+
+} */
+
+/* fun change-order-app(f : a -> b, x : a) {
+
+} */
+
+fun pop_map( f : a -> b ) : histofunc<a,b> {
+  (fun(lista) {
+    pop_map_helper(f, lista)
+  })
+}
+
+fun pop_map_helper(f : a -> b, t : histogram<a>) : (histogram<b>) {
+    match(t) {
+      Nil -> Nil
+      Cons(x, xs) -> match(x) {
+        (Exp(n), a) -> Cons((Exp(n), f(a)), pop_map_helper(f, xs))
+      }
+    }
+}
+
 
 fun weighted( action : () -> <score|e> a) : e (exp, a) {
   var w : exp  := Exp(1.0)
