@@ -198,13 +198,13 @@ fun smc(particle_num : int, step_num : int, step_size : int, model : model<a>) :
 
   val pop = populate(particle_num, smc_func)
   /* val resample_pop = resample pop */
-  fun loop(i, pop) {
+  /* fun loop(i, pop) {
       if (i < step_num) then {
         /* resample(pop) */
       } else {
 
       }
-  }
+  } */
 5
 }
 
