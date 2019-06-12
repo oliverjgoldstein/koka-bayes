@@ -13,6 +13,12 @@ type exp {
   Exp(i : double)
 }
 
+fun ln(x : exp) {
+  match(x) {
+    (Exp g) -> g
+  }
+}
+
 fun mult-exp(x : exp, y : exp) : exp {
   match (x) {
     Exp(j) -> {
@@ -32,6 +38,14 @@ fun div-exp(x : exp, y : exp) : exp {
     }
   }
 }
+
+/* let ( +.. ) =
+  let ln_plus x y (* ln (x + y) *)
+    = ( x +. log1p (exp (y -. x)))
+  in fun (Exp x) (Exp y) ->
+     if (x < y)
+     then Exp (ln_plus y x)
+     else Exp (ln_plus x y) */
 
 fun show(x : exp) : string {
   match(x) {
@@ -102,9 +116,9 @@ fun populate(k : int, model : model<a>) : div histogram<a> {
     loop(0, Nil)
 }
 
-/* fun sum_weights(histogram : histogram<a>) : exp {
-  foldl
-} */
+fun sum_weights(histogram : histogram<a>) : exp {
+  foldl(histogram, Exp(0), fun(acc, (w,x)) {})
+}
 
 /* fun resample(histogram : histogram<a>) : histogram<a> {
   val n = histogram.length
