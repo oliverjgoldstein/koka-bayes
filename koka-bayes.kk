@@ -102,14 +102,14 @@ fun finalize(action) {
   }
 }
 
-fun yield-on-score(action) {
+fun yield_on_score(action) {
   handle(action) {
     return x -> x
     score(w : exp) -> {score(w); yield(); resume(())}
   }
 }
 
-fun random-sampler(action : () -> sample a) : ndet a {
+fun random_sampler(action : () -> sample a) : ndet a {
   handle(action) {
     return x -> x
     sample() -> {resume(random())}
@@ -155,12 +155,14 @@ fun sum_weights(histogram : histogram<a>) : exp {
   foldl(histogram, Exp(0.0), foldlfunc)
 }
 
-fun weighted_choice(histogram : histogram<a>) : <exc, sample> a {
+fun weighted_choice(histogram : histogram<a>, default : (exp, a)) : <sample> a {
   val total_w = sum_weights(histogram)
   val total_fuel = (exp_to_double(total_w)) * sample()
-  fun choose(fuel : double, ws : histogram<a>) : <exc> a {
+  fun choose(fuel : double, ws) {
     match(ws) {
-      Nil -> raise("Error")
+      Nil -> match(default) {
+        (Exp(_), k) -> k
+      }
       Cons((w,x), wxs) -> {
         val fuel_new = fuel - exp_to_double(w)
         if (fuel_new <= 0.0) then {
@@ -171,38 +173,40 @@ fun weighted_choice(histogram : histogram<a>) : <exc, sample> a {
       }
     }
   }
-  choose(total_fuel, histogram)
+  val default_added = Cons(default, histogram)
+  choose(total_fuel, default_added)
 }
 
-fun resample(histogram : histogram<a>) : <div, sample> histogram<a> {
+fun resample(histogram : histogram<a>, default : (exp, a)) : <div, sample> histogram<a> {
   val n = histogram.length
   val total_w = sum_weights(histogram)
   fun resample_model() {
     score(total_w)
-    catch({random-sampler(weighted_choice(histogram))}, fun(s:string) {s})
+    weighted_choice(histogram, default)
   }
 
   populate(n, resample_model)
 }
 
-/* fun smc(particle_num : int, step_num : int, step_size : int, model : model<a>) {
-  with random_sampler handle
-  fun smc-func() {
-    with advance handle
-    with yield_on_score handle
-    model()
+fun smc(particle_num : int, step_num : int, step_size : int, model : model<a>) : ndet int {
+  with random_sampler
+  fun smc_func() {
+    with advance
+    with yield_on_score
+    return model()
   }
-  val pop = populate(particle_num, smc-func)
 
+  val pop = populate(particle_num, smc_func)
+  /* val resample_pop = resample pop */
   fun loop(i, pop) {
       if (i < step_num) then {
-        pop (resample)
+        /* resample(pop) */
       } else {
 
       }
   }
-
-} */
+5
+}
 
 fun pop_map( f : a -> b ) : histofunc<a,b> {
   (fun(lista) {
@@ -241,6 +245,6 @@ fun standard-normal() : <sample> double {
 }
 
 fun normal(mean, sdv) {
-  with random-sampler
+  with random_sampler
   mean + standard-normal() * sdv
 }
