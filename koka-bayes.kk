@@ -3,7 +3,7 @@ public module test/ojg/koka-bayes
 import std/num/double
 /* import lib/std/core */
 
-alias model<a> = () -> a
+alias model<a> = () -> <sample, score> a
 alias thunk<a> = () -> a
 alias doublefunc = double -> <ndet> double
 alias regression = model<doublefunc>
@@ -85,10 +85,6 @@ effect score {
   fun score(x : exp) : ()
 }
 
-effect funfden {
-  fun funfden() : ()
-}
-
 effect exc {
   fun raise(s : string ) : a
 }
@@ -120,21 +116,21 @@ fun random_sampler(action : () -> sample a) : ndet a {
   }
 }
 
-/* fun advance(action : () -> yield a) : yield ((a : int) -> yield a) {
+fun advance(action : () -> yield a) : yield ((a : int) -> yield a) {
   handle(action) {
     return x -> fun(a) {x}
     yield() -> fun(a) {
       if (a > 0) then {
-        resume(()) (a - 1)
+        resume(())(a - 1)
       } else {
         yield();
-        resume(()) 0
+        resume(())(0)
       }
     }
   }
-} */
+}
 
-fun populate(k : int, model : () -> <sample, score> a) : <div, sample> histogram<a>  {
+fun populate(k : int, model : model<a>) : <div, sample> histogram<a>  {
     fun loop(i, acc) {
       if (i < k) then {
         fun result() {
@@ -148,7 +144,14 @@ fun populate(k : int, model : () -> <sample, score> a) : <div, sample> histogram
         acc
       }
     }
+
     loop(0, Nil)
+}
+
+fun importance_sampling(model : model<a>) {
+  val particle_count = 1000
+  with random_sampler
+  populate(particle_count, model)
 }
 
 fun sum_weights(histogram : histogram<a>) : exp {
@@ -194,12 +197,12 @@ fun resample(histogram : histogram<a>, default : (exp, a)) : <div, sample> histo
 }
 
 fun smc(particle_num : int, step_num : int, step_size : int, model : model<a>) {
-  with random_sampler
+  /* with random_sampler
   fun smc_func() {
-    //with finalize
-    //with yield_on_score
+    with advance
+    with yield_on_score
     model()
-  }
+  } */
 
   //val pop = populate(particle_num, smc_func)
 
@@ -214,11 +217,29 @@ fun smc(particle_num : int, step_num : int, step_size : int, model : model<a>) {
 5
 }
 
-fun gaussian-model() : sample double {
-  val variance = 0.5
-  val mean = 2.0
-  val sample = standard-normal()
-  return sqrt(variance) * sample + mean
+fun gaussian-model() : <ndet, sample> double {
+  return normal(5.0, 1.0)
+}
+
+fun plot( f : (double -> double) ) : string {
+  val lft = 0.0
+  val rgt = 4.0
+  val steps = 100
+  val stp = (rgt - lft) / steps.double
+  list-join(steps) fun(i:int) {
+    val x = lft + (stp * i.double)
+    val y = f( x )
+    "[" + x.show(6) + "," + y.show(6) + "]"
+  }
+}
+
+fun example-plot() {
+  plot( fun(x){ 2.0 * x } )
+}
+
+fun list-join(len : int, elem) {
+  val xs = list(1,len,elem)
+  "[" + xs.join(",") + "]"
 }
 
 fun pop_map( f : a -> b ) : histofunc<a,b> {
@@ -243,11 +264,11 @@ fun weighted( w : exp, action : () -> <score|e> a ) : e (exp, a) {
   (g,x)
 }
 
-fun homogeneous_linear() : regression {
+/* fun homogeneous_linear() : regression {
   val r = fun(x) {normal(0.0, 2.0) * x}
   val y = fun() {r}
   y
-}
+} */
 
 fun box-muller(u1 :double, u2 :double) {
   sqrt(-2.0 * log(u1)) * cos(dbl-twopi * u2)
