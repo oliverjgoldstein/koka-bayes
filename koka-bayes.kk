@@ -74,7 +74,7 @@ fun show(x : exp) : string {
 }
 
 effect yield {
-  fun yield() : ()
+  control yield() : ()
 }
 
 effect sample {
@@ -83,6 +83,10 @@ effect sample {
 
 effect score {
   fun score(x : exp) : ()
+}
+
+effect funfden {
+  fun funfden() : ()
 }
 
 effect exc {
@@ -98,7 +102,7 @@ fun catch(action,h) {
 fun finalize(action) {
   handle(action) {
     return x -> x
-    yield() -> {resume(())}
+    yield() -> resume(())
   }
 }
 
@@ -116,18 +120,19 @@ fun random_sampler(action : () -> sample a) : ndet a {
   }
 }
 
-fun advance(action)  {
+/* fun advance(action : () -> yield a) : yield ((a : int) -> yield a) {
   handle(action) {
     return x -> fun(a) {x}
     yield() -> fun(a) {
       if (a > 0) then {
-        resume(()); a - 1
+        resume(()) (a - 1)
       } else {
-        yield(); resume(()); 0
+        yield();
+        resume(()) 0
       }
     }
   }
-}
+} */
 
 fun populate(k : int, model : () -> <sample, score> a) : <div, sample> histogram<a>  {
     fun loop(i, acc) {
@@ -188,24 +193,32 @@ fun resample(histogram : histogram<a>, default : (exp, a)) : <div, sample> histo
   populate(n, resample_model)
 }
 
-fun smc(particle_num : int, step_num : int, step_size : int, model : model<a>) : ndet int {
+fun smc(particle_num : int, step_num : int, step_size : int, model : model<a>) {
   with random_sampler
   fun smc_func() {
-    with advance
-    with yield_on_score
-    return model()
+    //with finalize
+    //with yield_on_score
+    model()
   }
 
-  val pop = populate(particle_num, smc_func)
-  /* val resample_pop = resample pop */
-  /* fun loop(i, pop) {
+  //val pop = populate(particle_num, smc_func)
+
+  /*/* val resample_pop = resample pop */
+  fun loop(i, pop) {
       if (i < step_num) then {
         /* resample(pop) */
       } else {
 
       }
-  } */
+    } */
 5
+}
+
+fun gaussian-model() : sample double {
+  val variance = 0.5
+  val mean = 2.0
+  val sample = standard-normal()
+  return sqrt(variance) * sample + mean
 }
 
 fun pop_map( f : a -> b ) : histofunc<a,b> {
