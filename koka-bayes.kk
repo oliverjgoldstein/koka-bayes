@@ -1,157 +1,48 @@
 public module test/ojg/koka-bayes
 
 import std/num/double
-/* import lib/std/core */
+import test/ojg/exp
+import test/ojg/bayes-handlers
 
 alias model<a> = () -> <sample, score> a
-alias thunk<a> = () -> a
-alias doublefunc = double -> <ndet> double
-alias regression = model<doublefunc>
+alias doublefunc = double -> ndet double
+alias regression = () -> ((x : double) -> ndet double)
 alias histogram<a> = list<(exp, a)>
 alias histofunc<a,b> = histogram<a> -> histogram<b>
 
-type exp {
-  Exp(i : double)
-}
 
-fun ln(x : exp) : double {
-  match(x) {
-    (Exp(g)) -> g
-  }
-}
-
-fun e(x : double) {
-  Exp(x)
-}
-
-fun exp_to_double(x : exp) : double {
-  match(x) {
-    (Exp(j)) -> dbl-e^j
-  }
-}
-
-fun mult_exp(x : exp, y : exp) : exp {
-  match (x) {
-    Exp(j) -> {
-      match(y) {
-        Exp(t) -> Exp(t + j)
-      }
+fun populate(k : int, model : model<a>) : <sample> histogram<a>  {
+  list(1, k) fun(i){
+    weighted(Exp(0.0)) {
+      score(div_exp(Exp(0.0), Exp(k.double)))
+      model()
     }
   }
 }
 
-fun div_exp(x : exp, y : exp) : exp {
-  match (x) {
-    Exp(j) -> {
-      match(y) {
-        Exp(t) -> Exp(t - j)
-      }
-    }
-  }
+fun normalise(histogram : histogram<a>) : histogram<a> {
+  val total = sum_weights(histogram)
+  map(histogram, fun(wt_x) { (div_exp(fst(wt_x), total), snd(wt_x))})
 }
 
-fun plus_exp(x : exp, y : exp) {
-  fun ln_plus (a : double, b : double) {
-      (a + log1p(dbl-e^(b - a)))
-  }
-  match(x) {
-    (Exp(xe)) -> match(y) {
-      (Exp(ye)) -> {
-        if (xe < ye) then {
-          Exp(ln_plus(ye, xe))
-        } else {
-          Exp(ln_plus(xe, ye))
-        }
-      }
-    }
-  }
-}
-
-fun show(x : exp) : string {
-  match(x) {
-    Exp(h) -> (dbl-e^h).show-fixed
-  }
-}
-
-effect yield {
-  control yield() : ()
-}
-
-effect sample {
-  fun sample() : double
-}
-
-effect score {
-  fun score(x : exp) : ()
-}
-
-effect exc {
-  fun raise(s : string ) : a
-}
-
-fun catch(action,h) {
-  handle(action) {
-    raise(s) -> h(s)
-  }
-}
-
-fun finalize(action) {
-  handle(action) {
-    return x -> x
-    yield() -> resume(())
-  }
-}
-
-fun yield_on_score(action) {
-  handle(action) {
-    return x -> x
-    score(w : exp) -> {score(w); yield(); resume(())}
-  }
-}
-
-fun random_sampler(action : () -> sample a) : ndet a {
-  handle(action) {
-    return x -> x
-    sample() -> {resume(random())}
-  }
-}
-
-fun advance(action : () -> yield a) : yield ((a : int) -> yield a) {
-  handle(action) {
-    return x -> fun(a) {x}
-    yield() -> fun(a) {
-      if (a > 0) then {
-        resume(())(a - 1)
-      } else {
-        yield();
-        resume(())(0)
-      }
-    }
-  }
-}
-
-fun populate(k : int, model : model<a>) : <div, sample> histogram<a>  {
-    fun loop(i, acc) {
-      if (i < k) then {
-        fun result() {
-          weighted(Exp(0.0)) {
-          score(div_exp(Exp(0.0), Exp(k.double)))
-          model()
-        }
-      }
-        loop((i + 1), (single(result()) + acc))
-      } else {
-        acc
-      }
-    }
-
-    loop(0, Nil)
-}
-
-fun importance_sampling(model : model<a>) {
+fun importance_sampling(model : model<a>) : ndet histogram<a> {
   val particle_count = 1000
   with random_sampler
-  populate(particle_count, model)
+  normalise(populate(particle_count, model))
+}
+
+fun plot_population_regression(histogram : histogram<(double -> double)>, default : (exp, (double -> double))) : <ndet, console, sample> string {
+  val negligible = length(filter(histogram,
+    fun(element){
+      match(element) {
+          (Exp(j),_) -> (dbl-e^(j) < 0.00001)
+      }
+    }))
+    println("Number of negligible samples: " + negligible.show)
+    list-join(15) fun(i) {
+      val f = weighted_choice(histogram, default)
+      plot(f)
+    }
 }
 
 fun sum_weights(histogram : histogram<a>) : exp {
@@ -196,13 +87,11 @@ fun resample(histogram : histogram<a>, default : (exp, a)) : <div, sample> histo
   populate(n, resample_model)
 }
 
-fun smc(particle_num : int, step_num : int, step_size : int, model : model<a>) {
-  /* with random_sampler
+/* fun smc(particle_num : int, step_num : int, step_size : int, model : model<a>) {
+  with random_sampler
   fun smc_func() {
-    with advance
-    with yield_on_score
-    model()
-  } */
+    advance{yield_on_score(model())}
+  }
 
   //val pop = populate(particle_num, smc_func)
 
@@ -215,10 +104,21 @@ fun smc(particle_num : int, step_num : int, step_size : int, model : model<a>) {
       }
     } */
 5
+} */
+
+fun pop_map( f : a -> b ) : histofunc<a,b> {
+  (fun(lista) {
+    pop_map_helper(f, lista)
+  })
 }
 
-fun gaussian-model() : <ndet, sample> double {
-  return normal(5.0, 1.0)
+fun pop_map_helper(f : a -> b, t : histogram<a>) : (histogram<b>) {
+    match(t) {
+      Nil -> Nil
+      Cons(x, xs) -> match(x) {
+        (Exp(n), a) -> Cons((Exp(n), f(a)), pop_map_helper(f, xs))
+      }
+    }
 }
 
 fun plot( f : (double -> double) ) : string {
@@ -242,33 +142,20 @@ fun list-join(len : int, elem) {
   "[" + xs.join(",") + "]"
 }
 
-fun pop_map( f : a -> b ) : histofunc<a,b> {
-  (fun(lista) {
-    pop_map_helper(f, lista)
-  })
-}
 
-fun pop_map_helper(f : a -> b, t : histogram<a>) : (histogram<b>) {
-    match(t) {
-      Nil -> Nil
-      Cons(x, xs) -> match(x) {
-        (Exp(n), a) -> Cons((Exp(n), f(a)), pop_map_helper(f, xs))
-      }
-    }
-}
+/* fun gaussian-model() : model<double> {
+  val x = fun() {
+    with random_sampler
+    return normal(5.0, 1.0)
+  }
+  x
+} */
 
-
-fun weighted( w : exp, action : () -> <score|e> a ) : e (exp, a) {
-  var g := w
-  val x = with fun score(s) { g := mult_exp(g, s) } in action()
-  (g,x)
-}
-
-/* fun homogeneous_linear() : regression {
-  val r = fun(x) {normal(0.0, 2.0) * x}
+fun homogeneous_linear() : regression {
+  val r = fun(x : double) {normal(0.0, 2.0) * x}
   val y = fun() {r}
   y
-} */
+}
 
 fun box-muller(u1 :double, u2 :double) {
   sqrt(-2.0 * log(u1)) * cos(dbl-twopi * u2)
