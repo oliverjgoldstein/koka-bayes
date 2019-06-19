@@ -1,21 +1,29 @@
-
 import test/ojg/exp
+alias model<a> = () -> <sample, score> a
+alias regression = model<double -> double>
+alias data = list<(double, double)>
+
+alias histogram<a> = list<(exp, a)>
+alias histofunc<a,b> = histogram<a> -> histogram<b>
+
 
 effect yield {
   control yield() : ()
 }
 
-effect sample {
-  fun sample() : double
-}
+ambient fun sample() : double
+ambient control score( s : exp ) : ()
 
-effect score {
-  fun score(x : exp) : ()
-}
 
 effect exc {
   fun raise(s : string ) : a
 }
+
+fun random_sampler(action : () -> <sample|e> a) : <ndet|e> a {
+  with fun sample() { random() }
+  mask<ndet>(action)  // mask out `ndet` from the `action` effect
+}
+
 
 fun catch(action,h) {
   handle(action) {
@@ -44,14 +52,8 @@ fun yield_on_score(action) {
   }
 }
 
-fun random_sampler(action : () -> sample a) : ndet a {
-  handle(action) {
-    return x -> x
-    sample() -> {resume(random())}
-  }
-}
 
-fun advance(action : () -> yield a) : yield ((a : int) -> yield a) {
+fun advance(action) {
   handle(action) {
     return x -> fun(a) {x}
     yield() -> fun(a) {
