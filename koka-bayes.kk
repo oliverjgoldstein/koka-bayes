@@ -35,13 +35,19 @@ fun fit_1d_gaussian(model : model<double>, dataset : data_1d) : model<double> {
   val g = fun() {
       val f : double = model()
       val map_fun = fun(x) {
-        score(normal_pdf(f, 0.25, x))
+        score(normal_pdf(f, 2.0, x))
       }
 
       map(dataset, map_fun)
       f
   }
   g
+}
+
+fun gaussian_model() : model<double> {
+  return fun() {
+    normal(0.0, 0.9)
+  }
 }
 
 val fitted = fit(homogeneous_linear, dataset)
@@ -70,19 +76,12 @@ it then maps over the histogram and dividies the exps by the total weights.
 
 */
 
-fun normalise(histogram : histogram<double>) : histogram<double> {
+fun normalise(histogram : histogram<a>) : histogram<a> {
   val total = sum_weights(histogram)
-
-  val norm_fun = fun(wt_x) {
-      match(wt_x) {
-        (u, i) -> (div_exp(u, total), i)
-      }
-  }
-
-  map(histogram, norm_fun)
+  map(histogram, fun(wt) {(div_exp(fst(wt), total), snd(wt))})
 }
 
-fun sum_histogram(hist : histogram<double>) : double {
+fun sum_histogram(hist : histogram<a>) : double {
   fun foldfunc(init, ws) {
     match(ws) {
       (Exp(w), _) -> {dbl-e^w + init}
@@ -99,15 +98,9 @@ normalise is going to make the set of weights one.
 the populate will return a histogram from the model.
 */
 
-fun importance_sampling(model : model<double>) : ndet histogram<double> {
+fun importance_sampling(model : model<a>) : ndet histogram<a> {
   val particle_count = 100
   random_sampler{normalise(populate(particle_count, model))}
-}
-
-fun gaussian_model() : model<double> {
-  return fun() {
-    normal(2.0, 0.9)
-  }
 }
 
 fun show(hist : histogram<double>) {
@@ -174,17 +167,6 @@ fun resample(histogram : histogram<a>, default : (exp, a)) : <div, sample> histo
 
   populate(n, resample_model)
 }
-
-/* fun smc_func_2(wm, step_size) {
-  match(wm) {
-    (w,m) -> {
-      weighted(w) {
-        with advance
-        m(step_size)
-      }
-    }
-  }
-} */
 
 /* fun smc(particle_num : int, step_num : int, step_size : int, model, default) {
   with random_sampler
