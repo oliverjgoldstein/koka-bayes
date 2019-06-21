@@ -2,6 +2,7 @@ import test/ojg/exp
 alias model<a> = () -> <sample, score> a
 alias regression = model<double -> double>
 alias data = list<(double, double)>
+alias data_1d = list<double>
 
 alias histogram<a> = list<(exp, a)>
 alias histofunc<a,b> = histogram<a> -> histogram<b>
@@ -31,12 +32,32 @@ fun catch(action,h) {
   }
 }
 
-fun weighted( w : exp, action : () -> <score|e> a ) : e (exp, a) {
-  var g := w
-  val x = with fun score(s) { g := mult_exp(g, s) } in action()
-  (g,x)
+val weighted = handler(wp : exp) {
+    return x -> (wp, x)
+    score(s) -> resume((), mult_exp(wp, s))
 }
 
+fun tester() {
+  score(Exp(5.0))
+  score(Exp(10.0))
+  return 60.0
+}
+
+fun main() {
+  weighted(Exp(10.0), tester)
+}
+
+fun show(aj) {
+  match(aj) {
+    (Exp(i) : exp, j : double) -> {
+      print("Exp ");
+      print(show-fixed(i : double));
+      print("  ");
+      print(show-fixed(j : double));
+      println(" ")
+    }
+  }
+}
 
 fun finalize(action) {
   handle(action) {
@@ -52,7 +73,7 @@ fun yield_on_score(action) {
   }
 }
 
-
+/* fun advance(action : () -> <yield|e> b) : <|e> ((a : int) -> <yield|e> b) { */
 fun advance(action) {
   handle(action) {
     return x -> fun(a) {x}

@@ -37,3 +37,11 @@ fun list-join(len : int, elem) {
   val xs = list(1,len,elem)
   "[" + xs.join(",") + "]"
 }
+
+/* fun plot_reg() {
+  for(1, 100) fun(i) {
+    with random_sampler
+    val f = homogeneous_linear()
+    println(plot(f))
+  }
+} */

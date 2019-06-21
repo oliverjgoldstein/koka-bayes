@@ -24,7 +24,7 @@ fun mult_exp(x : exp, y : exp) : exp {
   match (x) {
     Exp(j) -> {
       match(y) {
-        Exp(t) -> Exp(t + j)
+        Exp(t) -> Exp(j + t)
       }
     }
   }
@@ -34,7 +34,7 @@ fun div_exp(x : exp, y : exp) : exp {
   match (x) {
     Exp(j) -> {
       match(y) {
-        Exp(t) -> Exp(t - j)
+        Exp(t) -> Exp(j - t)
       }
     }
   }
@@ -59,6 +59,6 @@ fun plus_exp(x : exp, y : exp) {
 
 fun show(x : exp) : string {
   match(x) {
-    Exp(h) -> (dbl-e^h).show-fixed
+    Exp(h) -> "Exp " + show(h) + " with value: " + show-fixed(dbl-e^h)
   }
 }
