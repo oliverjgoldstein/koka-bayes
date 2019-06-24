@@ -1,6 +1,7 @@
 public module test/ojg/koka-bayes
 
 import std/num/double
+import std/num/ddouble
 import test/ojg/exp
 import test/ojg/bayes-handlers
 import test/ojg/model
@@ -35,7 +36,7 @@ fun fit_1d_gaussian(model : model<double>, dataset : data_1d) : model<double> {
   val g = fun() {
       val f : double = model()
       val map_fun = fun(x) {
-        score(normal_pdf(f, 2.0, x))
+        score(normal_pdf(f, 1.0, x))
       }
 
       map(dataset, map_fun)
@@ -46,7 +47,7 @@ fun fit_1d_gaussian(model : model<double>, dataset : data_1d) : model<double> {
 
 fun gaussian_model() : model<double> {
   return fun() {
-    normal(0.0, 0.9)
+    normal(3.0, 3.5)
   }
 }
 
@@ -99,7 +100,7 @@ the populate will return a histogram from the model.
 */
 
 fun importance_sampling(model : model<a>) : ndet histogram<a> {
-  val particle_count = 100
+  val particle_count = 1000
   random_sampler{normalise(populate(particle_count, model))}
 }
 
@@ -108,7 +109,7 @@ fun show(hist : histogram<double>) {
     val string = match(hist[i]) {
       Nothing -> " "
       Just(x) -> match(x) {
-        (Exp(dbl), a) -> {show-fixed(dbl-e^dbl) + ", " + show-fixed(a)}
+        (Exp(dbl), a) -> {show-fixed(exp(ddouble(dbl))) + ", " + show-fixed(a)}
       }
     }
     println(string)
@@ -161,14 +162,14 @@ fun resample(histogram : histogram<a>, default : (exp, a)) : <div, sample> histo
   val n = histogram.length
   val total_w = sum_weights(histogram)
   fun resample_model() {
-    score(total_w)
-    weighted_choice(histogram, default)
+    score(total_w)                      // The sample is scored with the uniform prior.
+    weighted_choice(histogram, default) // Returns a's with the highest weight.
   }
 
   populate(n, resample_model)
 }
 
-/* fun smc(particle_num : int, step_num : int, step_size : int, model, default) {
+fun smc(particle_num : int, step_num : int, step_size : int, model, default) {
   with random_sampler
   val smc_func = fun() {
     with advance
@@ -180,7 +181,7 @@ fun resample(histogram : histogram<a>, default : (exp, a)) : <div, sample> histo
 
   fun loop(i, pop_hist) {
       if (i < step_num) then {
-        val first_term = resample(pop_hist, default)
+        val resampled_histogram = resample(pop_hist, default)
         fun smc_func_2(wm) {
           match(wm) {
             (w,m) -> {
@@ -191,7 +192,7 @@ fun resample(histogram : histogram<a>, default : (exp, a)) : <div, sample> histo
             }
           }
         }
-        val second_term = map(first_term, smc_func_2)
+        val second_term = map(resampled_histogram, smc_func_2)
         val third_term = loop((i + 1), second_term)
         third_term
 
@@ -211,7 +212,7 @@ fun resample(histogram : histogram<a>, default : (exp, a)) : <div, sample> histo
       }
   }
   loop(0, pop)
-} */
+}
 
 fun plot_population_regression(histogram : histogram<(double -> double)>, default : (exp, (double -> double))) : <ndet, console, sample> string {
   val negligible = length(filter(histogram,

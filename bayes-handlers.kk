@@ -72,17 +72,17 @@ fun yield_on_score(action) {
     score(w : exp) -> {score(w); yield(); resume(())}
   }
 }
-
+/* fun advance(action : () -> <yield,yield|e> a) -> <yield|e> ((a : int) -> <yield|e> a) */
 /* fun advance(action : () -> <yield|e> b) : <|e> ((a : int) -> <yield|e> b) { */
 fun advance(action) {
   handle(action) {
-    return x -> fun(a) {x}
+    return x -> fun(a){x}
     yield() -> fun(a) {
       if (a > 0) then {
-        resume(())(a - 1)
+        mask<yield>{resume(())}(a - 1)
       } else {
-        yield();
-        resume(())(0)
+        yield()
+        mask<yield>{resume(())}(0)
       }
     }
   }
