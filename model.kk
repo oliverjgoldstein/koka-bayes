@@ -54,8 +54,8 @@ val homogeneous_linear : regression = fun() {
 }
 
 val gaussian_dataset : data_1d = [0.0, 0.1, 0.1, 0.0, 0.2, 0.1, 0.0, 0.2]
-val hmm_data_x1s : data_1d = [0.0,0.0,0.0,0.0,0.1]
-val hmm_data_x2s : data_1d = [3.0,3.0,3.0,3.0,0.1]
+val gaussian_one : data_1d = [0.0,0.0,0.0,0.0,0.1]
+val gaussian_two : data_1d = [3.0,3.0,3.0,3.0,0.1]
 val dataset : data = [(1.0,2.0),(2.0,3.0)]
 
 fun box-muller(u1 :double, u2 :double) {

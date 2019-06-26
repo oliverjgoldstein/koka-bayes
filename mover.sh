@@ -4,4 +4,4 @@
 source ~/.bash_profile
 cp KOKARUN/* KOKADEV/
 jake
-# python plot_examples.py
+python plot_examples.py

@@ -51,6 +51,21 @@ fun show(hist : histogram<double>) {
   total_string
 }
 
+fun show(hist : histogram<(double, double)>) : string {
+  var total_string := ""
+  for(1, hist.length) fun(i) {
+    val str = match(hist[i]) {
+      Nothing -> ""
+      Just(x) -> match(x) {
+        (Exp(dbl), (db1, db2)) -> {show-fixed(exp(ddouble(dbl))) + ", (" + show-fixed(db1) + ", " + show-fixed(db2) + ")"}
+      }
+    }
+    total_string := total_string + str
+  }
+  total_string := total_string + "\n"
+  total_string
+}
+
 fun example-plot() {
   plot( fun(x){ 2.0 * x } )
 }

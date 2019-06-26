@@ -17,34 +17,22 @@ It introduces score effects that give some measure of similarity.
 
  */
 
-fun fit_gaussian_hmm(x1s : data_1d, x2s : data_1d, transition_p : model<double>) : model<double> {
+fun fit_linear_gaussian(x1s : data_1d, x2s : data_1d) : model<(double, double)> {
   val g = fun() {
-    val h1 = normal(0.0, 1.0) // Prior : p(h1)
-    val v1 = id(h1)           // p(v1|h1) = 1.0
-    val map_fun = fun(x) {
-      score(normal_pdf(v1, 1.0, x))
-    }
+    val h1 = normal(0.0, 1.0)
+    val v1 = h1 + 2.0 * normal(0.0, 1.0)
+    map(x1s, fun(x) {score(normal_pdf(v1, 1.0, x))})
 
-    map(x1s, map_fun)
+    val h2 = 4.0 * h1 + normal(0.0, 1.0)
+    val v2 = h2 + 3.0 * normal(0.0, 1.0)
+    map(x2s, fun(x) {score(normal_pdf(v2, 1.0, x))})
 
-    val h2 = exp_to_double(normal_pdf(2.0, 1.0, h1)) // p(h2|h1) = N(2,1)
-    val v2 = id(h2)                   // p(v2|h2) = 1.0
-
-    val map_fun_2 = fun(x) {
-      score(normal_pdf(v2, 1.0, x))
-    }
-
-    map(x2s, map_fun_2)
-    v2
+    (h1, h2)
   }
   g
 }
 
-fun prior(mean : double) {
-  return normal(mean, 10.0)
-}
-
-/* val fitted_hmm = fit_gaussian_hmm() */
+/* val fitted_hmm = fit_linear_gaussian() */
 
 
 /*
@@ -149,7 +137,7 @@ fun resample(histogram : histogram<a>, default : (exp, a)) : <div, sample> histo
   populate(n, resample_model)
 }
 
-fun smc(particle_num : int, step_num : int, step_size : int, model, default) {
+fun smc(particle_num : int, step_num : int, step_size : int, model, default) :  <div,ndet|_e> histogram<_b> {
   with random_sampler
   val smc_func = fun() {
     with advance
@@ -197,4 +185,7 @@ fun smc(particle_num : int, step_num : int, step_size : int, model, default) {
 fun main() {
   val test_histogram : histogram<double> = [(Exp(0.0), 1.0), (Exp(2.0), 4.0)]
   write(test_histogram)
+  val default = (Exp(0.0), fun(i : int){(1.0, 1.0)})
+  val hist = smc(1, 1, 1, fit_linear_gaussian(gaussian_one, gaussian_two), default)
+  show(hist)
 }
