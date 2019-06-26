@@ -1,6 +1,9 @@
 import test/ojg/bayes-handlers
 import test/ojg/exp
 import std/num/double
+import std/os/file
+import std/os/path
+import std/num/ddouble
 
 fun pop_map( f ){
   (fun(lista) {
@@ -29,6 +32,25 @@ fun plot( f : (double -> double) ) : string {
   }
 }
 
+fun write( hist : histogram<double> ) {
+   write-text(path("./test/ojg/output.csv"), show(hist))
+}
+
+fun show(hist : histogram<double>) {
+  var total_string := ""
+  for(1, hist.length) fun(i) {
+    val str = match(hist[i]) {
+      Nothing -> ""
+      Just(x) -> match(x) {
+        (Exp(dbl), a) -> {show-fixed(exp(ddouble(dbl))) + ", " + show-fixed(a)}
+      }
+    }
+    total_string := total_string + str
+  }
+  total_string := total_string + "\n"
+  total_string
+}
+
 fun example-plot() {
   plot( fun(x){ 2.0 * x } )
 }
@@ -37,11 +59,3 @@ fun list-join(len : int, elem) {
   val xs = list(1,len,elem)
   "[" + xs.join(",") + "]"
 }
-
-/* fun plot_reg() {
-  for(1, 100) fun(i) {
-    with random_sampler
-    val f = homogeneous_linear()
-    println(plot(f))
-  }
-} */

@@ -3,6 +3,7 @@ alias model<a> = () -> <sample, score> a
 alias regression = model<double -> double>
 alias data = list<(double, double)>
 alias data_1d = list<double>
+alias sequential_data = list<list<double>>
 
 alias histogram<a> = list<(exp, a)>
 alias histofunc<a,b> = histogram<a> -> histogram<b>
@@ -47,18 +48,6 @@ fun main() {
   weighted(Exp(10.0), tester)
 }
 
-fun show(aj) {
-  match(aj) {
-    (Exp(i) : exp, j : double) -> {
-      print("Exp ");
-      print(show-fixed(i : double));
-      print("  ");
-      print(show-fixed(j : double));
-      println(" ")
-    }
-  }
-}
-
 fun finalize(action) {
   handle(action) {
     return x -> x
@@ -72,17 +61,16 @@ fun yield_on_score(action) {
     score(w : exp) -> {score(w); yield(); resume(())}
   }
 }
-/* fun advance(action : () -> <yield,yield|e> a) -> <yield|e> ((a : int) -> <yield|e> a) */
-/* fun advance(action : () -> <yield|e> b) : <|e> ((a : int) -> <yield|e> b) { */
-fun advance(action) {
+
+fun advance(action : () -> <yield|e> b) : e ((a : int) -> <yield|e> b) {
   handle(action) {
     return x -> fun(a){x}
     yield() -> fun(a) {
       if (a > 0) then {
-        mask<yield>{resume(())}(a - 1)
+        (mask<yield>{resume(())})(a - 1)
       } else {
         yield()
-        mask<yield>{resume(())}(0)
+        (mask<yield>{resume(())})(0)
       }
     }
   }

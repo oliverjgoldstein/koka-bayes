@@ -17,42 +17,34 @@ It introduces score effects that give some measure of similarity.
 
  */
 
-fun fit(model : regression, dataset : data) : regression {
-    val g = fun() {
-      val f : double -> double = model()
-      val map_fun = fun(xy) {
-        match(xy) {
-          (x,y) -> score(normal_pdf(f(x), 0.25, y))
-        }
-      }
-
-      map(dataset, map_fun)
-      f
-    }
-    g
-}
-
-fun fit_1d_gaussian(model : model<double>, dataset : data_1d) : model<double> {
+fun fit_gaussian_hmm(x1s : data_1d, x2s : data_1d, transition_p : model<double>) : model<double> {
   val g = fun() {
-      val f : double = model()
-      val map_fun = fun(x) {
-        score(normal_pdf(f, 1.0, x))
-      }
+    val h1 = normal(0.0, 1.0) // Prior : p(h1)
+    val v1 = id(h1)           // p(v1|h1) = 1.0
+    val map_fun = fun(x) {
+      score(normal_pdf(v1, 1.0, x))
+    }
 
-      map(dataset, map_fun)
-      f
+    map(x1s, map_fun)
+
+    val h2 = exp_to_double(normal_pdf(2.0, 1.0, h1)) // p(h2|h1) = N(2,1)
+    val v2 = id(h2)                   // p(v2|h2) = 1.0
+
+    val map_fun_2 = fun(x) {
+      score(normal_pdf(v2, 1.0, x))
+    }
+
+    map(x2s, map_fun_2)
+    v2
   }
   g
 }
 
-fun gaussian_model() : model<double> {
-  return fun() {
-    normal(3.0, 3.5)
-  }
+fun prior(mean : double) {
+  return normal(mean, 10.0)
 }
 
-val fitted = fit(homogeneous_linear, dataset)
-val gaussian = fit_1d_gaussian(gaussian_model(), gaussian_dataset)
+/* val fitted_hmm = fit_gaussian_hmm() */
 
 
 /*
@@ -104,18 +96,6 @@ fun importance_sampling(model : model<a>) : ndet histogram<a> {
   random_sampler{normalise(populate(particle_count, model))}
 }
 
-fun show(hist : histogram<double>) {
-  for(1, hist.length) fun(i) {
-    val string = match(hist[i]) {
-      Nothing -> " "
-      Just(x) -> match(x) {
-        (Exp(dbl), a) -> {show-fixed(exp(ddouble(dbl))) + ", " + show-fixed(a)}
-      }
-    }
-    println(string)
-  }
-}
-
 fun sum_weights(histogram : histogram<a>) : exp {
   fun foldlfunc(acc, wx) {
     match(wx) {
@@ -162,7 +142,7 @@ fun resample(histogram : histogram<a>, default : (exp, a)) : <div, sample> histo
   val n = histogram.length
   val total_w = sum_weights(histogram)
   fun resample_model() {
-    score(total_w)                      // The sample is scored with the uniform prior.
+    score(total_w)
     weighted_choice(histogram, default) // Returns a's with the highest weight.
   }
 
@@ -177,7 +157,7 @@ fun smc(particle_num : int, step_num : int, step_size : int, model, default) {
     model()
   }
 
-  val pop = populate(particle_num, smc_func)
+  val pop = normalise(populate(particle_num, smc_func))
 
   fun loop(i, pop_hist) {
       if (i < step_num) then {
@@ -214,16 +194,7 @@ fun smc(particle_num : int, step_num : int, step_size : int, model, default) {
   loop(0, pop)
 }
 
-fun plot_population_regression(histogram : histogram<(double -> double)>, default : (exp, (double -> double))) : <ndet, console, sample> string {
-  val negligible = length(filter(histogram,
-    fun(element){
-      match(element) {
-          (Exp(j),_) -> (dbl-e^(j) < 0.00001)
-      }
-    }))
-    println("Number of negligible samples: " + negligible.show)
-    list-join(15) fun(i) {
-      val f = weighted_choice(histogram, default)
-      plot(f)
-    }
+fun main() {
+  val test_histogram : histogram<double> = [(Exp(0.0), 1.0), (Exp(2.0), 4.0)]
+  write(test_histogram)
 }

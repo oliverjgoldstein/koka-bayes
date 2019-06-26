@@ -20,6 +20,19 @@ fun exp_to_double(x : exp) : double {
   }
 }
 
+/* fun show(aj) {
+  match(aj) {
+    (Exp(i) : exp, j : double) -> {
+      print("Exp ");
+      print(show-fixed(i : double));
+      print("  ");
+      print(show-fixed(j : double));
+      println(" ")
+    }
+  }
+} */
+
+
 fun mult_exp(x : exp, y : exp) : exp {
   match (x) {
     Exp(j) -> {

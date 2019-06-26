@@ -8,6 +8,43 @@ val linear : regression = fun() {
   (fun(x){ a * x + b })
 }
 
+fun gaussian_model() : model<double> {
+  return fun() {
+    normal(0.0, 10.0)
+  }
+}
+
+val fitted = fit(homogeneous_linear, dataset)
+val gaussian = fit_1d_gaussian(gaussian_model(), gaussian_dataset)
+
+fun fit(model : regression, dataset : data) : regression {
+    val g = fun() {
+      val f : double -> double = model()
+      val map_fun = fun(xy) {
+        match(xy) {
+          (x,y) -> score(normal_pdf(f(x), 0.25, y))
+        }
+      }
+
+      map(dataset, map_fun)
+      f
+    }
+    g
+}
+
+fun fit_1d_gaussian(model : model<double>, dataset : data_1d) : model<double> {
+  val g = fun() {
+      val f : double = model()
+      val map_fun = fun(x) {
+        score(normal_pdf(f, 1.0, x))
+      }
+
+      map(dataset, map_fun)
+      f
+  }
+  g
+}
+
 
 /* This function is going to return a linear function i.e. 0.1 * x for any x you give it. */
 val homogeneous_linear : regression = fun() {
@@ -16,14 +53,9 @@ val homogeneous_linear : regression = fun() {
   r
 }
 
-/* fun gaussian_model() : model<double> {
-  return fun() {
-    normal(2.0, 0.3)
-  }
-} */
-
 val gaussian_dataset : data_1d = [0.0, 0.1, 0.1, 0.0, 0.2, 0.1, 0.0, 0.2]
-
+val hmm_data_x1s : data_1d = [0.0,0.0,0.0,0.0,0.1]
+val hmm_data_x2s : data_1d = [3.0,3.0,3.0,3.0,0.1]
 val dataset : data = [(1.0,2.0),(2.0,3.0)]
 
 fun box-muller(u1 :double, u2 :double) {
