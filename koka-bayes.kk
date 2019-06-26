@@ -1,4 +1,4 @@
-/* public module test/ojg/koka-bayes
+public module test/ojg/koka-bayes
 
 import std/num/double
 import std/num/ddouble
@@ -188,4 +188,4 @@ fun main() {
   val default = (Exp(0.0), fun(i : int){(1.0, 1.0)})
   val hist = smc(100, 50, 50, fit_linear_gaussian(gaussian_one, gaussian_two), default)
   show(hist)
-} */
+}
