@@ -1,7 +1,7 @@
-# export KOKARUN=/Users/Development/Documents/Dissertation/koka/test/ojg
-# export KOKADEV=/Users/Development/Documents/Dissertation/koka
+#export KOKADEV="/Users/Development/Documents/Dissertation/koka/test/ojg/"
+#export KOKAGIT="/Users/Development/Documents/KokaFiles/koka-development/."
 
 source ~/.bash_profile
-cp KOKARUN/* KOKADEV/
-jake
-python plot_examples.py
+cp -R $KOKADEV $KOKAGIT
+#jake
+#python plot_examples.py
