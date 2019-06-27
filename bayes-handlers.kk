@@ -37,6 +37,7 @@ val weighted = handler(wp : exp) {
     return x -> (wp, x)
     score(s) -> resume((), mult_exp(wp, s))
 }
+
 fun finalize(action) {
   handle(action) {
     return x -> x

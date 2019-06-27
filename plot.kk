@@ -36,6 +36,11 @@ fun write( hist : histogram<double> ) {
    write-text(path("./test/ojg/output.csv"), show(hist))
 }
 
+fun write( hist : histogram<(double, double)> ) {
+   write-text(path("./test/ojg/output.csv"), show(hist))
+}
+
+
 fun show(hist : histogram<double>) {
   var total_string := ""
   for(1, hist.length) fun(i) {
@@ -45,9 +50,8 @@ fun show(hist : histogram<double>) {
         (Exp(dbl), a) -> {show-fixed(exp(ddouble(dbl))) + ", " + show-fixed(a)}
       }
     }
-    total_string := total_string + str
+    total_string := total_string + str + "\n"
   }
-  total_string := total_string + "\n"
   total_string
 }
 
@@ -57,13 +61,26 @@ fun show(hist : histogram<(double, double)>) : string {
     val str = match(hist[i]) {
       Nothing -> ""
       Just(x) -> match(x) {
-        (Exp(dbl), (db1, db2)) -> {show-fixed(exp(ddouble(dbl))) + ", (" + show-fixed(db1) + ", " + show-fixed(db2) + ")"}
+        (Exp(dbl), (db1, db2)) -> {show-fixed(exp(ddouble(dbl))) + ", " + show-fixed(db1) + "\n" +
+                                    show-fixed(exp(ddouble(dbl))) + ", " + show-fixed(db2)}
       }
     }
-    total_string := total_string + str
+    total_string := total_string + str + "\n"
   }
-  total_string := total_string + "\n"
   total_string
+}
+
+fun show(hist : histogram<(double -> double)>) : console int{
+  for(1, hist.length) fun(i) {
+    val str = match(hist[i]) {
+      Nothing -> ""
+      Just(x) -> match(x) {
+        (Exp(dbl), func) -> {"(" + show-fixed(exp(ddouble(dbl))) + ", " + show-fixed(func(100.0)) + ")"}
+      }
+    }
+    println(str)
+  }
+  0
 }
 
 fun example-plot() {

@@ -1,4 +1,4 @@
-public module test/ojg/koka-bayes
+public module test/ojg/debug
 
 import std/num/double
 import std/num/ddouble
@@ -28,26 +28,6 @@ fun fit_linear_gaussian(x1s : data_1d, x2s : data_1d) : model<(double, double)> 
     map(x2s, fun(x) {score(normal_pdf(v2, 1.0, x))})
 
     (h1, h2)
-  }
-  g
-}
-
-fun sequential_gaussian() : model<double> {
-  val x1 = 2.0
-  val g = fun() {
-    val seed = normal(2.0, 1.0)
-    score(normal_pdf(seed, 0.3, x1))
-    val seed2 = normal(seed, 1.0)
-    score(normal_pdf(seed2, 0.3, x1))
-    val seed3 = normal(seed2, 0.5)
-    score(normal_pdf(seed3, 0.3, x1))
-    val seed4 = normal(seed3, 0.4)
-    score(normal_pdf(seed4, 0.3, x1))
-    val seed5 = normal(seed4, 0.2)
-    score(normal_pdf(seed5, 0.2, x1))
-    val seed6 = normal(seed5, 0.1)
-    score(normal_pdf(seed6, 0.1, x1))
-    seed6
   }
   g
 }
@@ -118,26 +98,20 @@ Randomly choses a value from 0 through total_w.
 It then reduces this value by e^histogram_element_weight successively.
 When below 0 it chooses that value.
 */
-fun weighted_choice(histogram : histogram<a>, default : (exp, a)) : sample a {
-  val total_w = sum_weights(histogram)
-  val total_fuel = (exp_to_double(total_w)) * sample()
-  fun choose(fuel : double, ws) {
+/* fun weighted_choice(histogram : histogram<a>, default : (exp, a)) : sample a {
+
+  fun choose(ws) {
     match(ws) {
       Nil -> match(default) {
-        (Exp(_), k) -> k
+        (a, k) -> k
       }
       Cons((w,x), wxs) -> {
-        val fuel_new = fuel - exp_to_double(w)
-        if (fuel_new <= 0.0) then {
           x
-        } else {
-          choose(fuel_new, wxs)
-        }
       }
     }
   }
-  choose(total_fuel, histogram)
-}
+  choose(histogram)
+} */
 
 
 /*
@@ -146,18 +120,28 @@ Resample_model uses the original histogram.
 The resampled model actually does induce another score in the populate.
 The score is for total_w.
 */
-fun resample(histogram : histogram<a>, default : (exp, a)) : <div, sample> histogram<a> {
-  val n = histogram.length
-  val total_w = sum_weights(histogram)
+/* fun resample(histogram : histogram<a>, default : (exp, a)) : sample histogram<a> {
+
   fun resample_model() {
-    score(total_w)
-    weighted_choice(histogram, default) // Returns a's with the highest weight.
+    score(Exp(1.0))
+    //weighted_choice(histogram, default) // Returns a's with the highest weight.
+    fun choose(ws) {
+      match(ws) {
+        Nil -> match(default) {
+          (a, k) -> k
+        }
+        Cons((w,x), wxs) -> {
+            x
+        }
+      }
+    }
+    choose(histogram)
   }
 
-  populate(n, resample_model)
-}
+  histogram
+} */
 
-fun smc(particle_num : int, step_num : int, step_size : int, model, default) {
+/* fun smc(particle_num : int, step_num : int, step_size : int, model, default) : <div,ndet,ndet|_e> int { //: <console,div,ndet|_e> histogram<_b>
   random_sampler {
     val smc_func = fun() {
         advance {
@@ -169,11 +153,22 @@ fun smc(particle_num : int, step_num : int, step_size : int, model, default) {
 
     val pop = normalise(populate(particle_num, smc_func))
 
-    loop(0, pop, step_num, step_size, default)
+    loop(0, pop, default)
   }
+} */
+
+
+fun loop(histogram : list<(exp, _a)>, default : (exp, _a)) {
+   score(Exp(1.0))
+   if (5 < 0) {
+     val third_term = loop(histogram, default)
+     6
+   } else {
+     5
+   }
 }
 
-fun loop(i : int, pop_hist : histogram<(int) -> <yield,score,div,sample|e> a>, step_num : int, step_size : int, default : (exp, int -> <yield,score,div,sample|e> a)) : <div,sample|e> histogram<a> {
+/* fun loop(i : int, pop_hist : histogram<(int) -> <yield,score,div,console,ndet,sample|_e> _a>, step_num : int, step_size : int, default) : <console,sample,div,ndet|_e> histogram<_b> {
     if (i < step_num) then {
       val resampled_histogram = resample(pop_hist, default)
       fun smc_func_2(wm) {
@@ -189,7 +184,25 @@ fun loop(i : int, pop_hist : histogram<(int) -> <yield,score,div,sample|e> a>, s
       }
 
       val second_term = map(resampled_histogram, smc_func_2)
-      loop(i + 1, second_term, step_num, step_size, default)
+      val new_default = smc_func_2(default)
+      val third_term = loop((i + 1), second_term, step_num, step_size, new_default)
+      /* third_term */
+      /* resampled_histogram */
+      val pop_func = fun(wm) {
+        match(wm) {
+          (w,m) -> {
+            weighted(w) {
+              finalize {
+                m(0)
+              }
+            }
+          }
+        }
+      }
+
+      val x = map(pop_hist, pop_func)
+      x
+
     } else {
 
       val pop_func = fun(wm) {
@@ -207,13 +220,13 @@ fun loop(i : int, pop_hist : histogram<(int) -> <yield,score,div,sample|e> a>, s
       val x = map(pop_hist, pop_func)
       x
     }
-}
+} */
 
 fun main() {
-  /* val test_histogram : histogram<double> = [(Exp(0.0), 1.0), (Exp(2.0), 4.0)] */
-  /* val default = (Exp(0.0), fun(i : int){(fun(k:double){1.0})}) */
-  val default = (Exp(0.0), fun(i : int){(100.0)})
-  val hist = smc(50, 6, 1, sequential_gaussian(), default)
-  write(hist)
-  show(hist)
+  val test_histogram : histogram<double> = [(Exp(0.0), 1.0), (Exp(2.0), 4.0)]
+  write(test_histogram)
+  val default = (Exp(0.0), fun(i : int){(fun(k:double){1.0})})
+  /* val hist = smc(100, 5, 10, fit(linear, dataset), default) */
+  /* show(hist) */
+  5
 }
