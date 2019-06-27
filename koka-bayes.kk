@@ -52,15 +52,6 @@ fun sequential_gaussian() : model<double> {
   g
 }
 
-/* val fitted_hmm = fit_linear_gaussian() */
-
-
-/*
- Creates histogram with uniformly distributed exp weights.
- The model can induce another score to modify the weights.
- Randomly chosen elements from the model.
-*/
-
 fun populate(k : int, model : () -> <score|e> b) : e histogram<b> {
   list(1, k) fun(i) {
     weighted(Exp(0.0)) {
@@ -69,13 +60,6 @@ fun populate(k : int, model : () -> <score|e> b) : e histogram<b> {
     }
   }
 }
-
-/*
-
-normalise sums the weights.
-it then maps over the histogram and dividies the exps by the total weights.
-
-*/
 
 fun normalise(histogram : histogram<a>) : histogram<a> {
   val total = sum_weights(histogram)
@@ -92,13 +76,6 @@ fun sum_histogram(hist : histogram<a>) : double {
   foldl(hist, 0.0, foldfunc)
 }
 
-/*
-This initialises a set of particles,
-random_sampler wraps around it
-normalise is going to make the set of weights one.
-the populate will return a histogram from the model.
-*/
-
 fun importance_sampling(model : model<a>) : ndet histogram<a> {
   val particle_count = 1000
   random_sampler{normalise(populate(particle_count, model))}
@@ -113,11 +90,6 @@ fun sum_weights(histogram : histogram<a>) : exp {
   foldl(histogram, Exp(log(0.0)), foldlfunc)
 }
 
-/*
-Randomly choses a value from 0 through total_w.
-It then reduces this value by e^histogram_element_weight successively.
-When below 0 it chooses that value.
-*/
 fun weighted_choice(histogram : histogram<a>, default : (exp, a)) : sample a {
   val total_w = sum_weights(histogram)
   val total_fuel = (exp_to_double(total_w)) * sample()
@@ -139,13 +111,6 @@ fun weighted_choice(histogram : histogram<a>, default : (exp, a)) : sample a {
   choose(total_fuel, histogram)
 }
 
-
-/*
-Returns a histogram which is populated with elements from resample_model.
-Resample_model uses the original histogram.
-The resampled model actually does induce another score in the populate.
-The score is for total_w.
-*/
 fun resample(histogram : histogram<a>, default : (exp, a)) : <div, sample> histogram<a> {
   val n = histogram.length
   val total_w = sum_weights(histogram)
