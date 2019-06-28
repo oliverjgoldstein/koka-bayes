@@ -144,28 +144,32 @@ fun smc(particle_num : int, step_num : int, step_size : int, model, default) {
   }
 }
 
-fun loop(pop_hist : histogram<(int) -> <yield,score,div,sample|e> a>, step_num : int, step_size : int, default : (exp, int -> <yield,score,div,sample|e> a)) : <sample> int { //<div,sample|e> histogram<a> {
-  var temp_hist := pop_hist
-  var x := Nil
-  var temp := Nil
+fun loop(pop_hist : histogram<(int) -> <yield,score,div,sample|e> a>, step_num : int, step_size : int, default : (exp, int -> <yield,score,div,sample|e> a)) { //<div,sample|e> histogram<a> {
 
-  for(0, step_num) fun(i) {
-      if (i < step_num) then {
-        val histogram_l = resample(temp_hist, default)
-        fun smc_func_2(wm) {
-          match(wm) {
-            (w,m) -> {
-              weighted(w) {
-                advance {
-                  m(step_size)
-                }
-              }
-            }
+  var i := 0
+  val histogram_ls = resample(pop_hist, default)
+  fun smc_func_2(wm) {
+    match(wm) {
+      (w,m) -> {
+        weighted(w) {
+          advance {
+            m(step_size)
           }
         }
+      }
+    }
+  }
+  var temp := map(histogram_ls, smc_func_2)
 
-        temp := map(histogram_l, smc_func_2)
-      } else {
+  while {i < step_num} {
+    val histogram_l = resample(pop_hist, default)
+    println("X")
+    i := i - 1
+    temp := map(histogram_l, smc_func_2)
+  }
+
+
+      /* else {
 
         val pop_func = fun(wm) {
           match(wm) {
@@ -181,7 +185,7 @@ fun loop(pop_hist : histogram<(int) -> <yield,score,div,sample|e> a>, step_num :
 
         x := map(pop_hist, pop_func)
       }
-   }
+   } */
    5
 }
 
