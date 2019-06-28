@@ -34,19 +34,24 @@ fun fit_linear_gaussian(x1s : data_1d, x2s : data_1d) : model<(double, double)> 
 
 fun sequential_gaussian() : model<double> {
   val x1 = 2.0
+  val x2 = 2.0
+  val x3 = 2.1
+  val x4 = 2.2
+  val x5 = 2.0
+  val x6 = 2.0
   val g = fun() {
     val seed = normal(2.0, 1.0)
     score(normal_pdf(seed, 0.3, x1))
     val seed2 = normal(seed, 1.0)
-    score(normal_pdf(seed2, 0.3, x1))
+    score(normal_pdf(seed2, 0.3, x2))
     val seed3 = normal(seed2, 0.5)
-    score(normal_pdf(seed3, 0.3, x1))
+    score(normal_pdf(seed3, 0.3, x3))
     val seed4 = normal(seed3, 0.4)
-    score(normal_pdf(seed4, 0.3, x1))
+    score(normal_pdf(seed4, 0.3, x4))
     val seed5 = normal(seed4, 0.2)
-    score(normal_pdf(seed5, 0.2, x1))
+    score(normal_pdf(seed5, 0.3, x5))
     val seed6 = normal(seed5, 0.1)
-    score(normal_pdf(seed6, 0.1, x1))
+    score(normal_pdf(seed6, 0.3, x6))
     seed6
   }
   g
@@ -134,51 +139,53 @@ fun smc(particle_num : int, step_num : int, step_size : int, model, default) {
 
     val pop = normalise(populate(particle_num, smc_func))
 
-    loop(0, pop, step_num, step_size, default)
+    /* loop(0, pop, step_num, step_size, default) */
+    5
   }
 }
 
 fun loop(i : int, pop_hist : histogram<(int) -> <yield,score,div,sample|e> a>, step_num : int, step_size : int, default : (exp, int -> <yield,score,div,sample|e> a)) : <div,sample|e> histogram<a> {
-    if (i < step_num) then {
-      val resampled_histogram = resample(pop_hist, default)
-      fun smc_func_2(wm) {
-        match(wm) {
-          (w,m) -> {
-            weighted(w) {
-              advance {
-                m(step_size)
+  var histogram := pop_hist
+  for(i, step_num) fun(i) {
+      if (i < step_num) then {
+        histogram := resample(histogram, default)
+        fun smc_func_2(wm) {
+          match(wm) {
+            (w,m) -> {
+              weighted(w) {
+                advance {
+                  m(step_size)
+                }
               }
             }
           }
         }
-      }
 
-      val second_term = map(resampled_histogram, smc_func_2)
-      loop(i + 1, second_term, step_num, step_size, default)
-    } else {
+        histogram := map(histogram, smc_func_2)
+      } else {
 
-      val pop_func = fun(wm) {
-        match(wm) {
-          (w,m) -> {
-            weighted(w) {
-              finalize{
-                m(0)
+        val pop_func = fun(wm) {
+          match(wm) {
+            (w,m) -> {
+              weighted(w) {
+                finalize{
+                  m(0)
+                }
               }
             }
           }
         }
-      }
 
-      val x = map(pop_hist, pop_func)
-      x
-    }
+        return map(histogram, pop_func)
+      }
+   }
 }
 
 fun main() {
   /* val test_histogram : histogram<double> = [(Exp(0.0), 1.0), (Exp(2.0), 4.0)] */
   /* val default = (Exp(0.0), fun(i : int){(fun(k:double){1.0})}) */
-  val default = (Exp(0.0), fun(i : int){(100.0)})
-  val hist = smc(50, 6, 1, sequential_gaussian(), default)
-  write(hist)
+  val default = (Exp(0.0), fun(i : int){(0.0)})
+  val hist = smc(90, 6, 1, sequential_gaussian(), default)
+  /* write(hist) */
   show(hist)
 }
