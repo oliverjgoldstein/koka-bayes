@@ -1,13 +1,12 @@
 import test/ojg/exp
-alias model<a> = () -> <sample, score> a
-alias regression = model<double -> double>
-alias data = list<(double, double)>
-alias data_1d = list<double>
+alias model<a>        = () -> <sample, score> a
+alias regression      = model<double -> double>
 alias sequential_data = list<list<double>>
-
-alias histogram<a> = list<(exp, a)>
-alias histofunc<a,b> = histogram<a> -> histogram<b>
-
+alias data_1d         = list<double>
+alias two_d_data      = list<(double, double)>
+alias trace_values    = list<double>
+alias histogram<a>    = list<(exp, a)>
+alias histofunc<a,b>  = histogram<a> -> histogram<b>
 
 effect yield {
   control yield() : ()
@@ -16,9 +15,12 @@ effect yield {
 ambient fun sample() : double
 ambient control score( s : exp ) : ()
 
-
 effect exc {
   fun raise(s : string ) : a
+}
+
+type trace<a> {
+  Trace(m : model<a>, l : trace_values)
 }
 
 fun random_sampler(action : () -> <sample|e> a) : <ndet|e> a {
@@ -33,10 +35,50 @@ fun catch(action,h) {
   }
 }
 
-val weighted = handler(wp : exp) {
+fun trace(action) {
+  var random_list := Nil
+  handle(action) {
+    return x -> (random_list, x)
+    sample() -> {
+      val rand_choice = sample()
+      random_list := random_list + [rand_choice]
+      resume(rand_choice)
+    }
+  }
+}
+
+fun replay(trace : Trace, action) {
+  var new_trace := traceDist(trace)
+  var index     := 0
+  handle(action) {
+    return x -> (x, new_trace)
+    sample() -> {
+      match(trace[index]) {
+        Just(random_value) -> resume(random_value)
+        Nothing -> {
+          val rand_choice = sample()
+          new_trace := new_trace + [rand_choice]
+          resume(rand_choice)
+        }
+      }
+    }
+  }
+}
+
+/* val weighted = handler(wp : exp) {
     return x -> (wp, x)
     score(s) -> resume((), mult_exp(wp, s))
+} */
+
+
+fun weighted(wp : exp, action) {
+  var wps := wp
+    handle(action) {
+      return x -> (wps, x)
+      score(s) -> {wps := mult_exp(wps, s); resume(())}
+  }
 }
+
 
 fun finalize(action) {
   handle(action) {

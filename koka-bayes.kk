@@ -154,6 +154,7 @@ fun loop(i : int, pop_hist : histogram<(int) -> <yield,score,div,sample|e> a>, s
       }
 
       val second_term = map(resampled_histogram, smc_func_2)
+      /* map(tmcmc, second_term */
       loop(i + 1, second_term, step_num, step_size, default)
     } else {
 
@@ -174,7 +175,54 @@ fun loop(i : int, pop_hist : histogram<(int) -> <yield,score,div,sample|e> a>, s
     }
 }
 
+/* fun withRandomness(trace : list<double>, model : ) */
+
+fun trace_dist(tr : trace<_a>) {
+  match(tr) {
+    Trace(_, d) -> d
+  }
+}
+
+fun trace_model(tr : trace<_a>) {
+  match(tr) {
+    Trace(m, _) -> m
+  }
+}
+
+fun perturb_trace(trace : trace<_a>) {
+  val trace_values  = trace_dist(trace)
+  val perturb_index = random_range(trace_values.length)
+  val div_trace     = split(trace_values, perturb_index)
+  val new_trace     = match(div_trace) {
+    (l1, Cons(_, l2)) -> l1 + [sample()] + l2
+  }
+  Trace(trace_model(trace), new_trace)
+}
+
+fun withRandomness(trace : trace<_a>) {
+  random_sampler {
+    replay(trace) {
+      weighted(Exp(0.0)) {
+        trace_model(trace)()
+      }
+    }
+  }
+}
+
+fun random_range(upper_bound : int) {
+  return int(random() / (1.0 / double(upper_bound))) % upper_bound
+}
+
+fun show( ls : (list<int>, list<int>) ) : string {
+  match(ls) {
+    (l1, l2) -> show(l1) + show(l2)
+  }
+}
+
+
+
 fun main() {
+
   /* val test_histogram : histogram<double> = [(Exp(0.0), 1.0), (Exp(2.0), 4.0)] */
   /* val default = (Exp(0.0), fun(i : int){(fun(k:double){1.0})}) */
   val default = (Exp(0.0), fun(i : int){(100.0)})
