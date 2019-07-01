@@ -1,3 +1,4 @@
+import test/ojg/types
 import test/ojg/bayes-handlers
 import test/ojg/exp
 import std/num/double

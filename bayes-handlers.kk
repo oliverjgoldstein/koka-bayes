@@ -1,27 +1,5 @@
 import test/ojg/exp
-alias model<a>        = () -> <sample, score> a
-alias regression      = model<double -> double>
-alias sequential_data = list<list<double>>
-alias data_1d         = list<double>
-alias two_d_data      = list<(double, double)>
-alias trace_values    = list<double>
-alias histogram<a>    = list<(exp, a)>
-alias histofunc<a,b>  = histogram<a> -> histogram<b>
-
-effect yield {
-  control yield() : ()
-}
-
-ambient fun sample() : double
-ambient control score( s : exp ) : ()
-
-effect exc {
-  fun raise(s : string ) : a
-}
-
-type trace<a> {
-  Trace(m : model<a>, l : trace_values)
-}
+import test/ojg/types
 
 fun random_sampler(action : () -> <sample|e> a) : <ndet|e> a {
   with fun sample() { random() }
@@ -47,23 +25,27 @@ fun trace(action) {
   }
 }
 
-fun replay(trace : Trace, action) {
-  var new_trace := traceDist(trace)
+/*
+fun replay(trace : trace<a>, action) {
+  var new_trace := trace_dist(trace)
   var index     := 0
   handle(action) {
     return x -> (x, new_trace)
     sample() -> {
-      match(trace[index]) {
-        Just(random_value) -> resume(random_value)
+      index := index + 1
+      match(new_trace[index]) {
         Nothing -> {
           val rand_choice = sample()
           new_trace := new_trace + [rand_choice]
           resume(rand_choice)
         }
+        Just(random_value) -> resume(random_value)
       }
     }
   }
 }
+ */
+
 
 /* val weighted = handler(wp : exp) {
     return x -> (wp, x)

@@ -2,6 +2,7 @@ public module test/ojg/koka-bayes
 
 import std/num/double
 import std/num/ddouble
+import test/ojg/types
 import test/ojg/exp
 import test/ojg/bayes-handlers
 import test/ojg/model
@@ -143,7 +144,7 @@ fun loop(i : int, pop_hist : histogram<(int) -> <yield,score,div,sample|e> a>, s
       val resampled_histogram = resample(pop_hist, default)
       fun smc_func_2(wm) {
         match(wm) {
-          (w,m) -> {
+          (w, m) -> {
             weighted(w) {
               advance {
                 m(step_size)
@@ -154,7 +155,6 @@ fun loop(i : int, pop_hist : histogram<(int) -> <yield,score,div,sample|e> a>, s
       }
 
       val second_term = map(resampled_histogram, smc_func_2)
-      /* map(tmcmc, second_term */
       loop(i + 1, second_term, step_num, step_size, default)
     } else {
 
@@ -175,37 +175,59 @@ fun loop(i : int, pop_hist : histogram<(int) -> <yield,score,div,sample|e> a>, s
     }
 }
 
-/* fun withRandomness(trace : list<double>, model : ) */
-
-fun trace_dist(tr : trace<_a>) {
-  match(tr) {
-    Trace(_, d) -> d
-  }
-}
-
-fun trace_model(tr : trace<_a>) {
-  match(tr) {
-    Trace(m, _) -> m
-  }
-}
-
-fun perturb_trace(trace : trace<_a>) {
+fun perturb_trace(trace : trace<_a>) : <ndet, sample|e> trace_values {
   val trace_values  = trace_dist(trace)
   val perturb_index = random_range(trace_values.length)
   val div_trace     = split(trace_values, perturb_index)
   val new_trace     = match(div_trace) {
     (l1, Cons(_, l2)) -> l1 + [sample()] + l2
+    (l1, _) -> l1
   }
-  Trace(trace_model(trace), new_trace)
+  new_trace
 }
 
-fun withRandomness(trace : trace<_a>) {
-  random_sampler {
+/* fun with_randomness(trace : trace<_a>) {
+  val likelihood_a_trace = random_sampler {
     replay(trace) {
       weighted(Exp(0.0)) {
         trace_model(trace)()
       }
     }
+  }
+  likelihood_a_trace
+} */
+
+fun mh_trans(trace : trace<_a>) {
+  val new_trace = perturb_trace(trace)
+  match(trace) {
+    Trace(model, (old_trace, a)) -> {
+      val p1a = (0.5, a)
+      val p2b = (0.5, a)
+      match(p1a) {
+        (p1, _) -> {
+          match(p2b) {
+            (p2, b) -> {
+              val ratio = min(1.0, (p2 * old_trace.length.double) / (p1 * new_trace.length.double) )
+              val accept = bernoulli(ratio)
+              if(accept) {
+                Trace(model, (new_trace, b))
+              } else {
+                Trace(model, (old_trace, a))
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+fun bernoulli(p : double) : ndet bool {
+  val g = random()
+  if (g < p) {
+    True
+  } else{
+    False
   }
 }
 

@@ -1,8 +1,6 @@
 import std/num/double
+import test/ojg/types
 
-type exp {
-  Exp(i : double)
-}
 
 fun ln(x : exp) : double {
   match(x) {
@@ -19,19 +17,6 @@ fun exp_to_double(x : exp) : double {
     (Exp(j)) -> dbl-e^j
   }
 }
-
-/* fun show(aj) {
-  match(aj) {
-    (Exp(i) : exp, j : double) -> {
-      print("Exp ");
-      print(show-fixed(i : double));
-      print("  ");
-      print(show-fixed(j : double));
-      println(" ")
-    }
-  }
-} */
-
 
 fun mult_exp(x : exp, y : exp) : exp {
   match (x) {
