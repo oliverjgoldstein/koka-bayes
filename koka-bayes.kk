@@ -139,19 +139,16 @@ fun smc(particle_num : int, step_num : int, step_size : int, model, default) {
 
     val pop = normalise(populate(particle_num, smc_func))
 
-    /* loop(0, pop, step_num, step_size, default) */
-    5
+    loop(pop, step_num, step_size, default)
   }
 }
 
-fun loop(pop_hist : histogram<(int) -> <yield,score,div,sample|e> a>, step_num : int, step_size : int, default : (exp, int -> <yield,score,div,sample|e> a)) : <sample> int { //<div,sample|e> histogram<a> {
-  var temp_hist := pop_hist
-  var x := Nil
-  var temp := Nil
-
+fun loop(pop_hist : histogram<(int) -> <yield,score,div,sample|_e> _a>, step_num : int, step_size : int, default : (exp, int -> <yield,score,div,sample|_e> _a)) { //<div,sample|e> histogram<a> {
+  val temp = ref(pop_hist)
+  val x = ref(Nil)
   for(0, step_num) fun(i) {
       if (i < step_num) then {
-        val histogram_l = resample(temp_hist, default)
+        val histogram_l = resample(!temp, default)
         fun smc_func_2(wm) {
           match(wm) {
             (w,m) -> {
@@ -163,7 +160,6 @@ fun loop(pop_hist : histogram<(int) -> <yield,score,div,sample|e> a>, step_num :
             }
           }
         }
-
         temp := map(histogram_l, smc_func_2)
       } else {
 
@@ -179,10 +175,10 @@ fun loop(pop_hist : histogram<(int) -> <yield,score,div,sample|e> a>, step_num :
           }
         }
 
-        x := map(pop_hist, pop_func)
+        x := map(!temp, pop_func)
       }
    }
-   5
+   !x
 }
 
 /* fun loop(i : int, pop_hist : histogram<(int) -> <yield,score,div,sample|e> a>, step_num : int, step_size : int, default : (exp, int -> <yield,score,div,sample|e> a)) : <div,sample|e> histogram<a> {
@@ -225,7 +221,7 @@ fun main() {
   /* val test_histogram : histogram<double> = [(Exp(0.0), 1.0), (Exp(2.0), 4.0)] */
   /* val default = (Exp(0.0), fun(i : int){(fun(k:double){1.0})}) */
   val default = (Exp(0.0), fun(i : int){(0.0)})
-  val hist = smc(90, 6, 1, sequential_gaussian(), default)
-  /* write(hist) */
-  show(hist)
+  val hist = smc(100, 6, 1, sequential_gaussian(), default)
+  write(hist)
+  /* show(hist) */
 }
