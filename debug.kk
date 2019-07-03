@@ -1,15 +1,11 @@
+fun arb(arbitrary : list<_a>) {
 
-ambient fun arb() : double
-
-fun handler_test(action) {
-
-  var array := [1.0,2.0]
-
-  handle(action) {
-    return r -> r
-    arb() -> {
-      val x : maybe<double> = array[0]
-      resume(4.0)
-    }
+  val i = ref(0)
+  fun func(parameter) {
+    i := inject-st({parameter(0)})()
+    /* parameter(!i) */
   }
+
+  val temp = ref(arbitrary.map(func))
+  !i
 }

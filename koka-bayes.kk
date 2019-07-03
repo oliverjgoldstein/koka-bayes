@@ -126,20 +126,19 @@ fun resample(histogram : histogram<a>, default : (exp, a)) : <div, sample> histo
 fun smc(particle_num : int, step_num : int, step_size : int, model, default) {
   random_sampler {
     val smc_func = fun() {
-        advance {
-          yield_on_score {
+      advance {
+        yield_on_score {
           model()
         }
       }
     }
 
     val pop = normalise(populate(particle_num, smc_func))
-
-    loop(0, pop, step_num, step_size, default)
+    smc_loop(0, pop, step_num, step_size, default)
   }
 }
 
-fun loop(i : int, pop_hist : histogram<(int) -> <yield,score,div,sample|e> a>, step_num : int, step_size : int, default : (exp, int -> <yield,score,div,sample|e> a)) : <div,sample|e> histogram<a> {
+fun smc_loop(i : int, pop_hist : histogram<(int) -> <yield,score,div,sample|e> a>, step_num : int, step_size : int, default : (exp, int -> <yield,score,div,sample|e> a)) : <div,sample|e> histogram<a> {
     if (i < step_num) then {
       val resampled_histogram = resample(pop_hist, default)
       fun smc_func_2(wm) {
@@ -155,7 +154,7 @@ fun loop(i : int, pop_hist : histogram<(int) -> <yield,score,div,sample|e> a>, s
       }
 
       val second_term = map(resampled_histogram, smc_func_2)
-      loop(i + 1, second_term, step_num, step_size, default)
+      smc_loop(i + 1, second_term, step_num, step_size, default)
     } else {
 
       val pop_func = fun(wm) {
@@ -175,8 +174,62 @@ fun loop(i : int, pop_hist : histogram<(int) -> <yield,score,div,sample|e> a>, s
     }
 }
 
+fun rmsmc(particle_num : int, step_num : int, step_size : int, model, default) {
+  random_sampler {
+    val smc_func = fun() {
+      advance {
+        yield_on_score {
+          trace {
+            model()
+          }
+        }
+      }
+    }
+
+    val pop = normalise(populate(particle_num, smc_func))
+    /* rsmmc_loop(0, pop, step_num, step_size, default) */
+    pop
+  }
+}
+
+/* fun rsmmc_loop(i : int, pop_hist : histogram<(int) -> <yield,score,div,sample|e> a>, step_num : int, step_size : int, default : (exp, int -> <yield,score,div,sample|e> a)) : <div,sample|e> histogram<a> {
+    if (i < step_num) then {
+      val resampled_histogram = resample(pop_hist, default)
+      fun smc_func_2(wm) {
+        match(wm) {
+          (w, m) -> {
+            weighted(w) {
+              advance {
+                  trace_a(mh_step(Trace(trace{m(step_size)}))
+              }
+            }
+          }
+        }
+      }
+
+      val second_term = map(resampled_histogram, smc_func_2)
+      rsmmc_loop(i + 1, second_term, step_num, step_size, default)
+    } else {
+
+      val pop_func = fun(wm) {
+        match(wm) {
+          (w,m) -> {
+            weighted(w) {
+              finalize{
+                m(0)
+              }
+            }
+          }
+        }
+      }
+
+      val x = map(pop_hist, pop_func)
+      x
+    }
+} */
+
 fun perturb_trace(trace : trace<_a>) : <ndet, sample|e> trace_values {
-  val trace_values  = trace_dist(trace)
+  val trace_values  = trace_d(trace)
   val perturb_index = random_range(trace_values.length)
   val div_trace     = split(trace_values, perturb_index)
   val new_trace     = match(div_trace) {
@@ -186,35 +239,30 @@ fun perturb_trace(trace : trace<_a>) : <ndet, sample|e> trace_values {
   new_trace
 }
 
-/* fun with_randomness(trace : trace<_a>) {
+/* fun with_randomness(trace : trace<_a>) : (trace_values, exp) {
   val likelihood_a_trace = random_sampler {
-    replay(trace) {
+    replay(trace_d(trace)) {
       weighted(Exp(0.0)) {
-        trace_model(trace)()
+        trace_m(trace)()
       }
     }
   }
   likelihood_a_trace
 } */
 
-fun mh_trans(trace : trace<_a>) {
-  val new_trace = perturb_trace(trace)
+fun mh_step(trace : trace<_a>) : <ndet, ndet> trace<_a> {
+  val new_trace = random_sampler{perturb_trace(trace)}
   match(trace) {
-    Trace(model, (old_trace, a)) -> {
-      val p1a = (0.5, a)
-      val p2b = (0.5, a)
-      match(p1a) {
-        (p1, _) -> {
-          match(p2b) {
-            (p2, b) -> {
-              val ratio = min(1.0, (p2 * old_trace.length.double) / (p1 * new_trace.length.double) )
-              val accept = bernoulli(ratio)
-              if(accept) {
-                Trace(model, (new_trace, b))
-              } else {
-                Trace(model, (old_trace, a))
-              }
-            }
+    Trace(model, p1, old_trace, a) -> {
+      val p2b = (new_trace, (Exp(0.5), a))
+      match(p2b) {
+        (extended_trace ,(p2, b)) -> {
+          val ratio = min(1.0, (exp_to_double(p2) * old_trace.length.double) / (exp_to_double(p1) * new_trace.length.double) )
+          val accept = bernoulli(ratio)
+          if(accept) {
+            Trace(model, p2, new_trace, b)
+          } else {
+            Trace(model, p1, old_trace, a)
           }
         }
       }
@@ -235,20 +283,43 @@ fun random_range(upper_bound : int) {
   return int(random() / (1.0 / double(upper_bound))) % upper_bound
 }
 
-fun show( ls : (list<int>, list<int>) ) : string {
-  match(ls) {
-    (l1, l2) -> show(l1) + show(l2)
+fun tmcmc(model : model<a>, steps : int) : <div, ndet, ndet> trace<a> {
+  val model_results =
+  weighted(Exp(0.0)) {
+    random_sampler{
+      trace {
+        model()
+      }
+    }
   }
+
+  val p = match(model_results) {
+    (Exp(a), _) -> Exp(a)
+  }
+
+  val d = match(model_results) {
+    (_, (d, _)) -> d
+  }
+
+  val a = match(model_results) {
+    (_, (_, a)) -> a
+  }
+
+  var main_trace := Trace(model, p, d, a)
+
+  for(1, steps) fun(i) {
+    main_trace := mh_step(main_trace)
+  }
+
+  main_trace
 }
 
-
-
 fun main() {
-
   /* val test_histogram : histogram<double> = [(Exp(0.0), 1.0), (Exp(2.0), 4.0)] */
   /* val default = (Exp(0.0), fun(i : int){(fun(k:double){1.0})}) */
   val default = (Exp(0.0), fun(i : int){(100.0)})
   val hist = smc(50, 6, 1, sequential_gaussian(), default)
   write(hist)
-  show(hist)
+  println(show(hist))
+  show(trace_p(tmcmc(sequential_gaussian(), 1000)))
 }

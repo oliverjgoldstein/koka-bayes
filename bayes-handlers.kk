@@ -25,26 +25,26 @@ fun trace(action) {
   }
 }
 
-/*
-fun replay(trace : trace<a>, action) {
-  var new_trace := trace_dist(trace)
+
+/* fun replay(trace : trace_values, action) {
+  var extended_trace := trace
   var index     := 0
   handle(action) {
-    return x -> (x, new_trace)
+    return x -> (split(extended_trace, index), x)
     sample() -> {
       index := index + 1
-      match(new_trace[index]) {
+      match(extended_trace[index]) {
         Nothing -> {
           val rand_choice = sample()
-          new_trace := new_trace + [rand_choice]
+          extended_trace := extended_trace + [rand_choice]
           resume(rand_choice)
         }
         Just(random_value) -> resume(random_value)
       }
     }
   }
-}
- */
+} */
+
 
 
 /* val weighted = handler(wp : exp) {
