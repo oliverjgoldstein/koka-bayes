@@ -318,7 +318,7 @@ fun main() {
   /* val test_histogram : histogram<double> = [(Exp(0.0), 1.0), (Exp(2.0), 4.0)] */
   /* val default = (Exp(0.0), fun(i : int){(fun(k:double){1.0})}) */
   val default = (Exp(0.0), fun(i : int){(100.0)})
-  val hist = smc(50, 6, 1, sequential_gaussian(), default)
+  val hist = smc(1000, 6, 1, sequential_gaussian(), default)
   write(hist)
   /* println(show(hist)) */
   show(trace_a(tmcmc(sequential_gaussian(), 1000)))
