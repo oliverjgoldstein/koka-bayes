@@ -1,4 +1,5 @@
 import std/num/double
+import std/num/ddouble
 import test/ojg/types
 
 
@@ -57,6 +58,6 @@ fun plus_exp(x : exp, y : exp) {
 
 fun show(x : exp) : string {
   match(x) {
-    Exp(h) -> "Exp " + show(h) + " with value: " + show-fixed(dbl-e^h)
+    Exp(h) -> "Exp " + show(h) + " with probability: " + show-fixed(pow(dd-e,ddouble(h)))
   }
 }

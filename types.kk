@@ -29,13 +29,13 @@ type trace<a> {
 }
 
 
-fun trace_d(tr : trace<_a>) : list<double> {
+fun trace_v(tr : trace<_a>) : list<double> {
   match(tr) {
     Trace(_, _, d, _) -> d
   }
 }
 
-fun trace_model(tr : trace<_a>) : model<_a> {
+fun trace_m(tr : trace<_a>) : model<_a> {
   match(tr) {
     Trace(m, _, _, _) -> m
   }

@@ -26,11 +26,11 @@ fun trace(action) {
 }
 
 
-/* fun replay(trace : trace_values, action) {
-  var extended_trace := trace
+fun replay(trace : trace_values, action) {
+  var extended_trace : list<double> := trace
   var index     := 0
   handle(action) {
-    return x -> (split(extended_trace, index), x)
+    return x -> (split(extended_trace, index).fst, x)
     sample() -> {
       index := index + 1
       match(extended_trace[index]) {
@@ -43,7 +43,7 @@ fun trace(action) {
       }
     }
   }
-} */
+}
 
 
 

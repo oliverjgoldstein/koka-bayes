@@ -34,7 +34,7 @@ fun fit_linear_gaussian(x1s : data_1d, x2s : data_1d) : model<(double, double)> 
 }
 
 fun sequential_gaussian() : model<double> {
-  val x1 = 2.0
+  val x1 = 4.0
   val g = fun() {
     val seed = normal(2.0, 1.0)
     score(normal_pdf(seed, 0.3, x1))
@@ -229,7 +229,7 @@ fun rmsmc(particle_num : int, step_num : int, step_size : int, model, default) {
 } */
 
 fun perturb_trace(trace : trace<_a>) : <ndet, sample|e> trace_values {
-  val trace_values  = trace_d(trace)
+  val trace_values  = trace_v(trace)
   val perturb_index = random_range(trace_values.length)
   val div_trace     = split(trace_values, perturb_index)
   val new_trace     = match(div_trace) {
@@ -239,30 +239,30 @@ fun perturb_trace(trace : trace<_a>) : <ndet, sample|e> trace_values {
   new_trace
 }
 
-/* fun with_randomness(trace : trace<_a>) : (trace_values, exp) {
+fun with_randomness(model : model<_a>, trace_values : trace_values) : ndet (trace_values, (exp, _a)) {
   val likelihood_a_trace = random_sampler {
-    replay(trace_d(trace)) {
+    replay(trace_values) {
       weighted(Exp(0.0)) {
-        trace_m(trace)()
+        model()
       }
     }
   }
   likelihood_a_trace
-} */
+}
 
-fun mh_step(trace : trace<_a>) : <ndet, ndet> trace<_a> {
-  val new_trace = random_sampler{perturb_trace(trace)}
+fun mh_step(trace : trace<double>) : <console, ndet, ndet> trace<double> {
+  val modified_trace = random_sampler{perturb_trace(trace)}
   match(trace) {
     Trace(model, p1, old_trace, a) -> {
-      val p2b = (new_trace, (Exp(0.5), a))
+      val p2b = with_randomness(model, modified_trace)
       match(p2b) {
-        (extended_trace ,(p2, b)) -> {
-          val ratio = min(1.0, (exp_to_double(p2) * old_trace.length.double) / (exp_to_double(p1) * new_trace.length.double) )
+        (new_trace ,(p2, b)) -> {
+          val ratio = min(1.0, (exp_to_double(p2) * new_trace.length.double) / (exp_to_double(p1) * old_trace.length.double))
           val accept = bernoulli(ratio)
           if(accept) {
             Trace(model, p2, new_trace, b)
           } else {
-            Trace(model, p1, old_trace, a)
+            trace
           }
         }
       }
@@ -283,7 +283,7 @@ fun random_range(upper_bound : int) {
   return int(random() / (1.0 / double(upper_bound))) % upper_bound
 }
 
-fun tmcmc(model : model<a>, steps : int) : <div, ndet, ndet> trace<a> {
+fun tmcmc(model : model<double>, steps : int) : <div, ndet, ndet, console> trace<double> {
   val model_results =
   weighted(Exp(0.0)) {
     random_sampler{
@@ -320,6 +320,6 @@ fun main() {
   val default = (Exp(0.0), fun(i : int){(100.0)})
   val hist = smc(50, 6, 1, sequential_gaussian(), default)
   write(hist)
-  println(show(hist))
-  show(trace_p(tmcmc(sequential_gaussian(), 1000)))
+  /* println(show(hist)) */
+  show(trace_a(tmcmc(sequential_gaussian(), 1000)))
 }
