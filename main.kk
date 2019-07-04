@@ -1,18 +1,18 @@
-public module test/ojg/main
+public module test/koka-bayes/main
 
 import std/num/double
 import std/num/ddouble
-import test/ojg/output-and-plot
-import test/ojg/exponents
-import test/ojg/effects-and-types
-import test/ojg/sequential
-/* import test/ojg/trace */
-import test/ojg/model-resources
+import test/koka-bayes/output-and-plot
+import test/koka-bayes/exponents
+import test/koka-bayes/effects-and-types
+import test/koka-bayes/sequential
+/* import test/koka-bayes/trace */
+import test/koka-bayes/model-resources
 
 
 fun main() {
   val data_point                = 4.0
-  val particles                 = 2000
+  val particles                 = 50
   val resample_steps            = 6
   val scores_before_resampling  = 1
   val hist = smc(particles, resample_steps, scores_before_resampling, sequential_gaussian(data_point))

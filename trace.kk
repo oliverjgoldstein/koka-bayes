@@ -1,11 +1,11 @@
-public module test/ojg/trace
+public module test/koka-bayes/trace
 
 import std/num/double
 
-import test/ojg/effects-and-types
-import test/ojg/exponents
-import test/ojg/handlers
-import test/ojg/sampling
+import test/koka-bayes/effects-and-types
+import test/koka-bayes/exponents
+import test/koka-bayes/handlers
+import test/koka-bayes/sampling
 
 fun rmsmc(particle_num : int, step_num : int, step_size : int, model) {
     val smc_func = fun() {

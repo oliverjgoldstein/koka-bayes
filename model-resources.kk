@@ -1,10 +1,10 @@
-public module test/ojg/model-resources
+public module test/koka-bayes/model-resources
 
 import std/num/double
 
-import test/ojg/effects-and-types
-import test/ojg/handlers
-import test/ojg/exponents
+import test/koka-bayes/effects-and-types
+import test/koka-bayes/handlers
+import test/koka-bayes/exponents
 
 val linear : regression = fun() {
   val a = normal(0.0,2.0)

@@ -1,10 +1,10 @@
-public module test/ojg/sampling
+public module test/koka-bayes/sampling
 
 import std/num/double
 
-import test/ojg/effects-and-types
-import test/ojg/handlers
-import test/ojg/exponents
+import test/koka-bayes/effects-and-types
+import test/koka-bayes/handlers
+import test/koka-bayes/exponents
 
 fun populate(k : int, model : () -> <score|e> b) : e histogram<b> {
   list(1, k) fun(i) {

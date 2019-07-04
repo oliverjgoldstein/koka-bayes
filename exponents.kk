@@ -1,6 +1,6 @@
 import std/num/double
 import std/num/ddouble
-import test/ojg/effects-and-types
+import test/koka-bayes/effects-and-types
 
 
 fun ln(x : exp) : double {

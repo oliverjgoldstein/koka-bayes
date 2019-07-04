@@ -1,8 +1,8 @@
-public module test/ojg/sequential
+public module test/koka-bayes/sequential
 
-import test/ojg/effects-and-types
-import test/ojg/handlers
-import test/ojg/sampling
+import test/koka-bayes/effects-and-types
+import test/koka-bayes/handlers
+import test/koka-bayes/sampling
 
 fun smc(particle_num : int, step_num : int, step_size : int, model) {
   random_sampler {

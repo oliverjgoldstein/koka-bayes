@@ -1,9 +1,9 @@
-public module test/ojg/handlers
+public module test/koka-bayes/handlers
 
 import std/num/double
 
-import test/ojg/exponents
-import test/ojg/effects-and-types
+import test/koka-bayes/exponents
+import test/koka-bayes/effects-and-types
 
 fun random_sampler(action : () -> <sample|e> a) : <ndet|e> a {
   with fun sample() { random() }
