@@ -1,25 +1,12 @@
-import test/ojg/types
-import test/ojg/bayes-handlers
-import test/ojg/exp
+public module output-and-plot
+
 import std/num/double
 import std/os/file
 import std/os/path
 import std/num/ddouble
 
-/* fun pop_map( f ){
-  (fun(lista) {
-    pop_map_helper(f, lista)
-  })
-}
-
-fun pop_map_helper(f, t) {
-    match(t) {
-      Nil -> Nil
-      Cons(x, xs) -> match(x) {
-        (Exp(n), a) -> Cons((Exp(n), f(a)), pop_map_helper(f, xs))
-      }
-    }
-} */
+import test/ojg/effects-and-types
+import test/ojg/exponents
 
 fun plot( f : (double -> double) ) : string {
   val lft = 0.0
@@ -34,11 +21,11 @@ fun plot( f : (double -> double) ) : string {
 }
 
 fun write( hist : histogram<double> ) {
-   write-text(path("./test/ojg/output.csv"), show(hist))
+   write-text(path("./test/ojg/output/output.csv"), show(hist))
 }
 
 fun write( hist : histogram<(double, double)> ) {
-   write-text(path("./test/ojg/output.csv"), show(hist))
+   write-text(path("./test/ojg/output/output.csv"), show(hist))
 }
 
 

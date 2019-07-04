@@ -1,5 +1,9 @@
-import test/ojg/exp
-import test/ojg/types
+public module test/ojg/handlers
+
+import std/num/double
+
+import test/ojg/exponents
+import test/ojg/effects-and-types
 
 fun random_sampler(action : () -> <sample|e> a) : <ndet|e> a {
   with fun sample() { random() }

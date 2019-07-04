@@ -1,5 +1,7 @@
 
 import std/num/double
+
+
 /* ambient fun arb() : double
 
 fun handler_test(action) {
@@ -76,7 +78,7 @@ fun bar(i : int) {
 
 
 
-import std/num/ddouble
+/* import std/num/ddouble
 
 fun show(arb : int) {
   "G"
@@ -84,7 +86,7 @@ fun show(arb : int) {
 
 fun show( ls : list<int> ) : string {
   show(ls)
-}
+} */
 
 
 

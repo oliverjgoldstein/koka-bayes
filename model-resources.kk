@@ -1,7 +1,10 @@
-import test/ojg/types
-import test/ojg/bayes-handlers
+public module test/ojg/model-resources
+
 import std/num/double
-import test/ojg/exp
+
+import test/ojg/effects-and-types
+import test/ojg/handlers
+import test/ojg/exponents
 
 val linear : regression = fun() {
   val a = normal(0.0,2.0)
@@ -14,6 +17,41 @@ fun gaussian_model() : model<double> {
     normal(0.0, 10.0)
   }
 }
+
+fun fit_linear_gaussian(x1s : data_1d, x2s : data_1d) : model<(double, double)> {
+  val g = fun() {
+    val h1 = normal(0.0, 1.0)
+    val v1 = h1 + 2.0 * normal(0.0, 1.0)
+    map(x1s, fun(x) {score(normal_pdf(v1, 1.0, x))})
+
+    val h2 = 4.0 * h1 + normal(0.0, 1.0)
+    val v2 = h2 + 3.0 * normal(0.0, 1.0)
+    map(x2s, fun(x) {score(normal_pdf(v2, 1.0, x))})
+
+    (h1, h2)
+  }
+  g
+}
+
+fun sequential_gaussian(x1 : double) : model<double> {
+  val g = fun() {
+    val seed = normal(2.0, 1.0)
+    score(normal_pdf(seed, 0.3, x1))
+    val seed2 = normal(seed, 1.0)
+    score(normal_pdf(seed2, 0.3, x1))
+    val seed3 = normal(seed2, 0.5)
+    score(normal_pdf(seed3, 0.3, x1))
+    val seed4 = normal(seed3, 0.4)
+    score(normal_pdf(seed4, 0.3, x1))
+    val seed5 = normal(seed4, 0.2)
+    score(normal_pdf(seed5, 0.2, x1))
+    val seed6 = normal(seed5, 0.1)
+    score(normal_pdf(seed6, 0.1, x1))
+    seed6
+  }
+  g
+}
+
 
 val fitted = fit(homogeneous_linear, dataset)
 val gaussian = fit_1d_gaussian(gaussian_model(), gaussian_dataset)

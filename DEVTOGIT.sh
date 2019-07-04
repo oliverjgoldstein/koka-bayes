@@ -3,5 +3,3 @@
 
 source ~/.bash_profile
 cp -R $KOKADEV $KOKAGIT
-#jake
-#python plot_examples.py

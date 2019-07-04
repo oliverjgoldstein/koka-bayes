@@ -1,6 +1,6 @@
 import std/num/double
 import std/num/ddouble
-import test/ojg/types
+import test/ojg/effects-and-types
 
 
 fun ln(x : exp) : double {
