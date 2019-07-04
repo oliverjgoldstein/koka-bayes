@@ -30,7 +30,7 @@ fun rsmmc_loop(i : int, pop_hist, step_num : int, step_size : int) : <exn, div,s
           (w, m) -> {
             weighted(w) {
               advance {
-                trace_m(tmcmc( (fun() {m(step_size)}), 1 ))() // Remember to implement initial weight!
+                trace_m(tmcmc( (fun() {m(step_size)}), 1, w ))() // Remember to implement initial weight!
               }
             }
           }
@@ -114,9 +114,9 @@ fun random_range(upper_bound : int) {
   return int(random() / (1.0 / double(upper_bound))) % upper_bound
 }
 
-fun tmcmc(model : model<a>, steps : int) : <div, ndet, ndet> trace<a> {
+fun tmcmc(model : model<a>, steps : int, init_weight : exp) : <div, ndet, ndet> trace<a> {
   val model_results =
-  weighted(Exp(0.0)) {
+  weighted(init_weight) {
     random_sampler {
       trace {
         model()
