@@ -12,9 +12,10 @@ y = [float(v[1]) for v in li]
 print(sum(x))
 
 pyplot.plot(y,x, 'ro')
-pyplot.savefig('posterior.png')
 pyplot.ylabel('likelihood')
 pyplot.xlabel('theta')
+pyplot.savefig('posterior.png')
+
 pyplot.figure()
 
 bins = numpy.linspace(0.9, 1.1, 20)
