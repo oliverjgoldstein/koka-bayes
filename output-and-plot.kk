@@ -1,24 +1,12 @@
-import test/ojg/bayes-handlers
-import test/ojg/exp
+public module test/koka-bayes/output-and-plot
+
 import std/num/double
 import std/os/file
 import std/os/path
 import std/num/ddouble
 
-fun pop_map( f ){
-  (fun(lista) {
-    pop_map_helper(f, lista)
-  })
-}
-
-fun pop_map_helper(f, t) {
-    match(t) {
-      Nil -> Nil
-      Cons(x, xs) -> match(x) {
-        (Exp(n), a) -> Cons((Exp(n), f(a)), pop_map_helper(f, xs))
-      }
-    }
-}
+import test/koka-bayes/effects-and-types
+import test/koka-bayes/exponents
 
 fun plot( f : (double -> double) ) : string {
   val lft = 0.0
@@ -33,15 +21,15 @@ fun plot( f : (double -> double) ) : string {
 }
 
 fun write( hist : histogram<double> ) {
-   write-text(path("./test/ojg/output.csv"), show(hist))
+   write-text(path("./test/koka-bayes/output/output.csv"), show(hist))
 }
 
 fun write( hist : histogram<(double, double)> ) {
-   write-text(path("./test/ojg/output.csv"), show(hist))
+   write-text(path("./test/koka-bayes/output/output.csv"), show(hist))
 }
 
 
-fun show(hist : histogram<double>) {
+fun show(hist : histogram<double>) : string {
   var total_string := ""
   for(1, hist.length) fun(i) {
     val str = match(hist[i]) {
@@ -68,6 +56,12 @@ fun show(hist : histogram<(double, double)>) : string {
     total_string := total_string + str + "\n"
   }
   total_string
+}
+
+fun show( ls : (list<int>, list<int>) ) : string {
+  match(ls) {
+    (l1, l2) -> {show(l1) + show(l2)}
+  }
 }
 
 fun show(hist : histogram<(double -> double)>) : console int{
