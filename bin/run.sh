@@ -8,3 +8,5 @@ out/debug/koka-0.9.0-dev -e  --outdir=out/koka-bayes-output/ -ilib test/koka-bay
 
 cd ./test/koka-bayes/output/
 python ./plot_examples.py
+
+open output.html

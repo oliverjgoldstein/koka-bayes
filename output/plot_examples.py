@@ -13,11 +13,15 @@ print(sum(x))
 
 pyplot.plot(y,x, 'ro')
 pyplot.savefig('posterior.png')
+pyplot.ylabel('likelihood')
+pyplot.xlabel('theta')
 pyplot.figure()
 
 bins = numpy.linspace(0.9, 1.1, 20)
 
 # pyplot.hist(x, bins, alpha=0.5, label='x')
 pyplot.hist(y, alpha=0.5, label='y')
+pyplot.xlabel('theta')
+pyplot.ylabel('count')
 pyplot.legend(loc='upper right')
 pyplot.savefig('posterior_hist.png')
