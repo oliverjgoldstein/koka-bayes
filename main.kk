@@ -6,7 +6,8 @@ import test/koka-bayes/output-and-plot
 import test/koka-bayes/exponents
 import test/koka-bayes/effects-and-types
 import test/koka-bayes/sequential
-/* import test/koka-bayes/trace */
+import test/koka-bayes/trace
+import test/koka-bayes/handlers
 import test/koka-bayes/model-resources
 
 
@@ -15,12 +16,10 @@ fun main() {
   val particles                 = 50
   val resample_steps            = 6
   val scores_before_resampling  = 1
-  val hist = smc(particles, resample_steps, scores_before_resampling, sequential_gaussian(data_point))
+  val hist                      = smc(particles, resample_steps, scores_before_resampling, sequential_gaussian(data_point))
   write(hist)
-  /* val trace_mcmc_steps = 10000 */
-  /* show(trace_a(tmcmc(sequential_gaussian(), trace_mcmc_steps, Exp(0.0)))) */
+  println("Results of SMC written!")
+  val trace_mcmc_steps          = 10000
+  println("Estimated Gaussian mean after " + show(trace_mcmc_steps) + " steps" + " with true mean " + show-fixed(data_point) + ": ")
+  show(trace_a(tmcmc(sequential_gaussian(data_point), trace_mcmc_steps, Exp(0.0))))
 }
-
-/* fun test(){
-  error("Exception test.")
-} */

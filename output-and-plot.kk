@@ -64,6 +64,28 @@ fun show( ls : (list<int>, list<int>) ) : string {
   }
 }
 
+fun show(xs : list<double>) : string {
+  var total_string := "["
+  for(1, xs.length) fun(i) {
+
+    if(i < xs.length - 1) {
+      val str = match(xs[i]) {
+        Nothing -> ""
+        Just(x) -> show-fixed(x) + ","
+      }
+      total_string := total_string + str
+    } else {
+      val str = match(xs[i]) {
+        Nothing -> ""
+        Just(x) -> show-fixed(x)
+      }
+      total_string := total_string + str
+    }
+  }
+  total_string := total_string + "]"
+  total_string
+}
+
 fun show(hist : histogram<(double -> double)>) : console int{
   for(1, hist.length) fun(i) {
     val str = match(hist[i]) {

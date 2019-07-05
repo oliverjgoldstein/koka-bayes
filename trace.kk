@@ -7,37 +7,38 @@ import test/koka-bayes/exponents
 import test/koka-bayes/handlers
 import test/koka-bayes/sampling
 
-fun rmsmc(particle_num : int, step_num : int, step_size : int, model) {
-    val smc_func = fun() {
+/* fun rsmmc(particle_num : int, step_num : int, step_size : int, model : () -> <pure,sample,score,yield|_e> _a) {
+
+    val rsmmc_func = fun() {
       advance {
         yield_on_score {
           model()
         }
       }
     }
-
-    val pop = random_samplier{normalise(populate(particle_num, smc_func))}
-
+    random_sampler {
+    val pop = normalise(populate(particle_num, rsmmc_func))
     rsmmc_loop(0, pop, step_num, step_size)
+  }
 }
 
-fun rsmmc_loop(i : int, pop_hist, step_num : int, step_size : int) : <exn, div,sample|e> histogram<a> {
-  random_sampler {
+fun rsmmc_loop(i : int, pop_hist : histogram<(int) -> <yield,score,div,sample,exn|e> a>, step_num : int, step_size : int) : <exn, div, sample|e> histogram<a> {
     if (i < step_num) then {
       val resampled_histogram = resample(pop_hist)
-      fun smc_func_2(wm) {
+      fun rsmmc_func_2(wm) {
         match(wm) {
           (w, m) -> {
             weighted(w) {
               advance {
-                trace_m(tmcmc( (fun() {m(step_size)}), 1, w ))() // Remember to implement initial weight!
+                /* trace_m(tmcmc( (fun() {m(step_size)}), 1, w ))() */
+                m(step_size)
               }
             }
           }
         }
       }
 
-      val second_term = map(resampled_histogram, smc_func_2)
+      val second_term = map(resampled_histogram, rsmmc_func_2)
       rsmmc_loop(i + 1, second_term, step_num, step_size)
     } else {
 
@@ -56,8 +57,8 @@ fun rsmmc_loop(i : int, pop_hist, step_num : int, step_size : int) : <exn, div,s
       val x = map(pop_hist, pop_func)
       x
     }
-  }
-}
+} */
+
 
 fun perturb_trace(trace : trace<_a>) : <ndet, sample|e> trace_values {
   val trace_values  = trace_v(trace)
