@@ -11,7 +11,7 @@ if [ ! -n "$KOKA_GIT" ]; then
   echo "\dir1\dir2\..\koka-bayes-master\n"
   echo "This is needed in case you run this makefile from outside the github directory!"
   read koka_git
-  echo "export KOKA_INSTALL=\"$koka_git\"" >>~/.bash_profile
+  echo "export KOKA_GIT=\"$koka_git\"" >>~/.bash_profile
   echo "Koka install directory added to bash_profile!"
 fi
 
