@@ -82,7 +82,7 @@ fun with_randomness(model : model<_a>, trace_values : trace_values) : ndet (trac
   likelihood_a_trace
 }
 
-fun mh_step(trace : trace<a>) : <ndet, ndet|e> trace<a> {
+fun mh_step(trace : trace<a>) : <ndet, ndet> trace<a> {
   val modified_trace = random_sampler{perturb_trace(trace)}
   match(trace) {
     Trace(model, p1, old_trace, _) -> {
