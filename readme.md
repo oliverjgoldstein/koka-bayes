@@ -1,3 +1,5 @@
+N.B. This library uses shell scripts and thus requires unix/linux.
+
 To install and run this library:
 
 <b>To install koka-bayes:</b> <br />
