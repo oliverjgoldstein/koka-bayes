@@ -24,7 +24,7 @@ if [ ! -n "$KOKA_INSTALL" ]; then
   echo "First parameter supplied!"
   echo "Please enter the ${green}install directory of koka!${reset}\n"
   echo "This should have the form:\n"
-  echo "\absolute-directory\..\..\koka\n"
+  echo "\dir1\dir2\..\koka\n"
   read install_directory
   echo "export KOKA_INSTALL=\"$install_directory\"" >>~/.bash_profile
   echo "Koka install directory added to bash_profile!"

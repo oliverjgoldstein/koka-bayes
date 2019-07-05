@@ -22,4 +22,5 @@ fun main() {
   val trace_mcmc_steps          = 10000
   println("Estimated Gaussian mean after " + show(trace_mcmc_steps) + " steps" + " with true mean " + show-fixed(data_point) + ": ")
   show(trace_a(tmcmc(sequential_gaussian(data_point), trace_mcmc_steps, Exp(0.0))))
+  println("Comment in line 33 and comment out line 34 in trace.kk -- to break this code!")
 }

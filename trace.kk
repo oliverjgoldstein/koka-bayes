@@ -7,7 +7,7 @@ import test/koka-bayes/exponents
 import test/koka-bayes/handlers
 import test/koka-bayes/sampling
 
-/* fun rsmmc(particle_num : int, step_num : int, step_size : int, model : () -> <pure,sample,score,yield|_e> _a) {
+fun rsmmc(particle_num : int, step_num : int, step_size : int, model : () -> <pure,sample,score,yield|_e> _a) {
 
     val rsmmc_func = fun() {
       advance {
@@ -57,7 +57,7 @@ fun rsmmc_loop(i : int, pop_hist : histogram<(int) -> <yield,score,div,sample,ex
       val x = map(pop_hist, pop_func)
       x
     }
-} */
+}
 
 
 fun perturb_trace(trace : trace<_a>) : <ndet, sample|e> trace_values {
