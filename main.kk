@@ -13,7 +13,7 @@ import test/koka-bayes/model-resources
 
 fun main() {
   val data_point                = 4.0
-  val particles                 = 50
+  val particles                 = 400
   val resample_steps            = 6
   val scores_before_resampling  = 1
   val hist                      = smc(particles, resample_steps, scores_before_resampling, sequential_gaussian(data_point))
