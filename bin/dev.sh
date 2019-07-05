@@ -6,7 +6,7 @@ source ~/.bash_profile
 if [ ! -n "$KOKA_GIT" ]; then
   echo "\n\n"
   echo "First parameter supplied!"
-  echo "Please enter the ${green}download directory of the koka library!${reset}\n"
+  echo "Please enter the ${green}DEVELOPMENT directory of the koka library!${reset}\n"
   echo "This should have the form:\n"
   echo "\dir1\dir2\..\koka-bayes-master\n"
   echo "This is needed in case you run this makefile from outside the github directory!"
