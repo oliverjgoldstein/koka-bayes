@@ -5,4 +5,4 @@ at the <b>root</b> directory of koka-bayes...
 followed by
 <code> make run </code> This will run the main function and demonstrate example output. <br />
 
-<code make dev </code> This will copy all the files from the development directory into the koka-bayes module and run the main function. <br />
+<code> make dev </code> This will copy all the files from the development directory into the koka-bayes module and run the main function. <br />
