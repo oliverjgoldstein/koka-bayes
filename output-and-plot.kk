@@ -31,7 +31,7 @@ fun write( hist : histogram<(double, double)> ) {
 
 fun show(hist : histogram<double>) : string {
   var total_string := ""
-  for(1, hist.length) fun(i) {
+  for(0, hist.length - 1) fun(i) {
     val str = match(hist[i]) {
       Nothing -> ""
       Just(x) -> match(x) {
@@ -45,7 +45,7 @@ fun show(hist : histogram<double>) : string {
 
 fun show(hist : histogram<(double, double)>) : string {
   var total_string := ""
-  for(1, hist.length) fun(i) {
+  for(0, hist.length - 1) fun(i) {
     val str = match(hist[i]) {
       Nothing -> ""
       Just(x) -> match(x) {
@@ -66,7 +66,7 @@ fun show( ls : (list<int>, list<int>) ) : string {
 
 fun show(xs : list<double>) : string {
   var total_string := "["
-  for(1, xs.length) fun(i) {
+  for(0, xs.length - 1) fun(i) {
 
     if(i < xs.length - 1) {
       val str = match(xs[i]) {
@@ -87,7 +87,7 @@ fun show(xs : list<double>) : string {
 }
 
 fun show(hist : histogram<(double -> double)>) : console int{
-  for(1, hist.length) fun(i) {
+  for(0, hist.length - 1) fun(i) {
     val str = match(hist[i]) {
       Nothing -> ""
       Just(x) -> match(x) {

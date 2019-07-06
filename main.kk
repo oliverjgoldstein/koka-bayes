@@ -9,6 +9,7 @@ import test/koka-bayes/sequential
 import test/koka-bayes/trace
 import test/koka-bayes/handlers
 import test/koka-bayes/model-resources
+import test/koka-bayes/climate-change
 
 
 fun main() {

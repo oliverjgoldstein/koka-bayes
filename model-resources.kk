@@ -18,14 +18,6 @@ fun gaussian_model() : model<double> {
   }
 }
 
-fun multivariate_gaussian(dimension : int, mean : double, std_dev : double) : sample list<double> {
-  list(1, dimension) fun(i) {
-    normal(mean, std_dev)
-  }
-}
-
-
-
 fun fit_linear_gaussian(x1s : data_1d, x2s : data_1d) : model<(double, double)> {
   val g = fun() {
     val h1 = normal(0.0, 1.0)
@@ -59,27 +51,6 @@ fun sequential_gaussian(data_point : double) : model<double> {
   }
   g
 }
-
-/* fun linear_gaussian_climate_data(ys : list<list<double>>, vs : list<double>) {
-  val initital_temperature    = 5.0
-  val std_dev_in_initial_temp = 25.0
-  val x1                      = normal(initital_temperature, std_dev_in_initial_temp)
-  val var_bias_of_thermometer = 0.5
-  val bias_of_thermometer     = 1.0
-  val c_matrix                = multivariate_gaussian(ys.length, bias_of_thermometer, var_bias_of_thermometer)
-
-} */
-
-/* fun mult( x : double, ys : row_vector ) {
-  star(x,ys,[])
-}
-
-fun star( x : double, ys : row_vector, output : row_vector ) {
-  match(ys) {
-    Nil -> output
-    Cons(x,y) -> star(x, ys.tail, Cons(output, ))
-  }
-} */
 
 val fitted = fit(homogeneous_linear, dataset)
 val gaussian = fit_1d_gaussian(gaussian_model(), gaussian_dataset)
