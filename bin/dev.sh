@@ -31,9 +31,12 @@ cd $KOKA_INSTALL
 cd ./test/koka-bayes
 rm *.kk
 rm -r output/
+rm -r data/
 mkdir output
+mkdir data
 cp $KOKA_GIT/*.kk ./
 cp -r $KOKA_GIT/output/ ./output
+cp -r $KOKA_GIT/data/ ./data
 
 cd $KOKA_INSTALL
 

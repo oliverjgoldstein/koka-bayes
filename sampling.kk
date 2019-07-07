@@ -5,6 +5,7 @@ import std/num/double
 import test/koka-bayes/effects-and-types
 import test/koka-bayes/handlers
 import test/koka-bayes/exponents
+import test/koka-bayes/output-and-plot
 
 fun populate(k : int, model : () -> <score|e> b) : e histogram<b> {
   list(1, k) fun(i) {
@@ -44,10 +45,10 @@ fun sum_weights(histogram : histogram<a>) : exp {
   foldl(histogram, Exp(log(0.0)), foldlfunc)
 }
 
-fun weighted_choice(histogram : histogram<a>) : <exn, sample> a {
+fun weighted_choice(histogram : histogram<a>) : <console, exn, sample> a {
   val total_w = sum_weights(histogram)
   val total_fuel = (exp_to_double(total_w)) * sample()
-  fun choose(fuel : double, ws) {
+  fun choose(fuel : double, ws : list<_a>) {
     match(ws) {
       Nil -> error("Histogram is empty! Cannot select any element when resampling!")
       Cons((w,x), wxs) -> {
@@ -63,7 +64,7 @@ fun weighted_choice(histogram : histogram<a>) : <exn, sample> a {
   choose(total_fuel, histogram)
 }
 
-fun resample(histogram : histogram<a>) : <exn, sample> histogram<a> {
+fun resample(histogram : histogram<a>) : <console, exn, sample> histogram<a> {
   val n = histogram.length
   val total_w = sum_weights(histogram)
   fun resample_model() {

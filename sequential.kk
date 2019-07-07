@@ -3,8 +3,10 @@ public module test/koka-bayes/sequential
 import test/koka-bayes/effects-and-types
 import test/koka-bayes/handlers
 import test/koka-bayes/sampling
+import test/koka-bayes/exponents
+import test/koka-bayes/output-and-plot
 
-fun smc(particle_num : int, step_num : int, step_size : int, model : () -> <pure,sample,score,yield|_e> _a) {
+fun smc(particle_num : int, step_num : int, step_size : int, model : () -> <console,pure,sample,score,yield|_e> _a) {
   random_sampler {
     val smc_func = fun() {
       advance {
@@ -19,7 +21,7 @@ fun smc(particle_num : int, step_num : int, step_size : int, model : () -> <pure
   }
 }
 
-fun smc_loop(i : int, pop_hist : histogram<(int) -> <yield,score,div,sample,exn|e> a>, step_num : int, step_size : int) : <exn, div, sample|e> histogram<a> {
+fun smc_loop(i : int, pop_hist : histogram<(int) -> <yield,score,div,sample,exn, console|e> a>, step_num : int, step_size : int) : <console, exn, div, sample|e> histogram<a> {
     if (i < step_num) then {
       val resampled_histogram = resample(pop_hist)
       fun smc_func_2(wm) {
@@ -50,7 +52,7 @@ fun smc_loop(i : int, pop_hist : histogram<(int) -> <yield,score,div,sample,exn|
         }
       }
 
-      val x = map(pop_hist, pop_func)
+      val x = normalise(map(pop_hist, pop_func))
       x
     }
 }

@@ -20,12 +20,12 @@ fun plot( f : (double -> double) ) : string {
   }
 }
 
-fun write( hist : histogram<double> ) {
-   write-text(path("./test/koka-bayes/output/output.csv"), show(hist))
+fun write( hist : histogram<double>, filename : string ) {
+   write-text(path("./test/koka-bayes/output/" + filename), show(hist))
 }
 
-fun write( hist : histogram<(double, double)> ) {
-   write-text(path("./test/koka-bayes/output/output.csv"), show(hist))
+fun write( hist : histogram<(double, double)> , filename : string ) {
+   write-text(path("./test/koka-bayes/output/" + filename), show(hist))
 }
 
 

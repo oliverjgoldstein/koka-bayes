@@ -7,7 +7,7 @@ import test/koka-bayes/exponents
 import test/koka-bayes/handlers
 import test/koka-bayes/sampling
 
-fun rsmmc(particle_num : int, step_num : int, step_size : int, model : () -> <pure,sample,score,yield|_e> _a) {
+fun rsmmc(particle_num : int, step_num : int, step_size : int, model : () -> <console, pure,sample,score,yield|_e> _a) {
 
     val rsmmc_func = fun() {
       advance {
@@ -22,7 +22,7 @@ fun rsmmc(particle_num : int, step_num : int, step_size : int, model : () -> <pu
   }
 }
 
-fun rsmmc_loop(i : int, pop_hist : histogram<(int) -> <yield,score,div,sample,exn|e> a>, step_num : int, step_size : int) : <exn, div, sample|e> histogram<a> {
+fun rsmmc_loop(i : int, pop_hist : histogram<(int) -> <console, yield,score,div,sample,exn|e> a>, step_num : int, step_size : int) : <console, exn, div, sample|e> histogram<a> {
     if (i < step_num) then {
       val resampled_histogram = resample(pop_hist)
       fun rsmmc_func_2(wm) {
@@ -54,7 +54,7 @@ fun rsmmc_loop(i : int, pop_hist : histogram<(int) -> <yield,score,div,sample,ex
         }
       }
 
-      val x = map(pop_hist, pop_func)
+      val x = normalise(map(pop_hist, pop_func))
       x
     }
 }
@@ -88,7 +88,7 @@ fun mh_step(trace : trace<a>) : <ndet, ndet> trace<a> {
     Trace(model, p1, old_trace, _) -> {
       val p2b = with_randomness(model, modified_trace)
       match(p2b) {
-        (new_trace ,(p2, b)) -> {
+        (new_trace, (p2, b)) -> {
           val ratio = min(1.0, (exp_to_double(p2) * new_trace.length.double) / (exp_to_double(p1) * old_trace.length.double))
           val accept = bernoulli(ratio)
           if(accept) {
