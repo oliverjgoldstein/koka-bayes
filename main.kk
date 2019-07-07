@@ -29,3 +29,7 @@ fun main() {
   val clim_hist = smc(particles, resample_steps, scores_before_resampling, linear_gaussian_climate_data(temperatures, uncertainties))
   write(clim_hist, "temperature_posterior.csv")
 }
+
+fun tester() {
+  println(pre_process_data())
+}
