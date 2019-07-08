@@ -3,7 +3,7 @@ import numpy
 from matplotlib import pyplot
 import csv
 
-f =  ['./gaussian_posterior', 'temperature_posterior']
+f =  ['temperature_posterior']
 for i in range(0, len(f)):
     data = csv.reader(open(f[i] + '.csv', 'rt'))
     li = [tuple(row) for row in data]

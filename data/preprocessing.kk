@@ -24,8 +24,8 @@ fun pre_process_data() : _e (list<list<row_vector>>, list<list<row_vector>>) {
   val uncertainties_by_month = months(uncertainties_by_year)
   val temperatures_by_month = months(temperatures_by_year)
   
-  val grouped_uncertainties_by_month = convert_to_groups(uncertainties_by_month, 10)
-  val grouped_temperatures_by_month = convert_to_groups(temperatures_by_month, 10)
+  val grouped_uncertainties_by_month = convert_to_groups(uncertainties_by_month, 20)
+  val grouped_temperatures_by_month = convert_to_groups(temperatures_by_month, 20)
   
   (grouped_uncertainties_by_month, grouped_temperatures_by_month)
 }
