@@ -7,7 +7,7 @@ import test/koka-bayes/effects-and-types
 import test/koka-bayes/handlers
 import test/koka-bayes/output-and-plot
 import test/koka-bayes/exponents
-import test/koka-bayes/get
+import test/koka-bayes/exn-get
 
 fun multivariate_gaussian(dimension : int, mean : double, std_dev : double) : sample list<double> {
   list(1, dimension) fun(i) {
@@ -22,8 +22,8 @@ fun linear_gaussian_climate_data(ys : list<row_vector>, vs : list<row_vector>) :
     val x1                          = normal(prior_temperature, prior_temp_std_dev)
     val bias_of_thermometer_std_dev = 0.1
     val bias_of_thermometer         = 0.0
-    val first_ys                    = get(ys,0)
-    val first_vs                    = get(vs,0)
+    val first_ys                    = exn-get(ys,0)
+    val first_vs                    = exn-get(vs,0)
     val c_row                       = multivariate_gaussian(first_ys.length, 1.0 + bias_of_thermometer, bias_of_thermometer_std_dev)
     val v_row                       = convert_uncertainty_to_rand(first_vs)
     val predictions                 = plus(mult(x1, c_row), v_row)
@@ -49,7 +49,7 @@ fun score_thunk(score_std_dev : double) {
 
 fun convert_uncertainty_to_rand(vs : row_vector) : <exn, sample> row_vector {
   list(0, vs.length - 1) fun(i) {
-    val uncertainty = get(vs, i)
+    val uncertainty = exn-get(vs, i)
     normal(0.0, uncertainty)
   }
 }

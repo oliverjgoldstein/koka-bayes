@@ -1,6 +1,6 @@
-public module test/koka-bayes/get
+public module test/koka-bayes/exn-get
 
-fun get(xs : list<_a>, index : int) : exn _a {
+fun exn-get(xs : list<_a>, index : int) : exn _a {
   match(xs[index]) {
     Nothing -> error("ListIndexError: Invalid list indexing at index: " + show(index))
     Just(x) -> x

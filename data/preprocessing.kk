@@ -3,9 +3,10 @@ public module test/koka-bayes/data/preprocessing
 import std/num/double
 import std/os/path
 import std/os/file
-import test/koka-bayes/get
+import test/koka-bayes/exn-get
+import test/koka-bayes/effects-and-types
 
-fun pre_process_data() : _e (list<list<double>>, list<list<double>>) {
+fun pre_process_data() : _e (list<list<row_vector>>, list<list<row_vector>>) {
   val uncertainties1 = map(split(read-text(path("./test/koka-bayes/data/measurement-uncertainties1.txt")), "\n"), parse-double)
   val uncertainties2 = map(split(read-text(path("./test/koka-bayes/data/measurement-uncertainties2.txt")), "\n"), parse-double)
   val temperatures1  = map(split(read-text(path("./test/koka-bayes/data/temperature-readings1.txt")), "\n"), parse-double)
@@ -23,7 +24,10 @@ fun pre_process_data() : _e (list<list<double>>, list<list<double>>) {
   val uncertainties_by_month = months(uncertainties_by_year)
   val temperatures_by_month = months(temperatures_by_year)
   
-  (uncertainties_by_month, temperatures_by_month)
+  val grouped_uncertainties_by_month = convert_to_groups(uncertainties_by_month, 10)
+  val grouped_temperatures_by_month = convert_to_groups(temperatures_by_month, 10)
+  
+  (grouped_uncertainties_by_month, grouped_temperatures_by_month)
 }
 
 fun remove_maybes(list : list<maybe<double>>, return_list : list<double>) : exn list<double> {
@@ -45,7 +49,7 @@ fun remove_maybes(list : list<maybe<double>>, return_list : list<double>) : exn 
 // Preserves order.
 fun list_of_lists(list : list<double>, length : int) : div list<list<double>> {
   if (length == 0) {
-    return [[], list]
+    return [list]
   } else {
   match(list) {
       Nil -> Nil
@@ -66,10 +70,10 @@ fun length_months( months : list<list<double>> ) : list<int> {
 
 fun all_elements_equal( list : list<int> ) : exn bool { 
   assert("List must be non_empty!", non_empty(list))
-  val first_length = get(list, 0)
+  val first_length = exn-get(list, 0)
   var bool_val := True
   for(0, list.length - 1) fun(i) {
-    if (get(list, i) != first_length) {
+    if (exn-get(list, i) != first_length) {
       bool_val := False
     }
   }
@@ -84,6 +88,7 @@ fun months( months : list<list<double>> ) : <exn, console> list<list<double>> {
   for(0, 11) fun(i) {
     list_of_months := list_of_months + [by_month(months, i)]
   }
+  list_of_months := tail(list_of_months)
   list_of_months
 }
 
@@ -96,4 +101,14 @@ fun get_thunk( index : int ) {
     list[index]
   }
   x
+}
+
+fun convert_to_groups( months : list<list<double>>, group_size : int ) : div list<list<list<double>>> {
+  map(months, list_of_lists_thunk(group_size))
+}
+
+fun list_of_lists_thunk( length : int ) {
+  return fun(list) {
+    list_of_lists(list, length)
+  }
 }

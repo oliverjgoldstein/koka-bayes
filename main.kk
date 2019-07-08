@@ -11,6 +11,7 @@ import test/koka-bayes/handlers
 import test/koka-bayes/model-resources
 import test/koka-bayes/climate-change
 import test/koka-bayes/data/preprocessing
+import test/koka-bayes/exn-get
 
 fun main() {
   val data_point                = 6.0
@@ -24,18 +25,18 @@ fun main() {
   println("Estimated Gaussian mean after " + show(trace_mcmc_steps) + " steps with true mean " + show-fixed(data_point) + ": ")
   println(show(trace_a(tmcmc(sequential_gaussian(data_point), trace_mcmc_steps, Exp(0.0)))))
   println("Comment in line 33 and comment out line 34 in trace.kk -- to break this code!")
-  val temperatures  = [[12.0,12.0,12.0,12.1,12.1,12.2,12.1,12.0,12.0,12.0,12.1,12.1,12.2,12.1]]
-  val uncertainties = [replicate(1.0, 14)]
+  
+  val preprocessed_data = pre_process_data()
+  val uncertainties = exn-get(preprocessed_data.fst, 0)
+  val temperatures = exn-get(preprocessed_data.snd, 0)
   val clim_hist = smc(particles, resample_steps, scores_before_resampling, linear_gaussian_climate_data(temperatures, uncertainties))
   write(clim_hist, "temperature_posterior.csv")
 }
 
 fun tester() {
-  val x = pre_process_data()
-  match(x) {
-    (a,b) -> {
-      println(show(a))
-      println(show(b))
-    }
-  }
+  val preprocessed_data = pre_process_data()
+  val uncertainties = preprocessed_data.fst 
+  val temperatures = preprocessed_data.snd
+  println(show(uncertainties))
+  println(show(temperatures))
 }

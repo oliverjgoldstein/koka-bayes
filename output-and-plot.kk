@@ -90,6 +90,10 @@ fun show( x : list<list<double>> ) : string {
   join(map(x, show))
 }
 
+fun show( x : list<list<list<double>>> ) : string {
+  join(map(x, show))
+}
+
 fun show(hist : histogram<(double -> double)>) : console int {
   for(0, hist.length - 1) fun(i) {
     val str = match(hist[i]) {
