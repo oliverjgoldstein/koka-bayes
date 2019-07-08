@@ -22,7 +22,7 @@ fun main() {
   write(hist, "gaussian_posterior.csv") // Note that if you change the filename - change plot_examples.py too if you want to show the histograms.
   println("Results of SMC written!")
   val trace_mcmc_steps          = 10000
-  println("Estimated Gaussian mean after " + show(trace_mcmc_steps) + " steps with true mean " + show-fixed(data_point) + ": ")
+  println("Estimated Gaussian mean with trace mcmc after " + show(trace_mcmc_steps) + " steps with true mean " + show-fixed(data_point) + ": ")
   println(show(trace_a(tmcmc(sequential_gaussian(data_point), trace_mcmc_steps, Exp(0.0)))))
   println("Comment in line 33 and comment out line 34 in trace.kk -- to break this code!")
   
