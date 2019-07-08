@@ -18,18 +18,28 @@ esac
 
 GIT_DIR=$(pwd)
 
-source ~/.bash_profile
+LOCALS=$(pwd)/bin/locals.sh 
+if [[ ! -f "$LOCALS" ]]; then
+    touch $LOCALS
+fi
+
+chmod +x ./bin/locals.sh
+source ./bin/locals.sh 
+
 if [ ! -n "$KOKA_INSTALL" ]; then
   echo "\n\n"
   echo "First parameter supplied!"
   echo "Please enter the ${green}install directory of koka!${reset}\n"
   echo "This should have the form:\n"
-  echo "\dir1\dir2\..\koka\n"
+  echo "/dir1/dir2/../koka\n"
   read install_directory
-  echo "export KOKA_INSTALL=\"$install_directory\"" >>~/.bash_profile
-  echo "Koka install directory added to bash_profile!"
+  echo "export KOKA_INSTALL=\"$install_directory\""$'\n' >>$LOCALS
+  echo "Koka install directory added to ./bin/locals.sh!"
 fi
 
+source ./bin/locals.sh 
+echo "Install directory: "
+echo $KOKA_INSTALL
 cd $KOKA_INSTALL
 
 if [ -d "./test/koka-bayes/" ]; then

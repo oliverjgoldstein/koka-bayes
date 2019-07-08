@@ -14,6 +14,7 @@ import test/koka-bayes/data/preprocessing
 import test/koka-bayes/exn-get
 
 fun main() {
+  println("Running code...")
   val data_point                = 6.0
   val particles                 = 2000
   val resample_steps            = 20
@@ -31,4 +32,5 @@ fun main() {
   val temperatures = exn-get(preprocessed_data.snd, 0)
   val clim_hist = smc(particles, resample_steps, scores_before_resampling, linear_gaussian_climate_data(temperatures, uncertainties))
   write(clim_hist, "temperature_posterior.csv")
+  println("Finished running...")
 }
