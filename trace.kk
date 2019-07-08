@@ -54,7 +54,7 @@ fun rsmmc_loop(i : int, pop_hist : histogram<(int) -> <console, yield,score,div,
         }
       }
 
-      val x = normalise(map(pop_hist, pop_func))
+      val x = map(pop_hist, pop_func)
       x
     }
 }

@@ -52,7 +52,7 @@ fun smc_loop(i : int, pop_hist : histogram<(int) -> <yield,score,div,sample,exn,
         }
       }
 
-      val x = normalise(map(pop_hist, pop_func))
+      val x = map(pop_hist, pop_func)
       x
     }
 }
