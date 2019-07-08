@@ -20,15 +20,15 @@ fun linear_gaussian_climate_data(ys : list<row_vector>, vs : list<row_vector>) :
     val prior_temperature           = 0.0
     val prior_temp_std_dev          = 5.0
     val x1                          = normal(prior_temperature, prior_temp_std_dev)
-    val mult_bias_of_thermometer_std_dev = 0.1
+    val mult_bias_of_thermometer_std_dev = 0.05
     val mult_bias_of_thermometer    = 0.0
-    val first_ys                    = exn-get(ys,0)
-    val first_vs                    = exn-get(vs,0)
+    val first_ys                    = exn-get(ys,12)
+    val first_vs                    = exn-get(vs,12)
     val c_row                       = multivariate_gaussian(first_ys.length, 1.0 + mult_bias_of_thermometer, mult_bias_of_thermometer_std_dev)
     val v_row                       = convert_uncertainty_to_rand(first_vs)
     val predictions                 = plus(mult(x1, c_row), v_row)
-    score_predictions(first_ys, predictions, 6.0)
-    x1  
+    score_predictions(first_ys, predictions, 4.6)
+    x1
   }
   g
 }
@@ -50,7 +50,7 @@ fun score_thunk(score_std_dev : double) {
 fun convert_uncertainty_to_rand(vs : row_vector) : <exn, sample> row_vector {
   list(0, vs.length - 1) fun(i) {
     val uncertainty = exn-get(vs, i)
-    normal(0.0, uncertainty)
+    normal(0.0, uncertainty/10.0)
   }
 }
 
