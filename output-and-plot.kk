@@ -86,7 +86,11 @@ fun show(xs : list<double>) : string {
   total_string
 }
 
-fun show(hist : histogram<(double -> double)>) : console int{
+fun show( x : list<list<double>> ) : string {
+  join(map(x, show))
+}
+
+fun show(hist : histogram<(double -> double)>) : console int {
   for(0, hist.length - 1) fun(i) {
     val str = match(hist[i]) {
       Nothing -> ""

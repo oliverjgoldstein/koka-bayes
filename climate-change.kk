@@ -7,6 +7,7 @@ import test/koka-bayes/effects-and-types
 import test/koka-bayes/handlers
 import test/koka-bayes/output-and-plot
 import test/koka-bayes/exponents
+import test/koka-bayes/get
 
 fun multivariate_gaussian(dimension : int, mean : double, std_dev : double) : sample list<double> {
   list(1, dimension) fun(i) {
@@ -43,13 +44,6 @@ fun score_predictions(true_values : row_vector, predicted_values : row_vector, s
 fun score_thunk(score_std_dev : double) {
   return fun(true_val : double, pred_val : double) {
     score(normal_pdf(true_val, score_std_dev, pred_val))
-  }
-}
-
-fun get(xs : list<_a>, index : int) : exn _a {
-  match(xs[index]) {
-    Nothing -> error("ListIndexError: Invalid list indexing at index: " + show(index))
-    Just(x) -> x
   }
 }
 
