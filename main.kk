@@ -15,9 +15,9 @@ import test/koka-bayes/exn-get
 
 fun main() {
   val data_point                = 6.0
-  val particles                 = 1000
-  val resample_steps            = 20
-  val scores_before_resampling  = 1
+  val particles                 = 2000
+  val resample_steps            = 10
+  val scores_before_resampling  = 2
   val hist                      = smc(particles, resample_steps, scores_before_resampling, sequential_gaussian(data_point))
   write(hist, "gaussian_posterior.csv") // Note that if you change the filename - change plot_examples.py too if you want to show the histograms.
   println("Results of SMC written!")
