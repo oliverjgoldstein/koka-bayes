@@ -81,8 +81,7 @@ fun all_elements_equal( list : list<int> ) : exn bool {
 } 
 
 /* [[1,2,3,4,5,6,...12],[1,2,3,4,5,6...12]...] -> [[1,1,1,1,1,..........1,1,1,1],[2,2,2,2,2,2,......2,2,2,]] */
-fun months( months : list<list<double>> ) : <exn, console> list<list<double>> {
-  println(show(length_months(months)))
+fun months( months : list<list<double>> ) : exn list<list<double>> {
   assert("Month lengths must be equal!", all_elements_equal(length_months(months)))
   var list_of_months : list<list<double>> := [Nil]
   for(0, 11) fun(i) {
