@@ -1,6 +1,6 @@
 public module test/koka-bayes/trace
 
-import std/num/double
+import std/num/ddouble
 
 import test/koka-bayes/effects-and-types
 import test/koka-bayes/exponents
@@ -74,7 +74,7 @@ fun perturb_trace(trace : trace<_a>) : <ndet, sample|e> trace_values {
 fun with_randomness(model : model<_a>, trace_values : trace_values) : ndet (trace_values, (exp, _a)) {
   val likelihood_a_trace = random_sampler {
     replay(trace_values) {
-      weighted(Exp(0.0)) {
+      weighted(Exp(ddouble(0.0))) {
         model()
       }
     }
@@ -89,7 +89,7 @@ fun mh_step(trace : trace<a>) : <ndet, ndet> trace<a> {
       val p2b = with_randomness(model, modified_trace)
       match(p2b) {
         (new_trace, (p2, b)) -> {
-          val ratio = min(1.0, (exp_to_double(p2) * new_trace.length.double) / (exp_to_double(p1) * old_trace.length.double))
+          val ratio = min(ddouble(1.0), (exp_to_ddouble(p2) * new_trace.length.ddouble) / (exp_to_ddouble(p1) * old_trace.length.ddouble))
           val accept = bernoulli(ratio)
           if(accept) {
             Trace(model, p2, new_trace, b)
@@ -102,8 +102,8 @@ fun mh_step(trace : trace<a>) : <ndet, ndet> trace<a> {
   }
 }
 
-fun bernoulli(p : double) : ndet bool {
-  val g = random()
+fun bernoulli(p : ddouble) : ndet bool {
+  val g = ddouble(random())
   if (g < p) {
     True
   } else{
@@ -112,7 +112,7 @@ fun bernoulli(p : double) : ndet bool {
 }
 
 fun random_range(upper_bound : int) {
-  return int(random() / (1.0 / double(upper_bound))) % upper_bound
+  return int(ddouble(random()) / (ddouble(1.0) / ddouble(upper_bound))) % upper_bound
 }
 
 fun tmcmc(model : model<a>, steps : int, init_weight : exp) : <div, ndet, ndet> trace<a> {

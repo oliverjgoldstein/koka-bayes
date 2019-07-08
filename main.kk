@@ -15,9 +15,9 @@ import test/koka-bayes/exn-get
 
 fun main() {
   val data_point                = 6.0
-  val particles                 = 2000
+  val particles                 = 300
   val resample_steps            = 20
-  val scores_before_resampling  = 2
+  val scores_before_resampling  = 1
   /* val hist                      = smc(particles, resample_steps, scores_before_resampling, sequential_gaussian(data_point))
   write(hist, "gaussian_posterior.csv") // Note that if you change the filename - change plot_examples.py too if you want to show the histograms.
   println("Results of SMC written!")
@@ -31,4 +31,5 @@ fun main() {
   val temperatures = exn-get(preprocessed_data.snd, 0)
   val clim_hist = smc(particles, resample_steps, scores_before_resampling, linear_gaussian_climate_data(temperatures, uncertainties))
   write(clim_hist, "temperature_posterior.csv")
+  println(show(clim_hist))
 }

@@ -1,12 +1,12 @@
 public module test/koka-bayes/handlers
 
-import std/num/double
+import std/num/ddouble
 
 import test/koka-bayes/exponents
 import test/koka-bayes/effects-and-types
 
 fun random_sampler(action : () -> <sample|e> a) : <ndet|e> a {
-  with fun sample() { random() }
+  with fun sample() { ddouble(random()) }
   mask<ndet>(action)  // mask out `ndet` from the `action` effect
 }
 
@@ -31,7 +31,7 @@ fun trace(action) {
 
 
 fun replay(trace : trace_values, action) {
-  var extended_trace : list<double> := trace
+  var extended_trace : list<ddouble> := trace
   var index     := 0
   handle(action) {
     return x -> (split(extended_trace, index).fst, x)

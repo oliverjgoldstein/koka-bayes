@@ -1,9 +1,9 @@
 public module test/koka-bayes/output-and-plot
 
+import std/num/ddouble
 import std/num/double
 import std/os/file
 import std/os/path
-import std/num/ddouble
 
 import test/koka-bayes/effects-and-types
 import test/koka-bayes/exponents
@@ -20,22 +20,22 @@ fun plot( f : (double -> double) ) : string {
   }
 }
 
-fun write( hist : histogram<double>, filename : string ) {
+fun write( hist : histogram<ddouble>, filename : string ) {
    write-text(path("./test/koka-bayes/output/" + filename), show(hist))
 }
 
-fun write( hist : histogram<(double, double)> , filename : string ) {
+fun write( hist : histogram<(ddouble, ddouble)> , filename : string ) {
    write-text(path("./test/koka-bayes/output/" + filename), show(hist))
 }
 
 
-fun show(hist : histogram<double>) : string {
+fun show(hist : histogram<ddouble>) : string {
   var total_string := ""
   for(0, hist.length - 1) fun(i) {
     val str = match(hist[i]) {
       Nothing -> ""
       Just(x) -> match(x) {
-        (Exp(dbl), a) -> {show-fixed(exp(ddouble(dbl))) + ", " + show-fixed(a)}
+        (Exp(dbl), a) -> {show-fixed(exp(dbl)) + ", " + show-fixed(a)}
       }
     }
     total_string := total_string + str + "\n"
@@ -43,14 +43,14 @@ fun show(hist : histogram<double>) : string {
   total_string
 }
 
-fun show(hist : histogram<(double, double)>) : string {
+fun show(hist : histogram<(ddouble, ddouble)>) : string {
   var total_string := ""
   for(0, hist.length - 1) fun(i) {
     val str = match(hist[i]) {
       Nothing -> ""
       Just(x) -> match(x) {
-        (Exp(dbl), (db1, db2)) -> {show-fixed(exp(ddouble(dbl))) + ", " + show-fixed(db1) + "\n" +
-                                    show-fixed(exp(ddouble(dbl))) + ", " + show-fixed(db2)}
+        (Exp(dbl), (db1, db2)) -> {show-fixed(exp(dbl)) + ", " + show-fixed(db1) + "\n" +
+                                    show-fixed(exp(dbl)) + ", " + show-fixed(db2)}
       }
     }
     total_string := total_string + str + "\n"
@@ -64,7 +64,7 @@ fun show( ls : (list<int>, list<int>) ) : string {
   }
 }
 
-fun show(xs : list<double>) : string {
+fun show(xs : list<ddouble>) : string {
   var total_string := "["
   for(0, xs.length - 1) fun(i) {
 
@@ -86,20 +86,20 @@ fun show(xs : list<double>) : string {
   total_string
 }
 
-fun show( x : list<list<double>> ) : string {
+fun show( x : list<list<ddouble>> ) : string {
   join(map(x, show))
 }
 
-fun show( x : list<list<list<double>>> ) : string {
+fun show( x : list<list<list<ddouble>>> ) : string {
   join(map(x, show))
 }
 
-fun show(hist : histogram<(double -> double)>) : console int {
+fun show(hist : histogram<(ddouble -> ddouble)>) : console int {
   for(0, hist.length - 1) fun(i) {
     val str = match(hist[i]) {
       Nothing -> ""
       Just(x) -> match(x) {
-        (Exp(dbl), func) -> {"(" + show-fixed(exp(ddouble(dbl))) + ", " + show-fixed(func(100.0)) + ")"}
+        (Exp(dbl), func) -> {"(" + show-fixed(exp(dbl)) + ", " + show-fixed(func(ddouble(100.0))) + ")"}
       }
     }
     println(str)

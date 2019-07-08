@@ -1,24 +1,24 @@
-import std/num/double
+import std/num/ddouble
 
 alias model<a>        = () -> <sample, score> a
-alias regression      = model<double -> double>
-alias sequential_data = list<list<double>>
-alias data_1d         = list<double>
-alias two_d_data      = list<(double, double)>
-alias trace_values    = list<double>
+alias regression      = model<ddouble -> ddouble>
+alias sequential_data = list<list<ddouble>>
+alias data_1d         = list<ddouble>
+alias two_d_data      = list<(ddouble, ddouble)>
+alias trace_values    = list<ddouble>
 alias histogram<a>    = list<(exp, a)>
 alias histofunc<a,b>  = histogram<a> -> histogram<b>
-alias row_vector      = list<double>
+alias row_vector      = list<ddouble>
 
 type exp {
-  Exp(i : double)
+  Exp(i : ddouble)
 }
 
 effect yield {
   control yield() : ()
 }
 
-ambient fun sample() : double
+ambient fun sample() : ddouble
 ambient control score( s : exp ) : ()
 
 effect exc {
@@ -30,7 +30,7 @@ type trace<a> {
 }
 
 
-fun trace_v(tr : trace<_a>) : list<double> {
+fun trace_v(tr : trace<_a>) : list<ddouble> {
   match(tr) {
     Trace(_, _, d, _) -> d
   }

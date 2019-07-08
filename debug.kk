@@ -1,4 +1,4 @@
-import std/num/double
+import std/num/ddouble
 import std/os/path
 import std/os/file
 
@@ -9,11 +9,11 @@ fun main() {
 fun pre_process_data() {
   val nums = replicate(5.0, 4000)
   println(nums.length)
-  /* string_to_list_doubles(values) */
+  /* string_to_list_ddoubles(values) */
 }
 
-/* fun string_to_list_doubles( s : string )  {
-  val nums = map(split(s, "\n"), parse-double)
+/* fun string_to_list_ddoubles( s : string )  {
+  val nums = map(split(s, "\n"), parse-ddouble)
   println(nums.length)
   match(nums[50]) {
     Nothing -> " "
