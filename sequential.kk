@@ -6,7 +6,7 @@ import sampling
 import exponents
 import output-and-plot
 
-fun smc(particle_num : int, step_num : int, step_size : int, model : () -> <console,pure,sample,score,yield|_e> _a) {
+fun smc(particle_num : int, step_num : int, step_size : int, model : () -> <sample,score|_e> _a) {
   random_sampler {
     val smc_func = fun() {
       advance {
@@ -21,7 +21,7 @@ fun smc(particle_num : int, step_num : int, step_size : int, model : () -> <cons
   }
 }
 
-fun smc_loop(i : int, pop_hist : histogram<(int) -> <yield,score,div,sample,exn, console|e> a>, step_num : int, step_size : int) : <console, exn, div, sample|e> histogram<a> {
+fun smc_loop(i : int, pop_hist : histogram<(int) -> <exn,yield,score,sample|e> a>, step_num : int, step_size : int) : <exn, sample|e> histogram<a> {
     if (i < step_num) then {
       val resampled_histogram = resample(pop_hist)
       fun smc_func_2(wm) {

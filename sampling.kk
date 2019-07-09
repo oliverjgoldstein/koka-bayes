@@ -45,7 +45,7 @@ fun sum_weights(histogram : histogram<a>) : exp {
   foldl(histogram, Exp(log(0.0)), foldlfunc)
 }
 
-fun weighted_choice(histogram : histogram<a>) : <console, exn, sample> a {
+fun weighted_choice(histogram : histogram<a>) : <exn, sample> a {
   val total_w = sum_weights(histogram)
   val total_fuel = (exp_to_double(total_w)) * sample()
   fun choose(fuel : double, ws : list<_a>) {
@@ -64,7 +64,7 @@ fun weighted_choice(histogram : histogram<a>) : <console, exn, sample> a {
   choose(total_fuel, histogram)
 }
 
-fun resample(histogram : histogram<a>) : <console, exn, sample> histogram<a> {
+fun resample(histogram : histogram<a>) : <exn, sample> histogram<a> {
   val n = histogram.length
   val total_w = sum_weights(histogram)
   fun resample_model() {

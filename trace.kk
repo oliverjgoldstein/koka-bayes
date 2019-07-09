@@ -37,7 +37,7 @@ fun trace_a(tr : trace<_a>) : _a {
   }
 }
 
-fun rmsmc(particle_num : int, step_num : int, step_size : int, model : () -> <console, pure,sample,score,yield|_e> _a) {
+fun rmsmc(particle_num : int, step_num : int, step_size : int, model : () -> <sample,score,score|_e> _a) {
 
     val rmsmc_func = fun() {
       advance {
@@ -52,7 +52,7 @@ fun rmsmc(particle_num : int, step_num : int, step_size : int, model : () -> <co
   }
 }
 
-fun rmsmc_loop(i : int, pop_hist : histogram<(int) -> <console, yield,score,div,sample,exn|e> a>, step_num : int, step_size : int) : <console, exn, div, sample|e> histogram<a> {
+fun rmsmc_loop(i : int, pop_hist : histogram<(int) -> <exn,yield,score,sample|e> a>, step_num : int, step_size : int) : <exn, sample|e> histogram<a> {
     if (i < step_num) then {
       val resampled_histogram = resample(pop_hist)
       fun rmsmc_func_2(wm) {
