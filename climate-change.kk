@@ -1,13 +1,13 @@
-public module test/koka-bayes/climate-change
+public module climate-change
 
 import std/num/double
 
-import test/koka-bayes/model-resources
-import test/koka-bayes/effects-and-types
-import test/koka-bayes/handlers
-import test/koka-bayes/output-and-plot
-import test/koka-bayes/exponents
-import test/koka-bayes/exn-get
+import model-resources
+import effects-and-types
+import handlers
+import output-and-plot
+import exponents
+import exn-get
 
 fun multivariate_gaussian(dimension : int, mean : double, std_dev : double) : sample list<double> {
   list(1, dimension) fun(i) {

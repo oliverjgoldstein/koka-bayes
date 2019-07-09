@@ -1,3 +1,5 @@
+public module effects-and-types
+
 import std/num/double
 
 alias model<a>        = () -> <sample, score> a
@@ -21,35 +23,3 @@ effect yield {
 ambient fun sample() : double
 ambient control score( s : exp ) : ()
 
-effect exc {
-  fun raise(s : string ) : a
-}
-
-type trace<a> {
-  Trace(m : model<a>, p : exp, l : trace_values, a : a)
-}
-
-
-fun trace_v(tr : trace<_a>) : list<double> {
-  match(tr) {
-    Trace(_, _, d, _) -> d
-  }
-}
-
-fun trace_m(tr : trace<_a>) : model<_a> {
-  match(tr) {
-    Trace(m, _, _, _) -> m
-  }
-}
-
-fun trace_p(tr : trace<_a>) : exp {
-  match(tr) {
-    Trace(_, p, _, _) -> p
-  }
-}
-
-fun trace_a(tr : trace<_a>) : _a {
-  match(tr) {
-    Trace(_, _, _, a) -> a
-  }
-}

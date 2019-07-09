@@ -1,11 +1,41 @@
-public module test/koka-bayes/trace
+public module trace
 
 import std/num/double
 
-import test/koka-bayes/effects-and-types
-import test/koka-bayes/exponents
-import test/koka-bayes/handlers
-import test/koka-bayes/sampling
+import effects-and-types
+import exponents
+import handlers
+import sampling
+
+
+type trace<a> {
+  Trace(m : model<a>, p : exp, l : trace_values, a : a)
+}
+
+
+fun trace_v(tr : trace<_a>) : list<double> {
+  match(tr) {
+    Trace(_, _, d, _) -> d
+  }
+}
+
+fun trace_m(tr : trace<_a>) : model<_a> {
+  match(tr) {
+    Trace(m, _, _, _) -> m
+  }
+}
+
+fun trace_p(tr : trace<_a>) : exp {
+  match(tr) {
+    Trace(_, p, _, _) -> p
+  }
+}
+
+fun trace_a(tr : trace<_a>) : _a {
+  match(tr) {
+    Trace(_, _, _, a) -> a
+  }
+}
 
 fun rsmmc(particle_num : int, step_num : int, step_size : int, model : () -> <console, pure,sample,score,yield|_e> _a) {
 

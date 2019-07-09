@@ -1,1 +1,3 @@
 bin/local-vars.sh
+output/*.csv
+output/*.png

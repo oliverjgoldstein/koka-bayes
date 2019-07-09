@@ -1,12 +1,12 @@
-public module test/koka-bayes/output-and-plot
+public module output-and-plot
 
 import std/num/double
 import std/os/file
 import std/os/path
 import std/num/ddouble
 
-import test/koka-bayes/effects-and-types
-import test/koka-bayes/exponents
+import effects-and-types
+import exponents
 
 fun plot( f : (double -> double) ) : string {
   val lft = 0.0
@@ -21,11 +21,11 @@ fun plot( f : (double -> double) ) : string {
 }
 
 fun write( hist : histogram<double>, filename : string ) {
-   write-text(path("./test/koka-bayes/output/" + filename), show(hist))
+   write-text(path("./output/" + filename), show(hist))
 }
 
 fun write( hist : histogram<(double, double)> , filename : string ) {
-   write-text(path("./test/koka-bayes/output/" + filename), show(hist))
+   write-text(path("./output/" + filename), show(hist))
 }
 
 

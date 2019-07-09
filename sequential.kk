@@ -1,10 +1,10 @@
-public module test/koka-bayes/sequential
+public module sequential
 
-import test/koka-bayes/effects-and-types
-import test/koka-bayes/handlers
-import test/koka-bayes/sampling
-import test/koka-bayes/exponents
-import test/koka-bayes/output-and-plot
+import effects-and-types
+import handlers
+import sampling
+import exponents
+import output-and-plot
 
 fun smc(particle_num : int, step_num : int, step_size : int, model : () -> <console,pure,sample,score,yield|_e> _a) {
   random_sampler {

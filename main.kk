@@ -1,17 +1,17 @@
-public module test/koka-bayes/main
+public module main
 
 import std/num/double
 import std/num/ddouble
-import test/koka-bayes/output-and-plot
-import test/koka-bayes/exponents
-import test/koka-bayes/effects-and-types
-import test/koka-bayes/sequential
-import test/koka-bayes/trace
-import test/koka-bayes/handlers
-import test/koka-bayes/model-resources
-import test/koka-bayes/climate-change
-import test/koka-bayes/data/preprocessing
-import test/koka-bayes/exn-get
+import output-and-plot
+import exponents
+import effects-and-types
+import sequential
+import trace
+import handlers
+import model-resources
+import climate-change
+import data/preprocessing
+import exn-get
 
 fun main() {
   println("Running code...")

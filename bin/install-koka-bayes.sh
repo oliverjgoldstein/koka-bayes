@@ -37,34 +37,9 @@ if [ ! -n "$KOKA_INSTALL" ]; then
 fi
 
 source ./bin/local-vars.sh 
-echo "Install directory: "
-echo $KOKA_INSTALL
-cd $KOKA_INSTALL
 
-if [ -d "./test/koka-bayes/" ]; then
-  printf "\n\n"
-  echo "Your existing version of koka-bayes will be ${red}overwritten!${reset}"
-  read -p "Continue (y/n)? " choice
-  case "$choice" in
-    y|Y ) echo "${green}Proceeding${reset}";;
-    n|N ) exit 0;;
-    * ) echo "Invalid - re run install to try again"; exit 0;;
-  esac
-  rm -r ./test/koka-bayes/
-fi
-
-echo "\n\n"
-
-mkdir ./test/koka-bayes/
-cd ./test/koka-bayes
-cp $GIT_DIR/*.kk ./
-cp -r $GIT_DIR/output .
-cp -r $GIT_DIR/data .
-cd ..
-cd ..
-
-if [ ! -d "./out/koka-bayes-output/" ]; then
-  mkdir ./out/koka-bayes-output
+if [ ! -d "$KOKA_INSTALL/out/koka-bayes-output/" ]; then
+  mkdir $KOKA_INSTALL/out/koka-bayes-output
 fi
 
 echo "${green}Successfully installed koka-bayes!${reset}"

@@ -1,20 +1,13 @@
-public module test/koka-bayes/handlers
+public module handlers
 
 import std/num/double
 
-import test/koka-bayes/exponents
-import test/koka-bayes/effects-and-types
+import exponents
+import effects-and-types
 
 fun random_sampler(action : () -> <sample|e> a) : <ndet|e> a {
   with fun sample() { random() }
   mask<ndet>(action)  // mask out `ndet` from the `action` effect
-}
-
-
-fun catch(action,h) {
-  handle(action) {
-    raise(s) -> h(s)
-  }
 }
 
 fun trace(action) {

@@ -1,4 +1,4 @@
-public module test/koka-bayes/exn-get
+public module exn-get
 
 fun exn-get(xs : list<_a>, index : int) : exn _a {
   match(xs[index]) {

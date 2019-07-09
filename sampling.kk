@@ -1,11 +1,11 @@
-public module test/koka-bayes/sampling
+public module sampling
 
 import std/num/double
 
-import test/koka-bayes/effects-and-types
-import test/koka-bayes/handlers
-import test/koka-bayes/exponents
-import test/koka-bayes/output-and-plot
+import effects-and-types
+import handlers
+import exponents
+import output-and-plot
 
 fun populate(k : int, model : () -> <score|e> b) : e histogram<b> {
   list(1, k) fun(i) {
