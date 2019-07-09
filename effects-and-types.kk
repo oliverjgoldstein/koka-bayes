@@ -4,12 +4,10 @@ import std/num/double
 
 alias model<a>        = () -> <sample, score> a
 alias regression      = model<double -> double>
-alias sequential_data = list<list<double>>
 alias data_1d         = list<double>
 alias two_d_data      = list<(double, double)>
 alias trace_values    = list<double>
 alias histogram<a>    = list<(exp, a)>
-alias histofunc<a,b>  = histogram<a> -> histogram<b>
 alias row_vector      = list<double>
 
 type exp {
