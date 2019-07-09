@@ -18,7 +18,7 @@ esac
 
 GIT_DIR=$(pwd)
 
-LOCALS=$(pwd)/bin/locals.sh 
+LOCALS=$(pwd)/bin/local-vars.sh 
 if [[ ! -f "$LOCALS" ]]; then
     touch $LOCALS
 fi
