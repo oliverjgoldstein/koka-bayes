@@ -23,8 +23,8 @@ if [[ ! -f "$LOCALS" ]]; then
     touch $LOCALS
 fi
 
-chmod +x local-vars.sh
-source local-vars.sh 
+chmod +x ./bin/local-vars.sh
+source ./bin/local-vars.sh 
 
 if [ ! -n "$KOKA_INSTALL" ]; then
   echo "\n\n"
@@ -34,10 +34,10 @@ if [ ! -n "$KOKA_INSTALL" ]; then
   echo "/dir1/dir2/../koka\n"
   read install_directory
   echo "export KOKA_INSTALL=\"$install_directory\""$'\n' >>$LOCALS
-  echo "Koka install directory added to local-vars.sh!"
+  echo "Koka install directory added to ./bin/local-vars.sh!"
 fi
 
-source local-vars.sh 
+source ./bin/local-vars.sh 
 echo "Install directory: "
 echo $KOKA_INSTALL
 cd $KOKA_INSTALL
