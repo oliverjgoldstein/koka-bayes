@@ -22,13 +22,56 @@ fun linear_gaussian_climate_data(ys : list<row_vector>, vs : list<row_vector>) :
     val x1                          = normal(prior_temperature, prior_temp_std_dev)
     val mult_bias_of_thermometer_std_dev = 0.05
     val mult_bias_of_thermometer    = 0.0
-    val first_ys                    = exn-get(ys,12)
-    val first_vs                    = exn-get(vs,12)
-    val c_row                       = multivariate_gaussian(first_ys.length, 1.0 + mult_bias_of_thermometer, mult_bias_of_thermometer_std_dev)
-    val v_row                       = convert_uncertainty_to_rand(first_vs)
+    
+    
+    val month_ys                    = exn-get(ys,0)
+    val month_vs                    = exn-get(vs,0)
+    val c_row                       = multivariate_gaussian(month_ys.length, 1.0 + mult_bias_of_thermometer, mult_bias_of_thermometer_std_dev)
+    val v_row                       = convert_uncertainty_to_rand(month_vs)
     val predictions                 = plus(mult(x1, c_row), v_row)
-    score_predictions(first_ys, predictions, 4.6)
-    x1
+    score_predictions(month_ys, predictions, 4.6)
+    val a_val                       = normal(1.0,1.0)
+    
+    
+    val x2                          = x1 a_val + normal(1.0,1.0)
+    val month_ys                    = exn-get(ys,1)
+    val month_vs                    = exn-get(vs,1)
+    val c_row                       = multivariate_gaussian(month_ys.length, 1.0 + mult_bias_of_thermometer, mult_bias_of_thermometer_std_dev)
+    val v_row                       = convert_uncertainty_to_rand(month_vs)
+    val predictions                 = plus(mult(x2, c_row), v_row)
+    score_predictions(month_ys, predictions, 4.6)
+    
+    val x3                          = x2 a_val + normal(1.0,1.0)
+    val month_ys                    = exn-get(ys,2)
+    val month_vs                    = exn-get(vs,2)
+    val c_row                       = multivariate_gaussian(month_ys.length, 1.0 + mult_bias_of_thermometer, mult_bias_of_thermometer_std_dev)
+    val v_row                       = convert_uncertainty_to_rand(month_vs)
+    val predictions                 = plus(mult(x3, c_row), v_row)
+    score_predictions(month_ys, predictions, 4.6)
+    
+    val x4                          = x3 a_val + normal(1.0,1.0)
+    val month_ys                    = exn-get(ys,3)
+    val month_vs                    = exn-get(vs,3)
+    val c_row                       = multivariate_gaussian(month_ys.length, 1.0 + mult_bias_of_thermometer, mult_bias_of_thermometer_std_dev)
+    val v_row                       = convert_uncertainty_to_rand(month_vs)
+    val predictions                 = plus(mult(x4, c_row), v_row)
+    score_predictions(month_ys, predictions, 4.6)
+    
+    val x5                          = x4 a_val + normal(1.0,1.0)
+    val month_ys                    = exn-get(ys,4)
+    val month_vs                    = exn-get(vs,4)
+    val c_row                       = multivariate_gaussian(month_ys.length, 1.0 + mult_bias_of_thermometer, mult_bias_of_thermometer_std_dev)
+    val v_row                       = convert_uncertainty_to_rand(month_vs)
+    val predictions                 = plus(mult(x5, c_row), v_row)
+    score_predictions(month_ys, predictions, 4.6)
+    
+    val x6                          = x5 a_val + normal(1.0,1.0)
+    val month_ys                    = exn-get(ys,5)
+    val month_vs                    = exn-get(vs,5)
+    val c_row                       = multivariate_gaussian(month_ys.length, 1.0 + mult_bias_of_thermometer, mult_bias_of_thermometer_std_dev)
+    val v_row                       = convert_uncertainty_to_rand(month_vs)
+    val predictions                 = plus(mult(x6, c_row), v_row)
+    score_predictions(month_ys, predictions, 4.6)
   }
   g
 }
