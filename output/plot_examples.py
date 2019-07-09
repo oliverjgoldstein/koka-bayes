@@ -10,7 +10,6 @@ for i in range(0, len(f)):
     li = li[:len(li)-1]
     x = [float(v[0]) for v in li]
     y = [float(v[1]) for v in li]
-    print(sum(x))
 
     pyplot.figure()
 

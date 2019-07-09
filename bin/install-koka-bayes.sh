@@ -42,4 +42,4 @@ if [ ! -d "$KOKA_INSTALL/out/koka-bayes-output/" ]; then
   mkdir $KOKA_INSTALL/out/koka-bayes-output
 fi
 
-echo "${green}Successfully installed koka-bayes!${reset}"
+printf "${green}Successfully installed koka-bayes!${reset}"

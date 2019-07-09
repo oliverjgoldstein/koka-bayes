@@ -16,11 +16,14 @@ if [ ! -n "$KOKA_INSTALL" ]; then
   exit 2
 fi
 
-# cd $KOKA_INSTALL
-
 $KOKA_INSTALL/out/debug/koka-0.9.0-dev -e --outdir=$KOKA_INSTALL/out/koka-bayes-output/ -i"$KOKA_INSTALL/lib" -i"$KOKA_INSTALL/test/lib" $KOKA_GIT/main --core --checkcore
 
 cd ./output/
 python ./plot_examples.py
 printf "Output written to: %s/output.html\n" "$(pwd)"
+
+case "$OSTYPE" in
+  darwin*)  open     output.html ;; 
+  *)        xdg-open output.html ;;
+esac
 
