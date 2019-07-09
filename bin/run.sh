@@ -2,14 +2,14 @@
 set -e
 echo "\n\n"
 
-LOCALS=$(pwd)/bin/locals.sh 
+LOCALS=$(pwd)/bin/local-vars.sh 
 if [[ ! -f "$LOCALS" ]]; then
-    echo "Error. Missing locals.sh!"
+    echo "Error. Missing local-vars.sh!"
     exit 2
 fi
 
-chmod +x ./bin/locals.sh
-source ./bin/locals.sh 
+chmod +x ./bin/local-vars.sh
+source ./bin/local-vars.sh 
 
 if [ ! -n "$KOKA_INSTALL" ]; then
   echo "Error. No install directory found!"

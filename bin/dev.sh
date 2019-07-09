@@ -1,14 +1,14 @@
 #!/bin/sh
 set -e
 
-LOCALS=$(pwd)/bin/locals.sh 
+LOCALS=$(pwd)/bin/local-vars.sh 
 if [[ ! -f "$LOCALS" ]]; then
-    echo "Error. Missing locals.sh!"
+    echo "Error. Missing local-vars.sh!"
     exit 2
 fi
 
-chmod +x ./bin/locals.sh
-source ./bin/locals.sh 
+chmod +x ./bin/local-vars.sh
+source ./bin/local-vars.sh 
 
 if [ ! -n "$KOKA_INSTALL" ]; then
   echo "Error. No install directory found!"
@@ -25,10 +25,10 @@ if [ ! -n "$KOKA_GIT" ]; then
   echo "This is needed in case you run this makefile from outside the github directory!\n"
   read koka_git
   echo "export KOKA_GIT=\"$koka_git\""$'\n' >>$LOCALS
-  echo "Koka install directory added to locals.sh!"
+  echo "Koka install directory added to local-vars.sh!"
 fi
 
-source ./bin/locals.sh 
+source ./bin/local-vars.sh 
 cd $KOKA_INSTALL
 
 cd ./test/koka-bayes
