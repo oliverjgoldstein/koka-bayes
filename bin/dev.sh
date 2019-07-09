@@ -38,8 +38,8 @@ rm -r data/
 mkdir output
 mkdir data
 cp $KOKA_GIT/*.kk ./
-cp -r $KOKA_GIT/output/ ./output
-cp -r $KOKA_GIT/data/ ./data
+cp -r $KOKA_GIT/output/ .
+cp -r $KOKA_GIT/data/ .
 
 cd $KOKA_INSTALL
 
