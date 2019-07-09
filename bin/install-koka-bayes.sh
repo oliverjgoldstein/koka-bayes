@@ -5,9 +5,8 @@ red=`tput setaf 1`
 green=`tput setaf 2`
 reset=`tput sgr0`
 
-echo "\n"
-echo "This make script ${red}MUST${reset} be run from the root directory of the koka-bayes install location!"
-echo "\n"
+printf "\n"
+printf "This make script ${red}MUST${reset} be run from the root directory of the koka-bayes install location!\n"
 
 read -p "Is this run from the root of ${green}koka-bayes${reset} (y/n)? " choice
 case "$choice" in
@@ -27,14 +26,14 @@ chmod +x ./bin/local-vars.sh
 source ./bin/local-vars.sh 
 
 if [ ! -n "$KOKA_INSTALL" ]; then
-  echo "\n\n"
-  echo "First parameter supplied!"
-  echo "Please enter the ${green}install directory of koka!${reset}\n"
-  echo "This should have the form:\n"
-  echo "/dir1/dir2/../koka\n"
+  printf "\n\n"
+  printf "First parameter supplied!"
+  printf "Please enter the ${green}install directory of koka!${reset}\n"
+  printf "This should have the form:\n"
+  printf "/dir1/dir2/../koka\n"
   read install_directory
   echo "export KOKA_INSTALL=\"$install_directory\""$'\n' >>$LOCALS
-  echo "Koka install directory added to ./bin/local-vars.sh!"
+  printf "Koka install directory added to ./bin/local-vars.sh!"
 fi
 
 source ./bin/local-vars.sh 
@@ -43,7 +42,7 @@ echo $KOKA_INSTALL
 cd $KOKA_INSTALL
 
 if [ -d "./test/koka-bayes/" ]; then
-  echo "\n\n"
+  printf "\n\n"
   echo "Your existing version of koka-bayes will be ${red}overwritten!${reset}"
   read -p "Continue (y/n)? " choice
   case "$choice" in
