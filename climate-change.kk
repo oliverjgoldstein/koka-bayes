@@ -31,10 +31,10 @@ fun linear_gaussian_climate_data(ys : list<row_vector>, vs : list<row_vector>) :
     val predictions                 = plus(mult(x1, c_row), v_row)
     score_predictions(month_ys, predictions, 4.6)
     x1
-    /* val a_val                       = normal(1.0,1.0)
+    /* val a_val                       = normal(1.0,1.0) */
     
     
-    val x2                          = x1 a_val + normal(1.0,1.0)
+    /* val x2                          = x1 a_val + normal(1.0,1.0)
     val month_ys                    = exn-get(ys,1)
     val month_vs                    = exn-get(vs,1)
     val c_row                       = multivariate_gaussian(month_ys.length, 1.0 + mult_bias_of_thermometer, mult_bias_of_thermometer_std_dev)
