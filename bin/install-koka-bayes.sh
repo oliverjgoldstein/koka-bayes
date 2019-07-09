@@ -58,8 +58,8 @@ echo "\n\n"
 mkdir ./test/koka-bayes/
 cd ./test/koka-bayes
 cp $GIT_DIR/*.kk ./
-cp -r $GIT_DIR/output ./output
-cp -r $GIT_DIR/data ./data
+cp -r $GIT_DIR/output .
+cp -r $GIT_DIR/data .
 cd ..
 cd ..
 
