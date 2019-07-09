@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 
 red=`tput setaf 1`
@@ -19,7 +19,7 @@ esac
 GIT_DIR=$(pwd)
 
 LOCALS=$(pwd)/bin/local-vars.sh 
-if [[ ! -f "$LOCALS" ]]; then
+if [ ! -f "$LOCALS" ]; then
     touch $LOCALS
 fi
 

@@ -1,3 +1,4 @@
+target: run
 
 install:
 	chmod +x ./bin/install-koka-bayes.sh

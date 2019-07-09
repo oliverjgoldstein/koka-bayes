@@ -1,9 +1,9 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 echo "\n\n"
 
 LOCALS=$(pwd)/bin/local-vars.sh 
-if [[ ! -f "$LOCALS" ]]; then
+if [ ! -f "$LOCALS" ]; then
     echo "Error. Missing local-vars.sh!"
     exit 2
 fi
