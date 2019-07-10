@@ -52,7 +52,7 @@ fun rmsmc(particle_num : int, step_num : int, step_size : int, model : () -> <sa
   }
 }
 
-fun rmsmc_loop_pre(i : int, pop_hist : histogram<(int) -> <score,sample|e> a>, step_num : int, step_size : int) : <exn, sample|e> histogram<a> {
+fun rmsmc_loop_pre(i : int, pop_hist : histogram<(int) -> <score,sample|e> a>, step_num : int, step_size : int) : <sample|e> histogram<a> {
   val resampled_histogram = resample(pop_hist)
   fun rmsmc_func_2(wm) {
     match(wm) {
@@ -70,7 +70,7 @@ fun rmsmc_loop_pre(i : int, pop_hist : histogram<(int) -> <score,sample|e> a>, s
   rmsmc_loop(1,second_term,step_num,step_size)
 }
 
-fun rmsmc_loop(i : int, pop_hist : histogram<((a : int) -> <sample,score,div|_e> _a)>, step_num : int, step_size : int) : <exn, sample|e> histogram<a> {
+fun rmsmc_loop(i : int, pop_hist : histogram<((a : int) -> <sample,score|e> a)>, step_num : int, step_size : int) : <sample|e> histogram<a> {
     if (i < step_num) then {
       val resampled_histogram = resample(pop_hist)
       fun rmsmc_func_2(wm) {
@@ -165,7 +165,7 @@ fun random_range(upper_bound : int) {
   return int(sample() / (1.0 / double(upper_bound))) % upper_bound
 }
 
-fun tmcmc(model : model<a>, steps : int, init_weight : exp) : <sample, div> trace<a> {
+fun tmcmc(model : model<a>, steps : int, init_weight : exp) : sample trace<a> {
   val model_results =
   weighted(init_weight) {
       trace {
@@ -187,9 +187,9 @@ fun tmcmc(model : model<a>, steps : int, init_weight : exp) : <sample, div> trac
 
   var main_trace := Trace(model, p, d, a)
 
-  for(1, steps) fun(i) {
+  /* for(1, steps) fun(i) { */
     main_trace := mh_step(main_trace)
-  }
+  /* } */
 
   main_trace
 }
