@@ -49,8 +49,7 @@ fun show(hist : histogram<(double, double)>) : string {
     val str = match(hist[i]) {
       Nothing -> ""
       Just(x) -> match(x) {
-        (Exp(dbl), (db1, db2)) -> {show-fixed(exp(ddouble(dbl))) + ", " + show-fixed(db1) + "\n" +
-                                    show-fixed(exp(ddouble(dbl))) + ", " + show-fixed(db2)}
+        (Exp(dbl), (db1, db2)) -> {show-fixed(exp(ddouble(dbl))) + ", " + show-fixed(db1) + ", " + show-fixed(db2)}
       }
     }
     total_string := total_string + str + "\n"
