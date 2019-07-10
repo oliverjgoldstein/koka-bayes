@@ -16,4 +16,11 @@ if [ ! -n "$KOKA_INSTALL" ]; then
   exit 2
 fi
 
-$KOKA_INSTALL/out/debug/koka-0.9.0-dev -c --outdir=$KOKA_INSTALL/out/koka-bayes-output/ -i"$KOKA_INSTALL/lib" -i"$KOKA_INSTALL/test/lib" $KOKA_GIT/main --core --checkcore
+$KOKA_INSTALL/out/debug/koka-0.9.0-dev            \
+    -c                                            \
+    --outdir=$KOKA_INSTALL/out/koka-bayes-output/ \
+    -i"$KOKA_INSTALL/lib"                         \
+    -i"$KOKA_INSTALL/test/lib"                    \
+    $KOKA_GIT/main                                \
+    --core                                        \
+    --checkcore
