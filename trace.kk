@@ -48,29 +48,11 @@ fun rmsmc(particle_num : int, step_num : int, step_size : int, model : () -> <sa
     }
     random_sampler {
     val pop = normalise(populate(particle_num, rmsmc_func))
-    rmsmc_loop_pre(0, pop, step_num, step_size)
+    rmsmc_loop(0, pop, step_num, step_size)
   }
 }
 
-fun rmsmc_loop_pre(i : int, pop_hist : histogram<(int) -> <score,sample|e> a>, step_num : int, step_size : int) : <sample|e> histogram<a> {
-  val resampled_histogram = resample(pop_hist)
-  fun rmsmc_func_2(wm) {
-    match(wm) {
-      (w, m) -> {
-        weighted(w) {
-          advance {
-            trace_m(tmcmc( (fun() {m(step_size)}), 1, w ))()
-            /* m(step_size) */
-          }
-        }
-      }
-    }
-  }
-  val second_term = map(resampled_histogram, rmsmc_func_2)
-  rmsmc_loop(1,second_term,step_num,step_size)
-}
-
-fun rmsmc_loop(i : int, pop_hist : histogram<((a : int) -> <sample,score|e> a)>, step_num : int, step_size : int) : <sample|e> histogram<a> {
+fun rmsmc_loop(i : int, pop_hist : histogram<(int) -> <score,sample|e> a>, step_num : int, step_size : int) : <sample|e> histogram<a> {
     if (i < step_num) then {
       val resampled_histogram = resample(pop_hist)
       fun rmsmc_func_2(wm) {
