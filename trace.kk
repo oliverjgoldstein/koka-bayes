@@ -37,7 +37,7 @@ fun trace_a(tr : trace<_a>) : _a {
   }
 }
 
-fun rmsmc(particle_num : int, step_num : int, step_size : int, model : () -> <sample,score,score|_e> _a) {
+fun rmsmc(particle_num : int, step_num : int, step_size : int, model : () -> <sample,score|_e> _a) {
 
     val rmsmc_func = fun() {
       advance {
@@ -52,7 +52,7 @@ fun rmsmc(particle_num : int, step_num : int, step_size : int, model : () -> <sa
   }
 }
 
-fun rmsmc_loop(i : int, pop_hist : histogram<(int) -> <score,sample|e> a>, step_num : int, step_size : int) : <sample|e> histogram<a> {
+fun rmsmc_loop(i : int, pop_hist : histogram<(int) -> <exn,yield,score,sample|e> a>, step_num : int, step_size : int) : <exn,sample|e> histogram<a> {
     if (i < step_num) then {
       val resampled_histogram = resample(pop_hist)
       fun rmsmc_func_2(wm) {
@@ -60,8 +60,8 @@ fun rmsmc_loop(i : int, pop_hist : histogram<(int) -> <score,sample|e> a>, step_
           (w, m) -> {
             weighted(w) {
               advance {
-                trace_m(tmcmc( (fun() {m(step_size)}), 1, w ))()
-                /* m(step_size) */
+                /* trace_m(tmcmc( (fun() {m(step_size)}), 1, w ))() */
+                ggs(fun(){m(step_size)})()
               }
             }
           }
@@ -90,6 +90,9 @@ fun rmsmc_loop(i : int, pop_hist : histogram<(int) -> <score,sample|e> a>, step_
     }
 }
 
+fun ggs(m : (() -> <exn,yield,score,sample|e> a)) : (() -> <exn,yield,score,sample|e> a) {
+  m
+}
 
 
 
@@ -170,7 +173,7 @@ fun tmcmc(model : model<a>, steps : int, init_weight : exp) : sample trace<a> {
   var main_trace := Trace(model, p, d, a)
 
   /* for(1, steps) fun(i) { */
-    main_trace := mh_step(main_trace)
+  main_trace := mh_step(main_trace)
   /* } */
 
   main_trace
