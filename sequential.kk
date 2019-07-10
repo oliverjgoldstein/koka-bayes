@@ -36,7 +36,7 @@ fun smc_loop(i : int, pop_hist : histogram<(int) -> <exn,yield,score,sample|e> a
         }
       }
 
-      val second_term = normalise(map(resampled_histogram, smc_func_2))
+      val second_term = map(resampled_histogram, smc_func_2)
       smc_loop(i + 1, second_term, step_num, step_size)
     } else {
 

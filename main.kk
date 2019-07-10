@@ -16,11 +16,12 @@ import exn-get
 fun main() {
   println("Running code...")
   val data_point                = 6.0
-  val particles                 = 200
-  val resample_steps            = 40
+  val particles                 = 400
+  val resample_steps            = 270
   val scores_before_resampling  = 1
-  /* val hist                      = smc(particles, resample_steps, scores_before_resampling, sequential_gaussian(data_point))
-  write(hist, "gaussian_posterior.csv") // Note that if you change the filename - change plot_examples.py too if you want to show the histograms.
+  /* scores_before_resampling */
+  /* val hist                      = smc(particles, resample_steps, scores_before_resampling, sequential_gaussian(data_point)) */
+  /* write(hist, "gaussian_posterior.csv") // Note that if you change the filename - change plot_examples.py too if you want to show the histograms.
   println("Results of SMC written!")
   val trace_mcmc_steps          = 10000
   println("Estimated Gaussian mean with trace mcmc after " + show(trace_mcmc_steps) + " steps with true mean " + show-fixed(data_point) + ": ")
@@ -28,8 +29,8 @@ fun main() {
   println("Comment in line 33 and comment out line 34 in trace.kk -- to break this code!")
    */
   val preprocessed_data = pre_process_data()
-  val uncertainties = exn-get(preprocessed_data.fst, 6)
-  val temperatures = exn-get(preprocessed_data.snd,  6)
+  val uncertainties = exn-get(preprocessed_data.fst, 0)
+  val temperatures = exn-get(preprocessed_data.snd,  0)
   val clim_hist = smc(particles, resample_steps, scores_before_resampling, linear_gaussian_climate_data(temperatures, uncertainties))
   write(clim_hist, "temperature_posterior.csv")
   println("Finished running...")

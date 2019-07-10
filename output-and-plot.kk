@@ -28,6 +28,11 @@ fun write( hist : histogram<(double, double)> , filename : string ) {
    write-text(path("./output/" + filename), show(hist))
 }
 
+fun write( hist : histogram<(list<double>)> , filename : string ) {
+   write-text(path("./output/" + filename), show(hist))
+}
+
+
 
 fun show(hist : histogram<double>) : string {
   var total_string := ""
@@ -56,6 +61,36 @@ fun show(hist : histogram<(double, double)>) : string {
   }
   total_string
 }
+
+fun show(hist : histogram<(list<double>)>) : string {
+  var total_string := ""
+  for(0, hist.length - 1) fun(i) {
+    match(hist[i]) {
+      Nothing -> {total_string := total_string + ""}
+      Just(x) -> match(x) {
+        (Exp(dbl), lst : list<double>) -> { 
+          
+          total_string := total_string + (show-fixed(exp(ddouble(dbl))) + ",")
+            
+          for(0, lst.length - 1) fun(j) {
+            val str = match(lst[j]) {
+              Nothing -> ""
+              Just(x) -> (show-fixed(x) + ",")
+            }
+            total_string := total_string + str
+          }
+        }
+      }
+    }
+    
+    total_string := total_string + "\n"
+  }
+  total_string
+}
+/* 
+fun convert_list_to_csv(l : list<double>) : string {
+  match()
+} */
 
 fun show( ls : (list<int>, list<int>) ) : string {
   match(ls) {
