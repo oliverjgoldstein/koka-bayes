@@ -120,10 +120,10 @@ fun tmcmc(model : model<a,<sample,div,ndet|e>>, steps : int, init_weight : exp) 
 
 fun model_stepper_recursive(steps : int, trace : trace<a,<sample,ndet,div|e>>) : <div,ndet,ndet|e> trace<a,<sample,ndet,div|e>> {
   if(steps < 0) {
+    trace
+  } else {
     val new_trace = mh_step(trace)
     model_stepper_recursive(steps - 1, new_trace)
-  } else {
-    trace
   }
 }
 
