@@ -38,7 +38,7 @@ fun trace_a(tr : trace<a,_>) : a {
 }
 
 
-fun perturb_trace(trace : trace<a,_e>) : <ndet, sample|e> trace_values {
+fun perturb_trace(trace : trace<a,_e>) : <sample|e> trace_values {
   val trace_values  = trace_v(trace)
   val perturb_index = random_range(trace_values.length)
   val div_trace     = split(trace_values, perturb_index)
@@ -49,19 +49,20 @@ fun perturb_trace(trace : trace<a,_e>) : <ndet, sample|e> trace_values {
   new_trace
 }
 
-fun with_randomness(model : model<_a,<sample|e>>, trace_values : trace_values) : <ndet|e> (trace_values, (exp, _a)) {
-  val likelihood_a_trace = random_sampler {
+fun with_randomness(model : model<_a,<sample|e>>, trace_values : trace_values) : <sample|e> (trace_values, (exp, _a)) {
+  val likelihood_a_trace = 
+  /* random_sampler { */
     replay(trace_values) {
       weighted(Exp(0.0)) {
         model()
       }
     }
-  }
+  /* } */
   likelihood_a_trace
 }
 
-fun mh_step(trace : trace<a,<sample,ndet|e>>) : <ndet,ndet|e> trace<a,<sample,ndet|e>> {
-  val modified_trace = random_sampler{perturb_trace(trace)}
+fun mh_step(trace : trace<a,<sample|e>>) : <sample|e> trace<a,<sample|e>> {
+  val modified_trace = perturb_trace(trace)
   match(trace) {
     Trace(model, p1, old_trace, _) -> {
       val p2b = with_randomness(model, modified_trace)
@@ -80,8 +81,8 @@ fun mh_step(trace : trace<a,<sample,ndet|e>>) : <ndet,ndet|e> trace<a,<sample,nd
   }
 }
 
-fun bernoulli(p : double) : ndet bool {
-  val g = random()
+fun bernoulli(p : double) : sample bool {
+  val g = sample()
   if (g < p) {
     True
   } else{
@@ -90,17 +91,17 @@ fun bernoulli(p : double) : ndet bool {
 }
 
 fun random_range(upper_bound : int) {
-  return int(random() / (1.0 / double(upper_bound))) % upper_bound
+  return int(sample() / (1.0 / double(upper_bound))) % upper_bound
 }
 
-fun tmcmc(model : model<a,<sample,div,ndet|e>>, steps : int, init_weight : exp) : <div, ndet, ndet|e> trace<a,<sample,ndet,div|e>> {
+fun tmcmc(model : model<a,<sample,div|e>>, steps : int, init_weight : exp) : <sample, div|e> trace<a,<sample,div|e>> {
   val model_results =
   weighted(init_weight) {
-    random_sampler {
+    /* random_sampler { */
       trace {
         model()
       }
-    }
+    /* } */
   }
 
   val p = match(model_results) {
@@ -117,8 +118,8 @@ fun tmcmc(model : model<a,<sample,div,ndet|e>>, steps : int, init_weight : exp) 
 
   model_stepper_recursive(steps, Trace(model, p, d, a))
 }
-
-fun model_stepper_recursive(steps : int, trace : trace<a,<sample,ndet,div|e>>) : <div,ndet,ndet|e> trace<a,<sample,ndet,div|e>> {
+  
+fun model_stepper_recursive(steps : int, trace : trace<a,<sample,div|e>>) : <sample,div|e> trace<a,<sample,div|e>> {
   if(steps < 0) {
     trace
   } else {
@@ -151,8 +152,8 @@ fun rmsmc_loop(i : int, pop_hist : histogram<(int) -> <exn,yield,score,sample|e>
           (w, m) -> {
             weighted(w) {
               advance {
-                /* trace_m(tmcmc( (fun() {m(step_size)}), 1, w ))() */
-                m(step_size)
+                trace_m(tmcmc( (fun() {m(step_size)}), 1, w ))()
+                /* m(step_size) */
               }
             }
           }
