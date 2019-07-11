@@ -31,7 +31,7 @@ fun sum_histogram(hist : histogram<a>) : double {
   foldl(hist, 0.0, foldfunc)
 }
 
-fun importance_sampling(model : model<a>) : ndet histogram<a> {
+fun importance_sampling(model : model<a,e>) : <ndet|e> histogram<a> {
   val particle_count = 1000
   random_sampler{normalise(populate(particle_count, model))}
 }

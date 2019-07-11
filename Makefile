@@ -5,6 +5,7 @@ install:
 	chmod +x ./bin/run.sh
 	chmod +x ./bin/dev.sh
 	chmod +x ./bin/interactive.sh
+	chmod +x ./bin/clean.sh
 	./bin/install-koka-bayes.sh
 
 run:
@@ -15,3 +16,6 @@ dev:
 	
 interactive:
 	./bin/interactive.sh
+	
+clean:
+		./bin/clean.sh
