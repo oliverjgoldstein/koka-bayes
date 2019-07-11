@@ -33,7 +33,7 @@ for i in range(0, len(f)):
     li = [tuple(row) for row in data]
     li = li[:len(li)-1]
     x1 = [float(v[0]) for v in li]
-    y1 = [float(v[1]) for v in li]
+    y1 = [float(v[2]) for v in li]
 
     pyplot.figure()
 
@@ -50,7 +50,7 @@ for i in range(0, len(f)):
     pyplot.legend(loc='upper right')
     pyplot.savefig(f[i] + '_hist_1.png')
     
-    y2 = [float(v[2]) for v in li]
+    y2 = [float(v[3]) for v in li]
     
     pyplot.figure()
     

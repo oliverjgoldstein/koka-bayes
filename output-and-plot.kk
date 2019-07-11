@@ -70,7 +70,7 @@ fun show(hist : histogram<(list<double>)>) : string {
       Just(x) -> match(x) {
         (Exp(dbl), lst : list<double>) -> { 
           
-          total_string := total_string + (show-fixed(exp(ddouble(dbl))) + ",")
+          total_string := total_string + (show-fixed(exp(ddouble(dbl)), -1000) + "," + show-fixed(dbl) + ",")
             
           for(0, lst.length - 1) fun(j) {
             val str = match(lst[j]) {
@@ -87,10 +87,6 @@ fun show(hist : histogram<(list<double>)>) : string {
   }
   total_string
 }
-/* 
-fun convert_list_to_csv(l : list<double>) : string {
-  match()
-} */
 
 fun show( ls : (list<int>, list<int>) ) : string {
   match(ls) {

@@ -24,7 +24,8 @@ fun linear_gaussian_climate_data(ys : list<row_vector>, vs : list<row_vector>) :
     val w_mean                            = 0.0
     val w_std_dev                         = 1.0
     val a_mean                            = 1.0
-    val a_std_dev                         = 0.4
+    val a_std_dev                         = 0.3
+    val score_var                         = 5.0
     
     val x1                          = normal(prior_temperature, prior_temp_std_dev)
     val month_ys                    = exn-get(ys,0)
@@ -32,7 +33,7 @@ fun linear_gaussian_climate_data(ys : list<row_vector>, vs : list<row_vector>) :
     val c_row                       = multivariate_gaussian(month_ys.length, 1.0 + mult_bias_of_thermometer, mult_bias_of_thermometer_std_dev)
     val v_row                       = convert_uncertainty_to_rand(month_vs)
     val predictions                 = plus(mult(x1, c_row), v_row)
-    score_predictions(month_ys, predictions, 4.6)
+    score_predictions(month_ys, predictions, score_var)
     println("x1")
     
     val a_val                       = normal(a_mean,a_std_dev)
@@ -43,7 +44,7 @@ fun linear_gaussian_climate_data(ys : list<row_vector>, vs : list<row_vector>) :
     val c_row                       = multivariate_gaussian(month_ys.length, 1.0 + mult_bias_of_thermometer, mult_bias_of_thermometer_std_dev)
     val v_row                       = convert_uncertainty_to_rand(month_vs)
     val predictions                 = plus(mult(x2, c_row), v_row)
-    score_predictions(month_ys, predictions, 4.6)
+    score_predictions(month_ys, predictions, score_var)
     println("x2")
     val a_val                       = normal(a_mean,a_std_dev)
     val w_val                       = normal(w_mean,w_std_dev)
@@ -53,7 +54,7 @@ fun linear_gaussian_climate_data(ys : list<row_vector>, vs : list<row_vector>) :
     val c_row                       = multivariate_gaussian(month_ys.length, 1.0 + mult_bias_of_thermometer, mult_bias_of_thermometer_std_dev)
     val v_row                       = convert_uncertainty_to_rand(month_vs)
     val predictions                 = plus(mult(x3, c_row), v_row)
-    score_predictions(month_ys, predictions, 4.6)
+    score_predictions(month_ys, predictions, score_var)
     println("x3")
     val a_val                       = normal(a_mean,a_std_dev)
     val w_val                       = normal(w_mean,w_std_dev)
@@ -63,7 +64,7 @@ fun linear_gaussian_climate_data(ys : list<row_vector>, vs : list<row_vector>) :
     val c_row                       = multivariate_gaussian(month_ys.length, 1.0 + mult_bias_of_thermometer, mult_bias_of_thermometer_std_dev)
     val v_row                       = convert_uncertainty_to_rand(month_vs)
     val predictions                 = plus(mult(x4, c_row), v_row)
-    score_predictions(month_ys, predictions, 4.6)
+    score_predictions(month_ys, predictions, score_var)
     println("x4")
     val a_val                       = normal(a_mean,a_std_dev)
     val w_val                       = normal(w_mean,w_std_dev)
@@ -73,7 +74,7 @@ fun linear_gaussian_climate_data(ys : list<row_vector>, vs : list<row_vector>) :
     val c_row                       = multivariate_gaussian(month_ys.length, 1.0 + mult_bias_of_thermometer, mult_bias_of_thermometer_std_dev)
     val v_row                       = convert_uncertainty_to_rand(month_vs)
     val predictions                 = plus(mult(x5, c_row), v_row)
-    score_predictions(month_ys, predictions, 4.6)
+    score_predictions(month_ys, predictions, score_var)
     println("x5")
     val a_val                       = normal(a_mean,a_std_dev)
     val w_val                       = normal(w_mean,w_std_dev)
@@ -83,7 +84,7 @@ fun linear_gaussian_climate_data(ys : list<row_vector>, vs : list<row_vector>) :
     val c_row                       = multivariate_gaussian(month_ys.length, 1.0 + mult_bias_of_thermometer, mult_bias_of_thermometer_std_dev)
     val v_row                       = convert_uncertainty_to_rand(month_vs)
     val predictions                 = plus(mult(x6, c_row), v_row)
-    score_predictions(month_ys, predictions, 4.6)
+    score_predictions(month_ys, predictions, score_var)
     println("x6")
     val a_val                       = normal(a_mean,a_std_dev)
     val w_val                       = normal(w_mean,w_std_dev)
@@ -93,7 +94,7 @@ fun linear_gaussian_climate_data(ys : list<row_vector>, vs : list<row_vector>) :
     val c_row                       = multivariate_gaussian(month_ys.length, 1.0 + mult_bias_of_thermometer, mult_bias_of_thermometer_std_dev)
     val v_row                       = convert_uncertainty_to_rand(month_vs)
     val predictions                 = plus(mult(x7, c_row), v_row)
-    score_predictions(month_ys, predictions, 4.6)
+    score_predictions(month_ys, predictions, score_var)
     println("x7")
     val a_val                       = normal(a_mean,a_std_dev)
     val w_val                       = normal(w_mean,w_std_dev)
@@ -103,7 +104,7 @@ fun linear_gaussian_climate_data(ys : list<row_vector>, vs : list<row_vector>) :
     val c_row                       = multivariate_gaussian(month_ys.length, 1.0 + mult_bias_of_thermometer, mult_bias_of_thermometer_std_dev)
     val v_row                       = convert_uncertainty_to_rand(month_vs)
     val predictions                 = plus(mult(x8, c_row), v_row)
-    score_predictions(month_ys, predictions, 4.6)
+    score_predictions(month_ys, predictions, score_var)
     println("x8")
     val a_val                       = normal(a_mean,a_std_dev)
     val w_val                       = normal(w_mean,w_std_dev)
@@ -113,7 +114,7 @@ fun linear_gaussian_climate_data(ys : list<row_vector>, vs : list<row_vector>) :
     val c_row                       = multivariate_gaussian(month_ys.length, 1.0 + mult_bias_of_thermometer, mult_bias_of_thermometer_std_dev)
     val v_row                       = convert_uncertainty_to_rand(month_vs)
     val predictions                 = plus(mult(x9, c_row), v_row)
-    score_predictions(month_ys, predictions, 4.6)
+    score_predictions(month_ys, predictions, score_var)
     println("x9")
     val a_val                       = normal(a_mean,a_std_dev)
     val w_val                       = normal(w_mean,w_std_dev)
@@ -123,7 +124,7 @@ fun linear_gaussian_climate_data(ys : list<row_vector>, vs : list<row_vector>) :
     val c_row                       = multivariate_gaussian(month_ys.length, 1.0 + mult_bias_of_thermometer, mult_bias_of_thermometer_std_dev)
     val v_row                       = convert_uncertainty_to_rand(month_vs)
     val predictions                 = plus(mult(x10, c_row), v_row)
-    score_predictions(month_ys, predictions, 4.6)
+    score_predictions(month_ys, predictions, score_var)
     println("x10")
     val a_val                       = normal(a_mean,a_std_dev)
     val w_val                       = normal(w_mean,w_std_dev)
@@ -133,7 +134,7 @@ fun linear_gaussian_climate_data(ys : list<row_vector>, vs : list<row_vector>) :
     val c_row                       = multivariate_gaussian(month_ys.length, 1.0 + mult_bias_of_thermometer, mult_bias_of_thermometer_std_dev)
     val v_row                       = convert_uncertainty_to_rand(month_vs)
     val predictions                 = plus(mult(x11, c_row), v_row)
-    score_predictions(month_ys, predictions, 4.6)
+    score_predictions(month_ys, predictions, score_var)
     println("x11")
     val a_val                       = normal(a_mean,a_std_dev)
     val w_val                       = normal(w_mean,w_std_dev)
@@ -143,7 +144,7 @@ fun linear_gaussian_climate_data(ys : list<row_vector>, vs : list<row_vector>) :
     val c_row                       = multivariate_gaussian(month_ys.length, 1.0 + mult_bias_of_thermometer, mult_bias_of_thermometer_std_dev)
     val v_row                       = convert_uncertainty_to_rand(month_vs)
     val predictions                 = plus(mult(x12, c_row), v_row)
-    score_predictions(month_ys, predictions, 4.6)
+    score_predictions(month_ys, predictions, score_var)
     println("x12")
     val a_val                       = normal(a_mean,a_std_dev)
     val w_val                       = normal(w_mean,w_std_dev)
@@ -153,7 +154,7 @@ fun linear_gaussian_climate_data(ys : list<row_vector>, vs : list<row_vector>) :
     val c_row                       = multivariate_gaussian(month_ys.length, 1.0 + mult_bias_of_thermometer, mult_bias_of_thermometer_std_dev)
     val v_row                       = convert_uncertainty_to_rand(month_vs)
     val predictions                 = plus(mult(x13, c_row), v_row)
-    score_predictions(month_ys, predictions, 4.6)
+    score_predictions(month_ys, predictions, score_var)
     
     [x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13]
   }
