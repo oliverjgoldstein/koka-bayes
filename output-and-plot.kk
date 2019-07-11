@@ -75,7 +75,7 @@ fun show(hist : histogram<(list<double>)>) : string {
           for(0, lst.length - 1) fun(j) {
             val str = match(lst[j]) {
               Nothing -> ""
-              Just(x) -> (show-fixed(x) + ",")
+              Just(u) -> (show-fixed(u) + ",")
             }
             total_string := total_string + str
           }
