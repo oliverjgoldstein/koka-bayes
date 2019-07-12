@@ -23,7 +23,7 @@ fun trace(action) {
 }
 
 
-fun replay(trace : trace_values, action) {
+fun replay(trace : trace_values, action : () -> <sample,sample|e> a) : <sample|e> (list<double>, a) {
   var extended_trace : list<double> := trace
   var index     := -1
   handle(action) {
@@ -32,8 +32,7 @@ fun replay(trace : trace_values, action) {
       index := index + 1
       match(extended_trace[index]) {
         Nothing -> {
-          val rand_choice = sample()
-          extended_trace := extended_trace + [rand_choice]
+          extended_trace := extended_trace + [sample()]
           resume(rand_choice)
         }
         Just(random_value) -> resume(random_value)
