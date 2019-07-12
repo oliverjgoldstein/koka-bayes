@@ -1,9 +1,10 @@
 #!/bin/bash
-set -e
-printf "\n\n"
 
 rm ./output/*.png
 rm ./output/*.csv
+
+set -e
+printf "\n\n"
 
 LOCALS=$(pwd)/bin/local-vars.sh 
 if [ ! -f "$LOCALS" ]; then
@@ -23,3 +24,7 @@ cd $KOKA_INSTALL
 cd ./out/
 rm -r ./koka-bayes-output/
 mkdir ./koka-bayes-output/
+
+printf "Cleaned"
+
+printf "\n\n"
