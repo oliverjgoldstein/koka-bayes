@@ -24,8 +24,8 @@ fun linear_gaussian_climate_data(ys : list<row_vector>, vs : list<row_vector>) :
     val w_mean                            = 0.0
     val w_std_dev                         = 1.0
     val a_mean                            = 1.0
-    val a_std_dev                         = 0.3
-    val score_var                         = 5.0
+    val a_std_dev                         = 0.4
+    val score_var                         = 4.65
     
     val x1                          = normal(prior_temperature, prior_temp_std_dev)
     val month_ys                    = exn-get(ys,0)
@@ -178,7 +178,7 @@ fun score_thunk(score_std_dev : double) {
 fun convert_uncertainty_to_rand(vs : row_vector) : <exn, sample> row_vector {
   list(0, vs.length - 1) fun(i) {
     val uncertainty = exn-get(vs, i)
-    normal(0.0, uncertainty/10.0)
+    normal(0.0, uncertainty)
   }
 }
 

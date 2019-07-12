@@ -30,20 +30,6 @@ fun pre_process_data() : _e (list<list<row_vector>>, list<list<row_vector>>) {
   (grouped_uncertainties_by_month, grouped_temperatures_by_month)
 }
 
-/* fun get_from_every_thunk(index : int) {
-  return fun(list : list<list<a>>) : exn list<a> {
-    return exn-get(list, index)
-  }
-}
-
-fun transpose(list : list<list<list<a>>>, index : int) : <div, exn> list<list<list<a>>> {
-  if(index < 0) {
-    [[Nil]]
-  } else {
-    [map(list, get_from_every_thunk(index))] + transpose(list, index - 1)
-  }
-} */
-
 fun remove_maybes(list : list<maybe<double>>, return_list : list<double>) : exn list<double> {
   match(list) {
     Nil -> return_list 

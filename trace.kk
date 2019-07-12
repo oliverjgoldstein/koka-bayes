@@ -94,7 +94,7 @@ fun random_range(upper_bound : int) {
   return int(sample() / (1.0 / double(upper_bound))) % upper_bound
 }
 
-fun tmcmc(model : model<a,<sample,div|e>>, steps : int, init_weight : exp) : <sample, div|e> trace<a,<sample,div|e>> {
+fun tmcmc(model : model<a,<sample,div|e>>, steps : int, init_weight : exp) : <sample,div|e> trace<a,<sample,div|e>> {
   val model_results =
   weighted(init_weight) {
     /* random_sampler { */
