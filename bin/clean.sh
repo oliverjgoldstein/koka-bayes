@@ -2,6 +2,9 @@
 set -e
 printf "\n\n"
 
+rm ./output/*.png
+rm ./output/*.csv
+
 LOCALS=$(pwd)/bin/local-vars.sh 
 if [ ! -f "$LOCALS" ]; then
     printf "Error. Missing local-vars.sh!"
