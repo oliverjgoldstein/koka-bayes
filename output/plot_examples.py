@@ -26,7 +26,7 @@ for i in range(0, len(f)):
     pyplot.savefig(f[i] + '_hist.png')
 
 
-f = ['temperature_posterior']
+f = ['temperature_posterior_january']
 for i in range(0, len(f)):
     data = csv.reader(open(f[i] + '.csv', 'rt'))
     li = [tuple(row) for row in data]
