@@ -10,7 +10,7 @@ fun random_sampler(action : () -> <sample|e> a) : <ndet|e> a {
   mask<ndet>(action)  // mask out `ndet` from the `action` effect
 }
 
-fun trace(action) {
+fun trace(action : () -> <sample,sample|e> a) : <sample|e> (list<double>, a) {
   var random_list := Nil
   handle(action) {
     return x -> (random_list, x)

@@ -34,7 +34,7 @@ fun linear_gaussian_climate_data(ys : list<row_vector>, vs : list<row_vector>) :
     val v_row                       = convert_uncertainty_to_rand(month_vs)
     val predictions                 = plus(mult(x1, c_row), v_row)
     score_predictions(month_ys, predictions, score_var)
-    println("x1")
+    println("1st 20 year period.")
     
     val a_val                       = normal(a_mean,a_std_dev)
     val w_val                       = normal(w_mean,w_std_dev)
@@ -45,7 +45,7 @@ fun linear_gaussian_climate_data(ys : list<row_vector>, vs : list<row_vector>) :
     val v_row                       = convert_uncertainty_to_rand(month_vs)
     val predictions                 = plus(mult(x2, c_row), v_row)
     score_predictions(month_ys, predictions, score_var)
-    println("x2")
+    println("2nd 20 year period.")
     val a_val                       = normal(a_mean,a_std_dev)
     val w_val                       = normal(w_mean,w_std_dev)
     val x3                          = x2 * a_val + w_val
@@ -55,7 +55,7 @@ fun linear_gaussian_climate_data(ys : list<row_vector>, vs : list<row_vector>) :
     val v_row                       = convert_uncertainty_to_rand(month_vs)
     val predictions                 = plus(mult(x3, c_row), v_row)
     score_predictions(month_ys, predictions, score_var)
-    println("x3")
+    println("3rd 20 year period.")
     val a_val                       = normal(a_mean,a_std_dev)
     val w_val                       = normal(w_mean,w_std_dev)
     val x4                          = x3 * a_val + w_val
@@ -65,7 +65,7 @@ fun linear_gaussian_climate_data(ys : list<row_vector>, vs : list<row_vector>) :
     val v_row                       = convert_uncertainty_to_rand(month_vs)
     val predictions                 = plus(mult(x4, c_row), v_row)
     score_predictions(month_ys, predictions, score_var)
-    println("x4")
+    println("4th 20 year period.")
     val a_val                       = normal(a_mean,a_std_dev)
     val w_val                       = normal(w_mean,w_std_dev)
     val x5                          = x4 * a_val + w_val
@@ -75,7 +75,7 @@ fun linear_gaussian_climate_data(ys : list<row_vector>, vs : list<row_vector>) :
     val v_row                       = convert_uncertainty_to_rand(month_vs)
     val predictions                 = plus(mult(x5, c_row), v_row)
     score_predictions(month_ys, predictions, score_var)
-    println("x5")
+    println("5th 20 year period.")
     val a_val                       = normal(a_mean,a_std_dev)
     val w_val                       = normal(w_mean,w_std_dev)
     val x6                          = x5 * a_val + w_val
@@ -85,7 +85,7 @@ fun linear_gaussian_climate_data(ys : list<row_vector>, vs : list<row_vector>) :
     val v_row                       = convert_uncertainty_to_rand(month_vs)
     val predictions                 = plus(mult(x6, c_row), v_row)
     score_predictions(month_ys, predictions, score_var)
-    println("x6")
+    println("6th 20 year period.")
     val a_val                       = normal(a_mean,a_std_dev)
     val w_val                       = normal(w_mean,w_std_dev)
     val x7                          = x6 * a_val + w_val
@@ -95,7 +95,7 @@ fun linear_gaussian_climate_data(ys : list<row_vector>, vs : list<row_vector>) :
     val v_row                       = convert_uncertainty_to_rand(month_vs)
     val predictions                 = plus(mult(x7, c_row), v_row)
     score_predictions(month_ys, predictions, score_var)
-    println("x7")
+    println("7th 20 year period.")
     val a_val                       = normal(a_mean,a_std_dev)
     val w_val                       = normal(w_mean,w_std_dev)
     val x8                          = x7 * a_val + w_val
@@ -105,7 +105,7 @@ fun linear_gaussian_climate_data(ys : list<row_vector>, vs : list<row_vector>) :
     val v_row                       = convert_uncertainty_to_rand(month_vs)
     val predictions                 = plus(mult(x8, c_row), v_row)
     score_predictions(month_ys, predictions, score_var)
-    println("x8")
+    println("8th 20 year period.")
     val a_val                       = normal(a_mean,a_std_dev)
     val w_val                       = normal(w_mean,w_std_dev)
     val x9                          = x8 * a_val + w_val
@@ -115,7 +115,7 @@ fun linear_gaussian_climate_data(ys : list<row_vector>, vs : list<row_vector>) :
     val v_row                       = convert_uncertainty_to_rand(month_vs)
     val predictions                 = plus(mult(x9, c_row), v_row)
     score_predictions(month_ys, predictions, score_var)
-    println("x9")
+    println("9th 20 year period.")
     val a_val                       = normal(a_mean,a_std_dev)
     val w_val                       = normal(w_mean,w_std_dev)
     val x10                         = x9 * a_val + w_val
@@ -125,7 +125,7 @@ fun linear_gaussian_climate_data(ys : list<row_vector>, vs : list<row_vector>) :
     val v_row                       = convert_uncertainty_to_rand(month_vs)
     val predictions                 = plus(mult(x10, c_row), v_row)
     score_predictions(month_ys, predictions, score_var)
-    println("x10")
+    println("10th 20 year period.")
     val a_val                       = normal(a_mean,a_std_dev)
     val w_val                       = normal(w_mean,w_std_dev)
     val x11                         = x10 * a_val + w_val
@@ -135,7 +135,7 @@ fun linear_gaussian_climate_data(ys : list<row_vector>, vs : list<row_vector>) :
     val v_row                       = convert_uncertainty_to_rand(month_vs)
     val predictions                 = plus(mult(x11, c_row), v_row)
     score_predictions(month_ys, predictions, score_var)
-    println("x11")
+    println("11th 20 year period.")
     val a_val                       = normal(a_mean,a_std_dev)
     val w_val                       = normal(w_mean,w_std_dev)
     val x12                         = x11 * a_val + w_val
@@ -145,7 +145,7 @@ fun linear_gaussian_climate_data(ys : list<row_vector>, vs : list<row_vector>) :
     val v_row                       = convert_uncertainty_to_rand(month_vs)
     val predictions                 = plus(mult(x12, c_row), v_row)
     score_predictions(month_ys, predictions, score_var)
-    println("x12")
+    println("12th 20 year period.")
     val a_val                       = normal(a_mean,a_std_dev)
     val w_val                       = normal(w_mean,w_std_dev)
     val x13                         = x12 * a_val + w_val
@@ -155,7 +155,7 @@ fun linear_gaussian_climate_data(ys : list<row_vector>, vs : list<row_vector>) :
     val v_row                       = convert_uncertainty_to_rand(month_vs)
     val predictions                 = plus(mult(x13, c_row), v_row)
     score_predictions(month_ys, predictions, score_var)
-    
+    println("13th 20 year period.")
     [x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13]
   }
   g

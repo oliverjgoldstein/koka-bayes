@@ -16,7 +16,7 @@ import exn-get
 fun main() {
   println("Running code...")
   val data_point                = 6.0
-  val particles                 = 2000
+  val particles                 = 200
   val resample_steps            = 250
   val scores_before_resampling  = 2
   val hist                      = smc(particles, resample_steps, scores_before_resampling, sequential_gaussian(data_point))
