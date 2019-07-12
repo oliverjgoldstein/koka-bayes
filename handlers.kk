@@ -32,7 +32,8 @@ fun replay(trace : trace_values, action : () -> <sample,sample|e> a) : <sample|e
       index := index + 1
       match(extended_trace[index]) {
         Nothing -> {
-          extended_trace := extended_trace + [sample()]
+          val rand_choice = sample()
+          extended_trace := extended_trace + [rand_choice]
           resume(rand_choice)
         }
         Just(random_value) -> resume(random_value)
