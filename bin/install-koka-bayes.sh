@@ -15,8 +15,6 @@ case "$choice" in
   * ) echo "Invalid - re run install to try again"; exit 0;;
 esac
 
-GIT_DIR=$(pwd)
-
 LOCALS=$(pwd)/bin/local-vars.sh 
 if [ ! -f "$LOCALS" ]; then
     touch $LOCALS
@@ -37,6 +35,22 @@ if [ ! -n "$KOKA_INSTALL" ]; then
 fi
 
 source ./bin/local-vars.sh 
+
+mkdir ./output/months/
+mkdir ./output/months/jan/ 
+mkdir ./output/months/feb/ 
+mkdir ./output/months/mar/ 
+mkdir ./output/months/apr/ 
+mkdir ./output/months/may/ 
+mkdir ./output/months/jun/ 
+mkdir ./output/months/jul/ 
+mkdir ./output/months/aug/ 
+mkdir ./output/months/sep/
+mkdir ./output/months/oct/ 
+mkdir ./output/months/nov/ 
+mkdir ./output/months/dec/ 
+mkdir ./output/gaussian/
+
 
 if [ ! -d "$KOKA_INSTALL/out/koka-bayes-output/" ]; then
   mkdir $KOKA_INSTALL/out/koka-bayes-output
