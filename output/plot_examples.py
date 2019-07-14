@@ -73,7 +73,7 @@ def plot_hist(ys, month, path, labels):
         pyplot.xlabel(month + ' temperature ($^\circ$ C) : ' + labels[val])
         pyplot.ylabel('Frequency')
         pyplot.legend(loc='upper right')
-        pyplot.savefig(path + '_hist_'+str(val)+'.png')
+        pyplot.savefig(path + '_hist_'+str(val+1)+'.png')
         pyplot.tight_layout()
         pyplot.figure()
     
