@@ -12,11 +12,9 @@ def combine_csv(path, csv_1, csv_2):
 
 
 def process_month(path, month, labels):
-    data = csv.reader(open(path + '.csv', 'rt'))
-    li = [tuple(row) for row in data]
-    li = li[:len(li)-1]
+    li = read_in(path)
     x1 = [float(v[0]) for v in li]
-    y1 = [float(v[2]) for v in li]
+    y1 = [float(v[2])  for v in li]
     
     pyplot.figure()
     
@@ -26,141 +24,24 @@ def process_month(path, month, labels):
     pyplot.savefig(path + '_points.png')
     
     pyplot.figure()
-    
-    pyplot.hist(y1, alpha=0.5, label='y')
-    pyplot.xlabel(month + ' temperature ($^\circ$ C) : ' + labels[0])
-    pyplot.ylabel('Frequency')
-    pyplot.legend(loc='upper right')
-    pyplot.savefig(path + '_hist_1.png')
-    
-    y2 = [float(v[3]) for v in li]
-    
-    pyplot.figure()
-    
-    pyplot.hist(y2, alpha=0.5, label='y')
-    pyplot.xlabel(month + ' temperature ($^\circ$ C) : ' + labels[1])
-    pyplot.ylabel('Frequency')
-    pyplot.legend(loc='upper right')
-    pyplot.savefig(path + '_hist_2.png')
-    
-    y3 = [float(v[4]) for v in li]
-    
-    pyplot.figure()
-    
-    pyplot.hist(y3, alpha=0.5, label='y')
-    pyplot.xlabel(month + ' temperature ($^\circ$ C) : ' + labels[2])
-    pyplot.ylabel('Frequency')
-    pyplot.legend(loc='upper right')
-    pyplot.savefig(path + '_hist_3.png')
-    
-    y4 = [float(v[5]) for v in li]
-    
-    pyplot.figure()
-    
-    pyplot.hist(y4, alpha=0.5, label='y')
-    pyplot.xlabel(month + ' temperature ($^\circ$ C) : ' + labels[3])
-    pyplot.ylabel('Frequency')
-    pyplot.legend(loc='upper right')
-    pyplot.savefig(path + '_hist_4.png')
-    
-    y5 = [float(v[6]) for v in li]
-    
-    pyplot.figure()
-    
-    pyplot.hist(y5, alpha=0.5, label='y')
-    pyplot.xlabel(month + ' temperature ($^\circ$ C) : ' + labels[4])
-    pyplot.ylabel('Frequency')
-    pyplot.legend(loc='upper right')
-    pyplot.savefig(path + '_hist_5.png')
-    
-    y6 = [float(v[7]) for v in li]
-    
-    pyplot.figure()
-    
-    pyplot.hist(y6, alpha=0.5, label='y')
-    pyplot.xlabel(month + ' temperature ($^\circ$ C) : ' + labels[5])
-    pyplot.ylabel('Frequency')
-    pyplot.legend(loc='upper right')
-    pyplot.savefig(path + '_hist_6.png')
-    
-    
-    y7 = [float(v[8]) for v in li]
-    
-    pyplot.figure()
-    
-    pyplot.hist(y7, alpha=0.5, label='y')
-    pyplot.xlabel(month + ' temperature ($^\circ$ C) : ' + labels[6])
-    pyplot.ylabel('Frequency')
-    pyplot.legend(loc='upper right')
-    pyplot.savefig(path + '_hist_7.png')
-    
-    
-    y8 = [float(v[9]) for v in li]
-    
-    pyplot.figure()
-    
-    pyplot.hist(y8, alpha=0.5, label='y')
-    pyplot.xlabel(month + ' temperature ($^\circ$ C) : ' + labels[7])
-    pyplot.ylabel('Frequency')
-    pyplot.legend(loc='upper right')
-    pyplot.savefig(path + '_hist_8.png')
-    
-    
-    y9 = [float(v[10]) for v in li]
-    
-    pyplot.figure()
-    
-    pyplot.hist(y9, alpha=0.5, label='y')
-    pyplot.xlabel(month + ' temperature ($^\circ$ C) : ' + labels[8])
-    pyplot.ylabel('Frequency')
-    pyplot.legend(loc='upper right')
-    pyplot.savefig(path + '_hist_9.png')
-    
-    
+        
+    y2  = [float(v[3])  for v in li]
+    y3  = [float(v[4])  for v in li]
+    y4  = [float(v[5])  for v in li]
+    y5  = [float(v[6])  for v in li]
+    y6  = [float(v[7])  for v in li]
+    y7  = [float(v[8])  for v in li]
+    y8  = [float(v[9])  for v in li]
+    y9  = [float(v[10]) for v in li]
     y10 = [float(v[11]) for v in li]
-    
-    pyplot.figure()
-    
-    pyplot.hist(y10, alpha=0.5, label='y')
-    pyplot.xlabel(month + ' temperature ($^\circ$ C) : ' + labels[9])
-    pyplot.ylabel('Frequency')
-    pyplot.legend(loc='upper right')
-    pyplot.savefig(path + '_hist_10.png')
-    
-    
     y11 = [float(v[12]) for v in li]
-
-    pyplot.figure()
-
-    pyplot.hist(y11, alpha=0.5, label='y')
-    pyplot.xlabel(month + ' temperature ($^\circ$ C) : ' + labels[10])
-    pyplot.ylabel('Frequency')
-    pyplot.legend(loc='upper right')
-    pyplot.savefig(path + '_hist_11.png')
-
-
-
     y12 = [float(v[13]) for v in li]
-
-    pyplot.figure()
-
-    pyplot.hist(y12, alpha=0.5, label='y')
-    pyplot.xlabel(month + ' temperature ($^\circ$ C) : ' + labels[11])
-    pyplot.ylabel('Frequency')
-    pyplot.legend(loc='upper right')
-    pyplot.savefig(path + '_hist_12.png')
-
-
     y13 = [float(v[14]) for v in li]
-
-    pyplot.figure()
-
-    pyplot.hist(y13, alpha=0.5, label='y')
-    pyplot.xlabel(month + ' temperature ($^\circ$ C) : ' + labels[12])
-    pyplot.ylabel('Frequency')
-    pyplot.legend(loc='upper right')
-    pyplot.savefig(path + '_hist_13.png')
-
+    
+    ys = [y1, y2, y3, y4, y5, y6, y7, y8, y9, y10, y11, y12, y13]
+    
+    plot_hist(ys, month, path, labels)
+    
     return [
     (np.mean(y1), np.std(y1)),
     (np.mean(y2), np.std(y2)),
@@ -174,8 +55,64 @@ def process_month(path, month, labels):
     (np.mean(y10), np.std(y10)),
     (np.mean(y11), np.std(y11)),
     (np.mean(y12), np.std(y12)),
-    (np.mean(y13), np.std(y13)),
+    (np.mean(y13), np.std(y13))
     ]
+
+def plot_hist(ys, month, path, labels):
+    
+    y_reduced = reduce(list.__add__, ys)
+    
+    y_min = int(min(y_reduced))
+    y_max = int(max(y_reduced))
+    
+    for val in range(0, len(ys)):
+        pyplot.figure()
+        
+        pyplot.hist(ys[val], alpha=0.5, label='Temperature')
+        pyplot.xlim(y_min, y_max)
+        pyplot.xlabel(month + ' temperature ($^\circ$ C) : ' + labels[val])
+        pyplot.ylabel('Frequency')
+        pyplot.legend(loc='upper right')
+        pyplot.savefig(path + '_hist_'+str(val)+'.png')
+        pyplot.tight_layout()
+        pyplot.figure()
+    
+def calculate_global_temperature_change():
+    
+    months = [
+    read_in('./months/jan/comb'),
+    read_in('./months/feb/comb'),
+    read_in('./months/mar/comb'),
+    read_in('./months/apr/comb'),
+    read_in('./months/may/comb'),
+    read_in('./months/jun/comb'),
+    read_in('./months/jul/comb'),
+    read_in('./months/aug/comb'),
+    read_in('./months/sep/comb'),
+    read_in('./months/oct/comb'),
+    read_in('./months/nov/comb'),
+    read_in('./months/dec/comb')
+    ]
+    global_stats = []
+    temp         = []
+    for time_period in range(2, 15):
+        for month in range(0, len(months)):
+            for i in range(0, len(months[month])):
+                ys = float(months[month][i][time_period])
+                temp.append(ys)
+        
+                
+        global_stats += [(np.mean(temp), np.std(temp))]
+        temp = []
+        
+    return global_stats
+    
+    
+def read_in(csv_path):
+    data = csv.reader(open(csv_path + '.csv', 'rt'))
+    li = [tuple(row) for row in data]
+    li = li[:len(li)-1]
+    return li
 
 
 def graph_vals(path, labels, month_vals, month_name):
@@ -203,29 +140,25 @@ def graph_vals(path, labels, month_vals, month_name):
     pyplot.tight_layout()
     pyplot.savefig(path+'aggregate.png')
 
+def gaussian_posterior():
+    li = read_in('./gaussian/gaussian_posterior')
+    x = [float(v[0]) for v in li]
+    y = [float(v[1]) for v in li]
+    
+    pyplot.figure()
+    pyplot.plot(y,x, 'ro')
+    pyplot.ylabel('likelihood')
+    pyplot.xlabel('$\theta$')
+    pyplot.savefig('./gaussian/gaussian_posterior_points.png')
+    pyplot.figure()
+    pyplot.hist(y, alpha=0.5, label='y')
+    pyplot.xlabel('$\theta$')
+    pyplot.ylabel('Frequency')
+    pyplot.legend(loc='upper right')
+    pyplot.savefig('./gaussian/gaussian_posterior_hist.png')
+    pyplot.figure()
 
-f =  './gaussian/gaussian_posterior'
-data = csv.reader(open(f + '.csv', 'rt'))
-li = [tuple(row) for row in data]
-li = li[:len(li)-1]
-x = [float(v[0]) for v in li]
-y = [float(v[1]) for v in li]
-
-pyplot.figure()
-
-pyplot.plot(y,x, 'ro')
-pyplot.ylabel('likelihood')
-pyplot.xlabel('theta')
-pyplot.savefig(f + '_points.png')
-
-pyplot.figure()
-
-pyplot.hist(y, alpha=0.5, label='y')
-pyplot.xlabel('theta')
-pyplot.ylabel('count')
-pyplot.legend(loc='upper right')
-pyplot.savefig(f + '_hist.png')
-
+gaussian_posterior()
 
 combine_csv('./months/jan/', 'jan_1', 'jan_2')
 combine_csv('./months/feb/', 'feb_1', 'feb_2')
@@ -256,18 +189,18 @@ labels = ['1756 - 1776',
           '1996 - 2016']
 
 
-jan = process_month('./months/jan/comb', 'January'   , labels)       
-feb = process_month('./months/feb/comb', 'Feburary'  , labels)           
-mar = process_month('./months/mar/comb', 'March'     , labels)       
-apr = process_month('./months/apr/comb', 'April'     , labels)       
-may = process_month('./months/may/comb', 'May'       , labels)   
-jun = process_month('./months/jun/comb', 'June'      , labels)       
-jul = process_month('./months/jul/comb', 'July'      , labels)       
-aug = process_month('./months/aug/comb', 'August'    , labels)       
-sep = process_month('./months/sep/comb', 'September' , labels)           
-oct = process_month('./months/oct/comb', 'October'   , labels)       
-nov = process_month('./months/nov/comb', 'November'  , labels)           
-dec = process_month('./months/dec/comb', 'December'  , labels)           
+jan = process_month('./months/jan/comb', 'January'  , labels)       
+feb = process_month('./months/feb/comb', 'Feburary' , labels)       
+mar = process_month('./months/mar/comb', 'March'    , labels)       
+apr = process_month('./months/apr/comb', 'April'    , labels)       
+may = process_month('./months/may/comb', 'May'      , labels)   
+jun = process_month('./months/jun/comb', 'June'     , labels)       
+jul = process_month('./months/jul/comb', 'July'     , labels)       
+aug = process_month('./months/aug/comb', 'August'   , labels)       
+sep = process_month('./months/sep/comb', 'September', labels)           
+oct = process_month('./months/oct/comb', 'October'  , labels)       
+nov = process_month('./months/nov/comb', 'November' , labels)           
+dec = process_month('./months/dec/comb', 'December' , labels)           
 
 
 graph_vals('./months/jan/', labels, jan, 'January'  )
@@ -283,4 +216,6 @@ graph_vals('./months/oct/', labels, oct, 'October'  )
 graph_vals('./months/nov/', labels, nov, 'November' )
 graph_vals('./months/dec/', labels, dec, 'December' )
 
+
+graph_vals("./", labels, calculate_global_temperature_change(), "Global")
 
