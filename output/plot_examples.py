@@ -115,20 +115,25 @@ def read_in(csv_path):
     return li
 
 
-def graph_vals(path, labels, month_vals, month_name):
+def graph_vals(path, labels, month_vals, month_name, display_bar):
     x_pos = np.arange(len(labels))
     means = [mean[0] for mean in month_vals]
     errors = [std[1] for std in month_vals]
-    
     fig, ax = pyplot.subplots()
-    ax.bar(
-        x_pos, 
-        means,
-        yerr=errors,
-        align='center',
-        alpha=0.5,
-        ecolor='black',
-        capsize=10)
+    if(display_bar):
+        ax.bar(
+            x_pos, 
+            means,
+            yerr=errors,
+            align='center',
+            alpha=0.5,
+            ecolor='black',
+            capsize=10)
+    else:
+        ax.bar(
+            x_pos, 
+            means,
+            align='center')
         
     ax.set_ylabel('Temperature ($^\circ$ C)')
     ax.set_xticks(x_pos)    
@@ -203,19 +208,19 @@ nov = process_month('./months/nov/comb', 'November' , labels)
 dec = process_month('./months/dec/comb', 'December' , labels)           
 
 
-graph_vals('./months/jan/', labels, jan, 'January'  )
-graph_vals('./months/feb/', labels, feb, 'Feburary' )
-graph_vals('./months/mar/', labels, mar, 'March'    )
-graph_vals('./months/apr/', labels, apr, 'April'    )
-graph_vals('./months/may/', labels, may, 'May'      )
-graph_vals('./months/jun/', labels, jun, 'June'     )
-graph_vals('./months/jul/', labels, jul, 'July'     )
-graph_vals('./months/aug/', labels, aug, 'August'   )
-graph_vals('./months/sep/', labels, sep, 'September')
-graph_vals('./months/oct/', labels, oct, 'October'  )
-graph_vals('./months/nov/', labels, nov, 'November' )
-graph_vals('./months/dec/', labels, dec, 'December' )
+graph_vals('./months/jan/', labels, jan, 'January'  , True)
+graph_vals('./months/feb/', labels, feb, 'Feburary' , True)
+graph_vals('./months/mar/', labels, mar, 'March'    , True)
+graph_vals('./months/apr/', labels, apr, 'April'    , True)
+graph_vals('./months/may/', labels, may, 'May'      , True)
+graph_vals('./months/jun/', labels, jun, 'June'     , True)
+graph_vals('./months/jul/', labels, jul, 'July'     , True)
+graph_vals('./months/aug/', labels, aug, 'August'   , True)
+graph_vals('./months/sep/', labels, sep, 'September', True)
+graph_vals('./months/oct/', labels, oct, 'October'  , True)
+graph_vals('./months/nov/', labels, nov, 'November' , True)
+graph_vals('./months/dec/', labels, dec, 'December' , True)
 
 
-graph_vals("./", labels, calculate_global_temperature_change(), "Global")
+graph_vals("./", labels, calculate_global_temperature_change(), "Global", False)
 
