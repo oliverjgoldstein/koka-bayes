@@ -22,12 +22,12 @@ fun main() {
   val trace_mcmc_steps         = 2000
   
   // Note that if you change any filename - change output/plot_examples.py too if you want to show the histograms.
-  /* println("Running Sequential Monte Carlo...")
+  println("Running Sequential Monte Carlo...")
   print-elapsed {
     write(smc(particles, resample_steps, scores_before_resampling, sequential_gaussian(data_point)), "./gaussian/smc_posterior.csv")  
   }
   println("Completed Sequential Monte Carlo!")
-   */
+  
   println("Running Trace MCMC...")
   print-elapsed {
     random_sampler {
@@ -37,8 +37,8 @@ fun main() {
   }
   println("Completed Trace MCMC!")
   
-  /* run_climate_model(particles, resample_steps, scores_before_resampling)
-  println("Finished running...") */
+  run_climate_model(particles, resample_steps, scores_before_resampling)
+  println("Finished running...")
 }
 
 fun run_climate_model(pt : int, rs : int, sbrs : int) {
