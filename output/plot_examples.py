@@ -3,11 +3,15 @@ import numpy as np
 from matplotlib import pyplot
 import csv
 
-def combine_csv(path, csv_1, csv_2):
+def combine_csv(path, csv_1, csv_2, csv_3, csv_4):
     fout = open((path+"comb.csv"),"w+")
     for line in open(path+csv_1+'.csv'):
         fout.write(line)
     for line in open(path+csv_2+'.csv'):
+        fout.write(line)
+    for line in open(path+csv_3+'.csv'):
+        fout.write(line)
+    for line in open(path+csv_4+'.csv'):
         fout.write(line)
 
 
@@ -62,8 +66,8 @@ def plot_hist(ys, month, path, labels):
     
     y_reduced = reduce(list.__add__, ys)
     
-    y_min = int(min(y_reduced))
-    y_max = int(max(y_reduced))
+    y_min = int(min(y_reduced) - 1.0)
+    y_max = int(max(y_reduced) + 1.0)
     
     for val in range(0, len(ys)):
         pyplot.figure()
@@ -114,6 +118,26 @@ def read_in(csv_path):
     li = li[:len(li)-1]
     return li
 
+def trace_posterior():
+    li = read_in('./gaussian/trace_posterior')
+    y = [float(v[0]) for v in li]
+    
+    pyplot.figure()
+    pyplot.hist(y, alpha=0.5, label='y', bins=100)
+    pyplot.xlabel('$\Theta$')
+    pyplot.ylabel('Frequency')
+    pyplot.legend(loc='upper right')
+    pyplot.savefig('./gaussian/trace_posterior_hist.png')
+    pyplot.figure()
+    
+    y = y[500:]
+    pyplot.hist(y, alpha=0.5, label='y')
+    pyplot.xlabel('$\Theta$ with burn in of 500 samples')
+    pyplot.ylabel('Frequency')
+    pyplot.legend(loc='upper right')
+    pyplot.savefig('./gaussian/trace_posterior_hist_burnin.png')
+    pyplot.figure()
+
 
 def graph_vals(path, labels, month_vals, month_name, display_bar):
     x_pos = np.arange(len(labels))
@@ -145,38 +169,39 @@ def graph_vals(path, labels, month_vals, month_name, display_bar):
     pyplot.tight_layout()
     pyplot.savefig(path+'aggregate.png')
 
-def gaussian_posterior():
-    li = read_in('./gaussian/gaussian_posterior')
+def smc_posterior():
+    li = read_in('./gaussian/smc_posterior')
     x = [float(v[0]) for v in li]
     y = [float(v[1]) for v in li]
     
     pyplot.figure()
     pyplot.plot(y,x, 'ro')
     pyplot.ylabel('likelihood')
-    pyplot.xlabel('$\theta$')
-    pyplot.savefig('./gaussian/gaussian_posterior_points.png')
+    pyplot.xlabel('$\Theta$')
+    pyplot.savefig('./gaussian/smc_posterior_points.png')
     pyplot.figure()
     pyplot.hist(y, alpha=0.5, label='y')
-    pyplot.xlabel('$\theta$')
+    pyplot.xlabel('$\Theta$')
     pyplot.ylabel('Frequency')
     pyplot.legend(loc='upper right')
-    pyplot.savefig('./gaussian/gaussian_posterior_hist.png')
+    pyplot.savefig('./gaussian/smc_posterior_hist.png')
     pyplot.figure()
 
-gaussian_posterior()
+smc_posterior()
+trace_posterior()
 
-combine_csv('./months/jan/', 'jan_1', 'jan_2')
-combine_csv('./months/feb/', 'feb_1', 'feb_2')
-combine_csv('./months/mar/', 'mar_1', 'mar_2')
-combine_csv('./months/apr/', 'apr_1', 'apr_2')
-combine_csv('./months/may/', 'may_1', 'may_2')
-combine_csv('./months/jun/', 'jun_1', 'jun_2')
-combine_csv('./months/jul/', 'jul_1', 'jul_2')
-combine_csv('./months/aug/', 'aug_1', 'aug_2')
-combine_csv('./months/sep/', 'sep_1', 'sep_2')
-combine_csv('./months/oct/', 'oct_1', 'oct_2')
-combine_csv('./months/nov/', 'nov_1', 'nov_2')
-combine_csv('./months/dec/', 'dec_1', 'dec_2')
+combine_csv('./months/jan/', 'jan_1', 'jan_2', 'jan_3', 'jan_4')
+combine_csv('./months/feb/', 'feb_1', 'feb_2', 'feb_3', 'feb_4')
+combine_csv('./months/mar/', 'mar_1', 'mar_2', 'mar_3', 'mar_4')
+combine_csv('./months/apr/', 'apr_1', 'apr_2', 'apr_3', 'apr_4')
+combine_csv('./months/may/', 'may_1', 'may_2', 'may_3', 'may_4')
+combine_csv('./months/jun/', 'jun_1', 'jun_2', 'jun_3', 'jun_4')
+combine_csv('./months/jul/', 'jul_1', 'jul_2', 'jul_3', 'jul_4')
+combine_csv('./months/aug/', 'aug_1', 'aug_2', 'aug_3', 'aug_4')
+combine_csv('./months/sep/', 'sep_1', 'sep_2', 'sep_3', 'sep_4')
+combine_csv('./months/oct/', 'oct_1', 'oct_2', 'oct_3', 'oct_4')
+combine_csv('./months/nov/', 'nov_1', 'nov_2', 'nov_3', 'nov_4')
+combine_csv('./months/dec/', 'dec_1', 'dec_2', 'dec_3', 'dec_4')
 
 
 labels = ['1756 - 1776',
@@ -220,7 +245,6 @@ graph_vals('./months/sep/', labels, sep, 'September', True)
 graph_vals('./months/oct/', labels, oct, 'October'  , True)
 graph_vals('./months/nov/', labels, nov, 'November' , True)
 graph_vals('./months/dec/', labels, dec, 'December' , True)
-
 
 graph_vals("./", labels, calculate_global_temperature_change(), "Global", False)
 

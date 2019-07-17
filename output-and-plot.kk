@@ -20,6 +20,29 @@ fun plot( f : (double -> double) ) : string {
   }
 }
 
+fun show(tmcmc_result : list<(list<double>,double)>) : string {
+  var total_string := ""
+  for(0, tmcmc_result.length - 1) fun(i) {
+    val str = match(tmcmc_result[i]) {
+      Nothing -> ""
+      Just((_,a)) -> show-fixed(a)
+    }
+    total_string := total_string + str + "\n"
+  }
+  total_string
+}
+
+fun show_head(tmcmc_result : list<(list<double>,double)>) : string {
+  match(last(tmcmc_result)) {
+    Nothing -> ""
+    Just((_,a)) -> show-fixed(a)
+  }
+}
+
+fun write( trace : list<(list<double>,double)>, filename : string ) {
+    write-text(path("./output/" + filename), show(trace))
+}
+
 fun write( hist : histogram<double>, filename : string ) {
    write-text(path("./output/" + filename), show(hist))
 }

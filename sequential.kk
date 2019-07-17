@@ -8,7 +8,7 @@ import output-and-plot
 
 fun smc(particle_num : int, step_num : int, step_size : int, model : () -> <sample,score|_e> _a) {
   random_sampler {
-    val smc_func = fun() {
+    val composition_1 = fun() {
       advance {
         yield_on_score {
           model()
@@ -16,7 +16,7 @@ fun smc(particle_num : int, step_num : int, step_size : int, model : () -> <samp
       }
     }
 
-    val pop = normalise(populate(particle_num, smc_func))
+    val pop = normalise(populate(particle_num, composition_1))
     smc_loop(0, pop, step_num, step_size)
   }
 }
@@ -24,7 +24,7 @@ fun smc(particle_num : int, step_num : int, step_size : int, model : () -> <samp
 fun smc_loop(i : int, pop_hist : histogram<(int) -> <exn,yield,score,sample|e> a>, step_num : int, step_size : int) : <exn, sample|e> histogram<a> {
     if (i < step_num) then {
       val resampled_histogram = resample(pop_hist)
-      fun smc_func_2(wm) {
+      fun composition_1_2(wm) {
         match(wm) {
           (w, m) -> {
             weighted(w) {
@@ -36,7 +36,7 @@ fun smc_loop(i : int, pop_hist : histogram<(int) -> <exn,yield,score,sample|e> a
         }
       }
 
-      val second_term = map(resampled_histogram, smc_func_2)
+      val second_term = normalise(map(resampled_histogram, composition_1_2))
       smc_loop(i + 1, second_term, step_num, step_size)
     } else {
 
