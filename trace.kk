@@ -54,13 +54,11 @@ fun perturb_trace(trace : trace<a,_e>, proposal_dist : double -> sample double) 
 
 fun with_randomness(model : model<_a,<sample|e>>, trace_values : trace_values) : <sample|e> (trace_values, (exp, _a)) {
   val likelihood_a_trace = 
-  /* random_sampler { */
     replay(trace_values) {
       weighted(Exp(0.0)) {
         model()
       }
     }
-  /* } */
   likelihood_a_trace
 }
 
@@ -100,11 +98,9 @@ fun random_range(upper_bound : int) {
 fun tmcmc(model : model<a,<sample,div|e>>, steps : int, init_weight : exp, proposal_dist) : <sample,div|e> (list<(list<double>,a)>, trace<a,<sample,div|e>>) {
   val model_results =
   weighted(init_weight) {
-    /* random_sampler { */
-      trace {
+      replay([]) {
         model()
       }
-    /* } */
   }
 
   val p = match(model_results) {

@@ -10,19 +10,6 @@ fun random_sampler(action : () -> <sample|e> a) : <ndet|e> a {
   mask<ndet>(action)  // mask out `ndet` from the `action` effect
 }
 
-fun trace(action : () -> <sample,sample|e> a) : <sample|e> (list<double>, a) {
-  var random_list := Nil
-  handle(action) {
-    return x -> (random_list, x)
-    sample() -> {
-      val rand_choice = sample()
-      random_list := random_list + [rand_choice]
-      resume(rand_choice)
-    }
-  }
-}
-
-
 fun replay(trace : trace_values, action : () -> <sample,sample|e> a) : <sample|e> (list<double>, a) {
   var extended_trace : list<double> := trace
   var index     := -1
@@ -41,8 +28,6 @@ fun replay(trace : trace_values, action : () -> <sample,sample|e> a) : <sample|e
     }
   }
 }
-
-
 
 /* val weighted = handler(wp : exp) {
     return x -> (wp, x)
