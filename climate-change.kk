@@ -204,7 +204,7 @@ fun score_thunk(score_std_dev : double) {
 fun convert_uncertainty_to_rand(vs : row_vector) : <exn, sample> row_vector {
   list(0, vs.length - 1) fun(i) {
     val uncertainty = exn-get(vs, i)
-    normal(0.0, uncertainty)
+    normal(0.0, uncertainty / 3.92) // This factor converts confidence interval to std_dev.
   }
 }
 
