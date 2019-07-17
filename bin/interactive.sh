@@ -20,6 +20,5 @@ $KOKA_INSTALL/out/debug/koka-0.9.0-dev               \
     --outdir=$KOKA_INSTALL/out/koka-bayes-output/    \
     -i"$KOKA_INSTALL/lib"                            \
     -i"$KOKA_INSTALL/test/lib"                       \
-    $KOKA_GIT/main                                   \
     --core                                           \
     --checkcore
