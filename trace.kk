@@ -151,7 +151,7 @@ fun rmsmc_loop(i : int, pop_hist : histogram<(int) -> <exn,yield,score,sample|e>
           (w, m) -> {
             weighted(w) {
               advance {
-                /* trace_m(tmcmc( (fun() {m(step_size)}), 1, w ))() */
+                /* trace_m(tmcmc( (fun() {m(step_size)}), 1, w, uniform_proposal_dist ).snd)() */
                 m(step_size)
               }
             }
