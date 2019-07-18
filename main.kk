@@ -20,13 +20,13 @@ fun main() {
   val resample_steps           = 131
   val scores_before_resampling = 2
   val trace_mcmc_steps         = 2000
-/*
+
   // Note that if you change any filename - change output/plot_examples.py too if you want to show the histograms.
-  println("Running Sequential Monte Carlo...")
+  /* println("Running Sequential Monte Carlo...")
   print-elapsed {
     write(smc(particles, resample_steps, scores_before_resampling, sequential_gaussian(data_point)), "./gaussian/smc_posterior.csv")
   }
-  println("Completed Sequential Monte Carlo!")
+  println("Completed Sequential Monte Carlo!") */
 
   println("Running Trace MCMC...")
   print-elapsed {
@@ -35,9 +35,9 @@ fun main() {
       write(trace_and_values, "./gaussian/trace_posterior.csv")
     }
   }
-  println("Completed Trace MCMC!") */
+  println("Completed Trace MCMC!")
 
-  run_climate_model(particles, resample_steps, scores_before_resampling)
+  /* run_climate_model(particles, resample_steps, scores_before_resampling) */
   println("Finished running...")
 }
 
@@ -47,7 +47,7 @@ fun run_climate_model(pt : int, rs : int, sbrs : int) {
 
   print-elapsed {
     println("Begin:")
-    /* print-elapsed{write(smc(pt, rs, sbrs, linear_gaussian_climate_data(exn-get(data.snd, 0), exn-get(data.fst, 0), False)), "./months/jan/jan_1.csv")}
+    print-elapsed{write(smc(pt, rs, sbrs, linear_gaussian_climate_data(exn-get(data.snd, 0), exn-get(data.fst, 0), False)), "./months/jan/jan_1.csv")}
     print-elapsed{write(smc(pt, rs, sbrs, linear_gaussian_climate_data(exn-get(data.snd, 0), exn-get(data.fst, 0), False)), "./months/jan/jan_2.csv")}
     print-elapsed{write(smc(pt, rs, sbrs, linear_gaussian_climate_data(exn-get(data.snd, 1), exn-get(data.fst, 1), False)), "./months/feb/feb_1.csv")}
     print-elapsed{write(smc(pt, rs, sbrs, linear_gaussian_climate_data(exn-get(data.snd, 1), exn-get(data.fst, 1), False)), "./months/feb/feb_2.csv")}
@@ -70,9 +70,9 @@ fun run_climate_model(pt : int, rs : int, sbrs : int) {
     print-elapsed{write(smc(pt, rs, sbrs, linear_gaussian_climate_data(exn-get(data.snd, 10), exn-get(data.fst, 10), False)), "./months/nov/nov_1.csv")}
     print-elapsed{write(smc(pt, rs, sbrs, linear_gaussian_climate_data(exn-get(data.snd, 10), exn-get(data.fst, 10), False)), "./months/nov/nov_2.csv")}
     print-elapsed{write(smc(pt, rs, sbrs, linear_gaussian_climate_data(exn-get(data.snd, 11), exn-get(data.fst, 11), False)), "./months/dec/dec_1.csv")}
-    print-elapsed{write(smc(pt, rs, sbrs, linear_gaussian_climate_data(exn-get(data.snd, 11), exn-get(data.fst, 11), False)), "./months/dec/dec_2.csv")} */
+    print-elapsed{write(smc(pt, rs, sbrs, linear_gaussian_climate_data(exn-get(data.snd, 11), exn-get(data.fst, 11), False)), "./months/dec/dec_2.csv")}
     println("Mid way!")
-    /* print-elapsed{write(smc(pt, rs, sbrs, linear_gaussian_climate_data(exn-get(data.snd, 0), exn-get(data.fst, 0), False)), "./months/jan/jan_3.csv")}
+    print-elapsed{write(smc(pt, rs, sbrs, linear_gaussian_climate_data(exn-get(data.snd, 0), exn-get(data.fst, 0), False)), "./months/jan/jan_3.csv")}
     print-elapsed{write(smc(pt, rs, sbrs, linear_gaussian_climate_data(exn-get(data.snd, 0), exn-get(data.fst, 0), False)), "./months/jan/jan_4.csv")}
     print-elapsed{write(smc(pt, rs, sbrs, linear_gaussian_climate_data(exn-get(data.snd, 1), exn-get(data.fst, 1), False)), "./months/feb/feb_3.csv")}
     print-elapsed{write(smc(pt, rs, sbrs, linear_gaussian_climate_data(exn-get(data.snd, 1), exn-get(data.fst, 1), False)), "./months/feb/feb_4.csv")}
@@ -90,7 +90,7 @@ fun run_climate_model(pt : int, rs : int, sbrs : int) {
     print-elapsed{write(smc(pt, rs, sbrs, linear_gaussian_climate_data(exn-get(data.snd, 7), exn-get(data.fst, 7), False)), "./months/aug/aug_4.csv")}
     print-elapsed{write(smc(pt, rs, sbrs, linear_gaussian_climate_data(exn-get(data.snd, 8), exn-get(data.fst, 8), False)), "./months/sep/sep_3.csv")}
     print-elapsed{write(smc(pt, rs, sbrs, linear_gaussian_climate_data(exn-get(data.snd, 8), exn-get(data.fst, 8), False)), "./months/sep/sep_4.csv")}
-    print-elapsed{write(smc(pt, rs, sbrs, linear_gaussian_climate_data(exn-get(data.snd, 9), exn-get(data.fst, 9), False)), "./months/oct/oct_3.csv")} */
+    print-elapsed{write(smc(pt, rs, sbrs, linear_gaussian_climate_data(exn-get(data.snd, 9), exn-get(data.fst, 9), False)), "./months/oct/oct_3.csv")}
     print-elapsed{write(smc(pt, rs, sbrs, linear_gaussian_climate_data(exn-get(data.snd, 9), exn-get(data.fst, 9), False)), "./months/oct/oct_4.csv")}
     print-elapsed{write(smc(pt, rs, sbrs, linear_gaussian_climate_data(exn-get(data.snd, 10), exn-get(data.fst, 10), False)), "./months/nov/nov_3.csv")}
     print-elapsed{write(smc(pt, rs, sbrs, linear_gaussian_climate_data(exn-get(data.snd, 10), exn-get(data.fst, 10), False)), "./months/nov/nov_4.csv")}

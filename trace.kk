@@ -53,7 +53,7 @@ fun perturb_trace(trace : trace<a,_e>, proposal_dist : double -> sample double) 
 }
 
 fun with_randomness(model : model<_a,<sample|e>>, trace_values : trace_values) : <sample|e> (trace_values, (exp, _a)) {
-  val likelihood_a_trace = 
+  val likelihood_a_trace =
     replay(trace_values) {
       weighted(Exp(0.0)) {
         model()
@@ -117,7 +117,7 @@ fun tmcmc(model : model<a,<sample,div|e>>, steps : int, init_weight : exp, propo
 
   model_stepper_recursive(steps, Trace(model, p, d, a), proposal_dist, Nil)
 }
-  
+
 fun model_stepper_recursive(steps : int, trace : trace<a,<sample,div|e>>, proposal_dist, posterior : list<(list<double>,a)>) : <sample,div|e> (list<(list<double>,a)>, trace<a,<sample,div|e>>) {
   if(steps < 1) {
     (posterior, trace)
@@ -179,5 +179,3 @@ fun rmsmc_loop(i : int, pop_hist : histogram<(int) -> <exn,yield,score,sample|e>
       x
     }
 }
-
-
