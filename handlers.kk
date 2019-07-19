@@ -14,7 +14,7 @@ fun replay(trace : trace_values, action : () -> <sample,sample|e> a) : <sample|e
   var extended_trace : list<double> := trace
   var index     := -1
   handle(action) {
-    return x -> (split(extended_trace, index).fst, x)
+    return x -> (split(extended_trace, index + 1).fst, x)
     sample() -> {
       index := index + 1
       match(extended_trace[index]) {

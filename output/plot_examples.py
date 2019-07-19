@@ -17,35 +17,34 @@ def combine_csv(path, csv_1, csv_2, csv_3, csv_4):
 
 def process_month(path, month, labels):
     li = read_in(path)
-    x1 = [float(v[0]) for v in li]
-    y1 = [float(v[2])  for v in li]
-    
+    # x1 = [float(v[0]) for v in li]
+
+    # pyplot.figure()
+    #
+    # pyplot.plot(y1,x1, 'ro')
+    # pyplot.ylabel('Likelihood')
+    # pyplot.xlabel(month + ' temperature ($^\circ$ C) :')
+    # pyplot.savefig(path + '_points.png')
+
     pyplot.figure()
-    
-    pyplot.plot(y1,x1, 'ro')
-    pyplot.ylabel('Likelihood')
-    pyplot.xlabel(month + ' temperature ($^\circ$ C) :')
-    pyplot.savefig(path + '_points.png')
-    
-    pyplot.figure()
-        
-    y2  = [float(v[3])  for v in li]
-    y3  = [float(v[4])  for v in li]
-    y4  = [float(v[5])  for v in li]
-    y5  = [float(v[6])  for v in li]
-    y6  = [float(v[7])  for v in li]
-    y7  = [float(v[8])  for v in li]
-    y8  = [float(v[9])  for v in li]
-    y9  = [float(v[10]) for v in li]
-    y10 = [float(v[11]) for v in li]
-    y11 = [float(v[12]) for v in li]
-    y12 = [float(v[13]) for v in li]
-    y13 = [float(v[14]) for v in li]
-    
+    y1  = [float(v[0])  for v in li]
+    y2  = [float(v[1])  for v in li]
+    y3  = [float(v[2])  for v in li]
+    y4  = [float(v[3])  for v in li]
+    y5  = [float(v[4])  for v in li]
+    y6  = [float(v[5])  for v in li]
+    y7  = [float(v[6])  for v in li]
+    y8  = [float(v[7])  for v in li]
+    y9  = [float(v[8]) for v in li]
+    y10 = [float(v[9]) for v in li]
+    y11 = [float(v[10]) for v in li]
+    y12 = [float(v[11]) for v in li]
+    y13 = [float(v[12]) for v in li]
+
     ys = [y1, y2, y3, y4, y5, y6, y7, y8, y9, y10, y11, y12, y13]
-    
+
     plot_hist(ys, month, path, labels)
-    
+
     return [
     (np.mean(y1), np.std(y1)),
     (np.mean(y2), np.std(y2)),
@@ -63,15 +62,15 @@ def process_month(path, month, labels):
     ]
 
 def plot_hist(ys, month, path, labels):
-    
+
     y_reduced = reduce(list.__add__, ys)
-    
+
     y_min = int(min(y_reduced) - 1.0)
     y_max = int(max(y_reduced) + 1.0)
-    
+
     for val in range(0, len(ys)):
         pyplot.figure()
-        
+
         pyplot.hist(ys[val], alpha=0.5, label='Temperature')
         pyplot.xlim(y_min, y_max)
         pyplot.xlabel(month + ' temperature ($^\circ$ C) : ' + labels[val])
@@ -80,9 +79,9 @@ def plot_hist(ys, month, path, labels):
         pyplot.savefig(path + '_hist_'+str(val+1)+'.png')
         pyplot.tight_layout()
         pyplot.figure()
-    
+
 def calculate_global_temperature_change():
-    
+
     months = [
     read_in('./months/jan/comb'),
     read_in('./months/feb/comb'),
@@ -104,14 +103,14 @@ def calculate_global_temperature_change():
             for i in range(0, len(months[month])):
                 ys = float(months[month][i][time_period])
                 temp.append(ys)
-        
-                
+
+
         global_stats += [(np.mean(temp), np.std(temp))]
         temp = []
-        
+
     return global_stats
-    
-    
+
+
 def read_in(csv_path):
     data = csv.reader(open(csv_path + '.csv', 'rt'))
     li = [tuple(row) for row in data]
@@ -121,7 +120,7 @@ def read_in(csv_path):
 def trace_posterior():
     li = read_in('./gaussian/trace_posterior')
     y = [float(v[0]) for v in li]
-    
+
     pyplot.figure()
     pyplot.hist(y, alpha=0.5, label='y', bins=100)
     pyplot.xlabel('$\Theta$')
@@ -129,7 +128,7 @@ def trace_posterior():
     pyplot.legend(loc='upper right')
     pyplot.savefig('./gaussian/trace_posterior_hist.png')
     pyplot.figure()
-    
+
     y = y[500:]
     pyplot.hist(y, alpha=0.5, label='y')
     pyplot.xlabel('$\Theta$ with burn in of 500 samples')
@@ -146,7 +145,7 @@ def graph_vals(path, labels, month_vals, month_name, display_bar):
     fig, ax = pyplot.subplots()
     if(display_bar):
         ax.bar(
-            x_pos, 
+            x_pos,
             means,
             yerr=errors,
             align='center',
@@ -155,12 +154,12 @@ def graph_vals(path, labels, month_vals, month_name, display_bar):
             capsize=10)
     else:
         ax.bar(
-            x_pos, 
+            x_pos,
             means,
             align='center')
-        
+
     ax.set_ylabel('Temperature ($^\circ$ C)')
-    ax.set_xticks(x_pos)    
+    ax.set_xticks(x_pos)
     ax.set_xticklabels(labels, rotation='vertical', fontsize=16)
     ax.set_title(month_name + ' temperature change over time.')
     ax.yaxis.grid(True)
@@ -173,7 +172,7 @@ def smc_posterior():
     li = read_in('./gaussian/smc_posterior')
     x = [float(v[0]) for v in li]
     y = [float(v[1]) for v in li]
-    
+
     pyplot.figure()
     pyplot.plot(y,x, 'ro')
     pyplot.ylabel('likelihood')
@@ -187,6 +186,21 @@ def smc_posterior():
     pyplot.savefig('./gaussian/smc_posterior_hist.png')
     pyplot.figure()
 
+labels = ['1756 - 1776',
+          '1776 - 1796',
+          '1796 - 1816',
+          '1816 - 1836',
+          '1836 - 1856',
+          '1856 - 1876',
+          '1876 - 1896',
+          '1896 - 1916',
+          '1916 - 1936',
+          '1936 - 1936',
+          '1956 - 1976',
+          '1976 - 1996',
+          '1996 - 2016']
+
+process_month('./months/jan/jan_1', 'whatever'  , labels)
 smc_posterior()
 trace_posterior()
 
@@ -219,18 +233,18 @@ labels = ['1756 - 1776',
           '1996 - 2016']
 
 
-jan = process_month('./months/jan/comb', 'January'  , labels)       
-feb = process_month('./months/feb/comb', 'Feburary' , labels)       
-mar = process_month('./months/mar/comb', 'March'    , labels)       
-apr = process_month('./months/apr/comb', 'April'    , labels)       
-may = process_month('./months/may/comb', 'May'      , labels)   
-jun = process_month('./months/jun/comb', 'June'     , labels)       
-jul = process_month('./months/jul/comb', 'July'     , labels)       
-aug = process_month('./months/aug/comb', 'August'   , labels)       
-sep = process_month('./months/sep/comb', 'September', labels)           
-oct = process_month('./months/oct/comb', 'October'  , labels)       
-nov = process_month('./months/nov/comb', 'November' , labels)           
-dec = process_month('./months/dec/comb', 'December' , labels)           
+jan = process_month('./months/jan/comb', 'January'  , labels)
+feb = process_month('./months/feb/comb', 'Feburary' , labels)
+mar = process_month('./months/mar/comb', 'March'    , labels)
+apr = process_month('./months/apr/comb', 'April'    , labels)
+may = process_month('./months/may/comb', 'May'      , labels)
+jun = process_month('./months/jun/comb', 'June'     , labels)
+jul = process_month('./months/jul/comb', 'July'     , labels)
+aug = process_month('./months/aug/comb', 'August'   , labels)
+sep = process_month('./months/sep/comb', 'September', labels)
+oct = process_month('./months/oct/comb', 'October'  , labels)
+nov = process_month('./months/nov/comb', 'November' , labels)
+dec = process_month('./months/dec/comb', 'December' , labels)
 
 
 graph_vals('./months/jan/', labels, jan, 'January'  , True)
@@ -247,4 +261,3 @@ graph_vals('./months/nov/', labels, nov, 'November' , True)
 graph_vals('./months/dec/', labels, dec, 'December' , True)
 
 graph_vals("./", labels, calculate_global_temperature_change(), "Global", False)
-

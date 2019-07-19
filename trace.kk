@@ -6,6 +6,7 @@ import effects-and-types
 import exponents
 import handlers
 import sampling
+import output-and-plot
 
 
 type trace<a,e> {
@@ -47,7 +48,7 @@ fun perturb_trace(trace : trace<a,_e>, proposal_dist : double -> sample double) 
   val div_trace     = split(trace_values, perturb_index)
   val new_trace     = match(div_trace) {
     (l1, Cons(x, l2)) -> l1 + [proposal_dist(x)] + l2
-    (l1, _) -> l1
+    (l1, l2) -> l1 + l2 // This should never be reached.
   }
   new_trace
 }
@@ -62,7 +63,7 @@ fun with_randomness(model : model<_a,<sample|e>>, trace_values : trace_values) :
   likelihood_a_trace
 }
 
-fun mh_step(trace : trace<a,<sample|e>>, proposal_dist : double -> sample double) : <sample|e> trace<a,<sample|e>> {
+fun mh_step(trace : trace<a,<console,sample|e>>, proposal_dist : double -> sample double) : <console,sample|e> trace<a,<console,sample|e>> {
   val modified_trace = perturb_trace(trace, proposal_dist)
   match(trace) {
     Trace(model, p1, old_trace, _) -> {
@@ -95,7 +96,7 @@ fun random_range(upper_bound : int) {
   return int(sample() / (1.0 / double(upper_bound))) % upper_bound
 }
 
-fun tmcmc(model : model<a,<sample,div|e>>, steps : int, init_weight : exp, proposal_dist) : <sample,div|e> (list<(list<double>,a)>, trace<a,<sample,div|e>>) {
+fun tmcmc(model : model<a,<console,sample,div|e>>, steps : int, init_weight : exp, proposal_dist : double -> sample double, burnin : int) : <console,sample,div|e> (list<(list<double>,a)>, trace<a,<console,sample,div|e>>) {
   val model_results =
   weighted(init_weight) {
       replay([]) {
@@ -115,15 +116,19 @@ fun tmcmc(model : model<a,<sample,div|e>>, steps : int, init_weight : exp, propo
     (_, (_, a)) -> a
   }
 
-  model_stepper_recursive(steps, Trace(model, p, d, a), proposal_dist, Nil)
+  model_stepper_recursive(steps, Trace(model, p, d, a), proposal_dist, Nil, burnin)
 }
 
-fun model_stepper_recursive(steps : int, trace : trace<a,<sample,div|e>>, proposal_dist, posterior : list<(list<double>,a)>) : <sample,div|e> (list<(list<double>,a)>, trace<a,<sample,div|e>>) {
+fun model_stepper_recursive(steps : int, trace : trace<a,<console,sample,div|e>>, proposal_dist, posterior : list<(list<double>,a)>, burnin) : <console,sample,div|e> (list<(list<double>,a)>, trace<a,<console,sample,div|e>>) {
   if(steps < 1) {
     (posterior, trace)
   } else {
     val new_trace = mh_step(trace, proposal_dist)
-    model_stepper_recursive(steps - 1, new_trace, proposal_dist, posterior + [(trace_v(new_trace), trace_a(new_trace))])
+    if (burnin > 0) {
+      model_stepper_recursive(steps - 1, new_trace, proposal_dist, posterior, burnin - 1)
+    } else {
+      model_stepper_recursive(steps - 1, new_trace, proposal_dist, posterior + [(trace_v(new_trace), trace_a(new_trace))], burnin)
+    }
   }
 }
 
