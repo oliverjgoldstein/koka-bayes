@@ -7,7 +7,7 @@ import exponents
 import handlers
 import sampling
 import output-and-plot
-
+import model-resources
 
 type trace<a,e> {
   Trace(m : model<a,e>, p : exp, l : trace_values, a : a)
@@ -38,8 +38,15 @@ fun trace_a(tr : trace<a,_>) : a {
   }
 }
 
-fun uniform_proposal_dist(x : double) {
-  sample()
+fun gaussian_proposal_dist(x : double) {
+  val a = normal(x, 0.2)
+  if (a > 1.0){
+    return 1.0
+  } elif (a < 0.0) {
+    return 0.0
+  } else {
+    return a
+  }
 }
 
 fun perturb_trace(trace : trace<a,_e>, proposal_dist : double -> sample double) : <sample|e> trace_values {
@@ -70,7 +77,8 @@ fun mh_step(trace : trace<a,<console,sample|e>>, proposal_dist : double -> sampl
       val p2b = with_randomness(model, modified_trace)
       match(p2b) {
         (new_trace, (p2, b)) -> {
-          val ratio = min(1.0, (exp_to_double(p2) * new_trace.length.double) / (exp_to_double(p1) * old_trace.length.double))
+          // This update procedure copies that of Monad Bayes:
+          val ratio = min(1.0, ((exp_to_double(p2) * new_trace.length.double) / (exp_to_double(p1) * old_trace.length.double)))
           val accept = bernoulli(ratio)
           if(accept) {
             Trace(model, p2, new_trace, b)
@@ -156,7 +164,7 @@ fun rmsmc_loop(i : int, pop_hist : histogram<(int) -> <exn,yield,score,sample|e>
           (w, m) -> {
             weighted(w) {
               advance {
-                /* trace_m(tmcmc( (fun() {m(step_size)}), 1, w, uniform_proposal_dist ).snd)() */
+                /* trace_m(tmcmc( (fun() {m(step_size)}), 1, w, gaussian_proposal_dist ).snd)() */
                 m(step_size)
               }
             }

@@ -46,6 +46,96 @@ fun fit(model : regression, dataset : two_d_data) : regression {
     g
 }
 
+fun logistic_regression(dat : list<(double,bool)>) : nmodel<double> {
+  val g = fun() {
+    val m = normal(0.0, 1.0)
+    val b = normal(0.0, 1.0)
+    val sigma = normal(0.0,1.0)
+
+    fun y(x) {
+      normal(m*x + b, sigma)
+    }
+
+    fun sigmoid(x) {
+      1.0 / (1.0 + dbl-e^(y(x)))
+    }
+
+    fun obs(x_label) {
+      match(x_label) {
+        (x, label) -> {
+          val p = sigmoid(x)
+          if(label) {
+            score(Exp(p))
+          } else {
+            score(Exp(1.0 - p))
+          }
+        }
+      }
+    }
+
+    map(dat, obs)
+    sigmoid(8.0)
+  }
+  g
+}
+
+fun gamma(x) {
+    val p = [0.99999999999980993, 676.5203681218851, -1259.1392167224028,
+        771.32342877765313, -176.61502916214059, 12.507343278686905,
+        -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7]
+
+    val g = 7.0
+    if (x < 0.5) {
+        return dbl-pi / (sin(dbl-pi * x) * gamma(1.0 - x))
+    }
+
+    val hh = x - 1.0
+
+    val a = ref(0.99999999999980993)
+    val t = hh + g + 0.5
+    for(1, p.length) fun(i) {
+      val new_p = match(p[i]) {
+        Nothing -> 0.0
+        Just(aa) -> aa
+      }
+      a := !a + new_p / (hh + double(i))
+    }
+
+    return sqrt(2.0 * dbl-pi) * t^(hh + 0.5) * exp(0.0 - t) * !a
+}
+
+/* fun gamma_dist(alpha : double, beta : double) {
+  val numerator = beta^(alpha)
+} */
+
+/* fun gamrand(alpha : double, lambda : double) {
+  if(alpha>1.0) {
+    val d = alpha - 1.0/3.0
+    val c = 1.0/sqrt(9.0*d)
+
+    var flag := True
+    val v = ref(0.0)
+    while {flag} {
+      val z = normal(0.0,1.0)
+      if (z > (0.0 - (1.0/c))) {
+        v := (1.0 + c * z)^3.0
+        if (log(sample()) > (0.5 * z^(2.0) + d - d * !v + d * log(!v))) {
+          flag := True
+        } else {
+          flag := False
+        }
+      }
+    }
+
+    return d * !v / lambda
+  }
+  else {
+    val x = gamrand(alpha+1.0,lambda);
+    return x * sample()^(1.0/alpha);
+  }
+} */
+
+
 fun fit_1d_gaussian(model : nmodel<double>, dataset : data_1d) : nmodel<double> {
   val g = fun() {
       val f : double = model()

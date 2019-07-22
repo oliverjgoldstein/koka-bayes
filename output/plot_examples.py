@@ -98,7 +98,7 @@ def calculate_global_temperature_change():
     ]
     global_stats = []
     temp         = []
-    for time_period in range(2, 15):
+    for time_period in range(0, 13):
         for month in range(0, len(months)):
             for i in range(0, len(months[month])):
                 ys = float(months[month][i][time_period])
@@ -200,22 +200,21 @@ labels = ['1756 - 1776',
           '1976 - 1996',
           '1996 - 2016']
 
-process_month('./months/jan/jan_1', 'whatever'  , labels)
 smc_posterior()
 trace_posterior()
 
-combine_csv('./months/jan/', 'jan_1', 'jan_2', 'jan_3', 'jan_4')
-combine_csv('./months/feb/', 'feb_1', 'feb_2', 'feb_3', 'feb_4')
-combine_csv('./months/mar/', 'mar_1', 'mar_2', 'mar_3', 'mar_4')
-combine_csv('./months/apr/', 'apr_1', 'apr_2', 'apr_3', 'apr_4')
-combine_csv('./months/may/', 'may_1', 'may_2', 'may_3', 'may_4')
-combine_csv('./months/jun/', 'jun_1', 'jun_2', 'jun_3', 'jun_4')
-combine_csv('./months/jul/', 'jul_1', 'jul_2', 'jul_3', 'jul_4')
-combine_csv('./months/aug/', 'aug_1', 'aug_2', 'aug_3', 'aug_4')
-combine_csv('./months/sep/', 'sep_1', 'sep_2', 'sep_3', 'sep_4')
-combine_csv('./months/oct/', 'oct_1', 'oct_2', 'oct_3', 'oct_4')
-combine_csv('./months/nov/', 'nov_1', 'nov_2', 'nov_3', 'nov_4')
-combine_csv('./months/dec/', 'dec_1', 'dec_2', 'dec_3', 'dec_4')
+combine_csv('./months/jan/', 'jan_5', 'jan_6', 'jan_3', 'jan_4')
+combine_csv('./months/feb/', 'feb_5', 'feb_6', 'feb_3', 'feb_4')
+combine_csv('./months/mar/', 'mar_5', 'mar_6', 'mar_3', 'mar_4')
+combine_csv('./months/apr/', 'apr_5', 'apr_6', 'apr_3', 'apr_4')
+combine_csv('./months/may/', 'may_5', 'may_6', 'may_3', 'may_4')
+combine_csv('./months/jun/', 'jun_5', 'jun_6', 'jun_3', 'jun_4')
+combine_csv('./months/jul/', 'jul_5', 'jul_6', 'jul_3', 'jul_4')
+combine_csv('./months/aug/', 'aug_5', 'aug_6', 'aug_3', 'aug_4')
+combine_csv('./months/sep/', 'sep_5', 'sep_6', 'sep_3', 'sep_4')
+combine_csv('./months/oct/', 'oct_5', 'oct_6', 'oct_3', 'oct_4')
+combine_csv('./months/nov/', 'nov_5', 'nov_6', 'nov_3', 'nov_4')
+combine_csv('./months/dec/', 'dec_5', 'dec_6', 'dec_3', 'dec_4')
 
 
 labels = ['1756 - 1776',

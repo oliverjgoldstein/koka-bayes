@@ -15,7 +15,7 @@ fun multivariate_gaussian(dimension : int, mean : double, std_dev : double) : sa
   }
 }
 
-fun linear_gaussian_climate_data(ys : list<row_vector>, vs : list<row_vector>, print : bool, diff : double, subtract : double) : model<list<double>,<exn,console>> {
+fun linear_gaussian_climate_data(ys : list<row_vector>, vs : list<row_vector>, print : bool, diff : double, subtract : double, score_var) : model<list<double>,<exn,console>> {
   val g = fun() {
     val mult_bias_of_thermometer_std_dev  = 0.05
     val mult_bias_of_thermometer          = 0.0
@@ -23,7 +23,6 @@ fun linear_gaussian_climate_data(ys : list<row_vector>, vs : list<row_vector>, p
     val w_std_dev                         = 1.0
     val a_mean                            = 1.0
     val a_std_dev                         = 0.4
-    val score_var                         = 4.7
 
     val x1                          = (sample() * diff) + subtract
     val month_ys1                   = exn-get(ys,0)

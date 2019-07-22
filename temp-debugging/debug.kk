@@ -1,25 +1,21 @@
 import std/num/double
-import std/os/path
-import std/os/file
+import model-resources
+/* import effects-and-types */
 
-fun main() {
-  pre_process_data()
-}
+ambient fun sample() : double
 
-fun pre_process_data() {
-  val nums = replicate(5.0, 4000)
-  println(nums.length)
-  /* string_to_list_doubles(values) */
-}
+fun gamrand(alpha : double) {
+  if(alpha>1.0) {
 
-/* fun string_to_list_doubles( s : string )  {
-  val nums = map(split(s, "\n"), parse-double)
-  println(nums.length)
-  match(nums[50]) {
-    Nothing -> " "
-    Just(x) -> match(x) {
-      Nothing -> " "
-      Just(v) -> show-fixed(v)
+    var flag := True
+    while {flag} {
+      flag := True
     }
+    
+    0.0
   }
-} */
+  else {
+    val x = gamrand(alpha);
+    return sample()
+  }
+}
