@@ -154,3 +154,22 @@ fun string_to_list_doubles( s : string )  {
     }
   }
 }
+///
+
+ambient fun sample() : double
+
+fun gamrand(alpha : double) {
+  if(alpha>1.0) {
+
+    var flag := True
+    while {flag} {
+      flag := True
+    }
+
+    0.0
+  }
+  else {
+    val x = gamrand(alpha);
+    return sample()
+  }
+}

@@ -46,7 +46,7 @@ fun fit(model : regression, dataset : two_d_data) : regression {
     g
 }
 
-fun logistic_regression(dat : list<(double,bool)>) : nmodel<double> {
+fun logistic_regression(dat : list<(double,bool)>) : nmodel<(double,double)> {
   val g = fun() {
     val m = normal(0.0, 1.0)
     val b = normal(0.0, 1.0)
@@ -65,16 +65,16 @@ fun logistic_regression(dat : list<(double,bool)>) : nmodel<double> {
         (x, label) -> {
           val p = sigmoid(x)
           if(label) {
-            score(Exp(p))
+            score(Exp(log(p)))
           } else {
-            score(Exp(1.0 - p))
+            score(Exp(log(1.0 - p)))
           }
         }
       }
     }
 
     map(dat, obs)
-    sigmoid(8.0)
+    (m,b)
   }
   g
 }
