@@ -1,21 +1,12 @@
-import std/num/double
-import model-resources
-/* import effects-and-types */
+
 
 ambient fun sample() : double
 
-fun gamrand(alpha : double) {
-  if(alpha>1.0) {
-
-    var flag := True
-    while {flag} {
-      flag := True
-    }
-    
-    0.0
+fun random_sampler(action) {
+  handle(action) {
+    return x -> x
+    sample() -> random()
   }
-  else {
-    val x = gamrand(alpha);
-    return sample()
-  }
+  /* with fun sample() { random() } */
+  /* action  // mask out `ndet` from the `action` effect */
 }

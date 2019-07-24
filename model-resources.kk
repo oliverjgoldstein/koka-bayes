@@ -135,6 +135,34 @@ fun gamma(x) {
   }
 } */
 
+/* fun compute(flag, v, c, d) {
+  val zz = normal(0.0,1.0)
+  val new_v = (1.0 + c * zz)^3.0
+  if(flag) {
+    if (log(sample()) > (0.5 * zz^(2.0) + d - d * new_v + d * log(new_v))) {
+      compute(True, new_v, c, d)
+    } else {
+      compute(False, new_v, c, d)
+    }
+  } else {
+    return new_v
+  }
+}
+
+
+fun gamrand(alpha : double, lambda : double) {
+  if(alpha>1.0) {
+    val d = alpha - 1.0/3.0
+    val c = 1.0/sqrt(9.0*d)
+
+    return d * compute(True, 0.0, c, d) / lambda
+  }
+  else {
+    val x = gamrand(alpha+1.0,lambda);
+    return x * sample()^(1.0/alpha);
+  }
+}
+ */
 
 fun fit_1d_gaussian(model : nmodel<double>, dataset : data_1d) : nmodel<double> {
   val g = fun() {

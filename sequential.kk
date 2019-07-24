@@ -21,10 +21,10 @@ fun smc(particle_num : int, step_num : int, step_size : int, model : () -> <samp
   }
 }
 
-fun smc_loop(i : int, pop_hist : histogram<(int) -> <exn,yield,score,sample|e> a>, step_num : int, step_size : int) : <exn, sample|e> histogram<a> {
+fun smc_loop(i : int, populated_hist : histogram<(int) -> <exn,yield,score,sample|e> a>, step_num : int, step_size : int) : <exn, sample|e> histogram<a> {
     if (i < step_num) then {
-      val resampled_histogram = resample(pop_hist)
-      fun composition_1_2(wm) {
+      val resampled_histogram = resample(populated_hist)
+      fun advance_func(wm) {
         match(wm) {
           (w, m) -> {
             weighted(w) {
@@ -36,11 +36,11 @@ fun smc_loop(i : int, pop_hist : histogram<(int) -> <exn,yield,score,sample|e> a
         }
       }
 
-      val second_term = normalise(map(resampled_histogram, composition_1_2))
+      val second_term = normalise(map(resampled_histogram, advance_func))
       smc_loop(i + 1, second_term, step_num, step_size)
     } else {
 
-      val pop_func = fun(wm) {
+      val finalize_func = fun(wm) {
         match(wm) {
           (w,m) -> {
             weighted(w) {
@@ -52,7 +52,7 @@ fun smc_loop(i : int, pop_hist : histogram<(int) -> <exn,yield,score,sample|e> a
         }
       }
 
-      val x = normalise(map(pop_hist, pop_func))
+      val x = normalise(map(populated_hist, finalize_func))
       x
     }
 }

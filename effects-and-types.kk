@@ -19,6 +19,5 @@ effect yield {
   control yield() : ()
 }
 
-ambient fun sample() : double
-ambient control score( s : exp ) : ()
-
+effect fun sample() : double
+effect fun score( s : exp ) : ()
