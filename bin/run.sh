@@ -2,14 +2,14 @@
 set -e
 printf "\n\n"
 
-LOCALS=$(pwd)/bin/local-vars.sh 
+LOCALS=$(pwd)/bin/local-vars.sh
 if [ ! -f "$LOCALS" ]; then
     printf "Error. Missing local-vars.sh!"
     exit 2
 fi
 
 chmod +x ./bin/local-vars.sh
-source ./bin/local-vars.sh 
+source ./bin/local-vars.sh
 
 if [ ! -n "$KOKA_INSTALL" ]; then
   printf "Error. No install directory found!"
@@ -30,7 +30,6 @@ python ./plot_examples.py
 printf "Output written to: %s/output.html\n" "$(pwd)"
 
 case "$OSTYPE" in
-  darwin*)  open     output.html ;; 
+  darwin*)  open     output.html ;;
   *)        xdg-open output.html ;;
 esac
-

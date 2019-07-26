@@ -337,7 +337,6 @@ oct = process_month('./months/oct/comb_tmcmc', 'October'  , labels)
 nov = process_month('./months/nov/comb_tmcmc', 'November' , labels)
 dec = process_month('./months/dec/comb_tmcmc', 'December' , labels)
 
-
 graph_vals('./months/jan/tmcmc_', labels, jan, 'January'  , True)
 graph_vals('./months/feb/tmcmc_', labels, feb, 'Feburary' , True)
 graph_vals('./months/mar/tmcmc_', labels, mar, 'March'    , True)
