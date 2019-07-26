@@ -32,7 +32,7 @@ fun sum_histogram(hist : histogram<a>) : double {
 }
 
 fun importance_sampling(model : model<a,e>) : <ndet|e> histogram<a> {
-  val particle_count = 1000
+  val particle_count = 2000
   random_sampler{normalise(populate(particle_count, model))}
 }
 
