@@ -91,15 +91,6 @@ fun mh_step(trace : trace<a,<console,sample|e>>, proposal_dist : double -> sampl
   }
 }
 
-fun bernoulli(p : double) : sample bool {
-  val g = sample()
-  if (g < p) {
-    True
-  } else{
-    False
-  }
-}
-
 fun random_range(upper_bound : int) {
   return int(sample() / (1.0 / double(upper_bound))) % upper_bound
 }

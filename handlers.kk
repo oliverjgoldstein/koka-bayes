@@ -35,7 +35,7 @@ fun replay(trace : trace_values, action : () -> <sample,sample|e> a) : <sample|e
 } */
 
 
-fun weighted(wp : exp, action) {
+fun weighted(wp : exp, action : () -> <score|e> a) : e (exp, a) {
   var wps := wp
     handle(action) {
       return x -> (wps, x)

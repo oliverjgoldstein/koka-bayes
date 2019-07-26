@@ -46,6 +46,14 @@ fun fit(model : regression, dataset : two_d_data) : regression {
     g
 }
 
+fun generate_synthetic_lr_data(num : int) : ndet list<(double, bool)> {
+  list(1, num) fun(i) {
+    random_sampler{
+      (sample() * 10.0, bernoulli(0.5))
+    }
+  }
+}
+
 fun logistic_regression(dat : list<(double,bool)>) : nmodel<(double,double)> {
   val g = fun() {
     val m = normal(0.0, 1.0)
@@ -74,6 +82,10 @@ fun logistic_regression(dat : list<(double,bool)>) : nmodel<(double,double)> {
     }
 
     map(dat, obs)
+
+    /* for(0, dat.length) fun(i) {
+      score(Exp(1.0))
+    } */
     (m,b)
   }
   g
@@ -177,22 +189,14 @@ fun fit_1d_gaussian(model : nmodel<double>, dataset : data_1d) : nmodel<double> 
   g
 }
 
-
-/* val linear : regression = fun() {
-  val a = normal(0.0,2.0)
-  val b = normal(0.0,2.0)
-  (fun(x){ a * x + b })
-} */
-
-/* val fitted = fit(homogeneous_linear, dataset) */
-/* val gaussian = fit_1d_gaussian(gaussian_model(), gaussian_dataset) */
-
-/* This function is going to return a linear function i.e. 0.1 * x for any x you give it. */
-/* val homogeneous_linear : regression = fun() {
-  val a = normal(0.0, 2.0)
-  val r = fun(x : double) {a * x}
-  r
-} */
+fun bernoulli(p : double) : sample bool {
+  val g = sample()
+  if (g < p) {
+    True
+  } else{
+    False
+  }
+}
 
 val gaussian_dataset : data_1d = [0.0, 0.1, 0.1, 0.0, 0.2, 0.1, 0.0, 0.2]
 val gaussian_five : data_1d = [5.0,5.0,5.0,5.0,5.1,5.0,5.0,5.0,5.0,5.1,5.0,5.0,5.0,5.0,5.1]
