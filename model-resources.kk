@@ -14,7 +14,7 @@ fun gaussian_model() : nmodel<double> {
 
 fun sequential_gaussian(data_point : double) : nmodel<double> {
   val g = fun() {
-    val seed = normal(2.0, 1.0)
+    val seed = normal(0.0, 1.0)
     score(normal_pdf(seed, 0.3, data_point))
     val seed2 = normal(seed, 1.0)
     score(normal_pdf(seed2, 0.3, data_point))

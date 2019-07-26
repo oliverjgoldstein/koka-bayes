@@ -16,7 +16,7 @@ import exn-get
 import sampling
 
 fun main() {
-  val data_point               = 6.0
+  val data_point               = 5.0
   val particles                = 2000
   val resample_steps           = 131
   val scores_before_resampling = 2
