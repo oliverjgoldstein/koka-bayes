@@ -183,7 +183,7 @@ def trace_posterior():
     y = [float(v[0]) for v in li]
 
     pyplot.figure()
-    pyplot.hist(y, alpha=0.5, label='y', bins=100)
+    pyplot.hist(y, alpha=0.5, label='samples', bins=100)
     pyplot.xlabel('$\Theta$')
     pyplot.ylabel('Frequency')
     pyplot.legend(loc='upper right')
@@ -191,7 +191,7 @@ def trace_posterior():
     pyplot.figure()
 
     y = y[500:]
-    pyplot.hist(y, alpha=0.5, label='y')
+    pyplot.hist(y, alpha=0.5, label='samples')
     pyplot.xlabel('$\Theta$ with burn in of 500 samples')
     pyplot.ylabel('Frequency')
     pyplot.legend(loc='upper right')
@@ -209,7 +209,7 @@ def smc_posterior():
     pyplot.xlabel('$\Theta$')
     pyplot.savefig('./gaussian/smc_posterior_points.png')
     pyplot.figure()
-    pyplot.hist(y, alpha=0.5, label='y')
+    pyplot.hist(y, alpha=0.5, label='samples')
     pyplot.xlabel('$\Theta$')
     pyplot.ylabel('Frequency')
     pyplot.legend(loc='upper right')
@@ -227,7 +227,7 @@ def is_posterior():
     pyplot.xlabel('$\Theta$')
     pyplot.savefig('./gaussian/is_posterior_points.png')
     pyplot.figure()
-    pyplot.hist(y, alpha=0.5, label='y')
+    pyplot.hist(y, alpha=0.5, label='samples')
     pyplot.xlabel('$\Theta$')
     pyplot.ylabel('Frequency')
     pyplot.legend(loc='upper right')
