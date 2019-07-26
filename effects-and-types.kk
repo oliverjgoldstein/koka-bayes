@@ -15,9 +15,7 @@ type exp {
   Exp(i : double)
 }
 
-effect yield {
-  control yield() : ()
-}
+effect control yield() : ()
 
 effect fun sample() : double
 effect fun score( s : exp ) : ()

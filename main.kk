@@ -23,6 +23,7 @@ fun main() {
   val t_steps                  = 50000
   val burnin                   = 46000 // Koka cannot handle more than 4000 difference.
 
+  /*
   println("Running Timing Experiments...")
   random_sampler {
     run_experiments()
@@ -48,7 +49,7 @@ fun main() {
     }
   }
   println("Completed Trace MCMC!")
-
+  */
   println("Running Climate Model...")
   run_climate_model(particles, resample_steps, scores_before_resampling, t_steps, burnin)
   println("Completed Climate Model!")

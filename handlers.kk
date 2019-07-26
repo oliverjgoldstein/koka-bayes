@@ -10,7 +10,11 @@ fun random_sampler(action : () -> <sample|e> a) : <ndet|e> a {
   mask<ndet>(action)  // mask out `ndet` from the `action` effect
 }
 
-fun replay(trace : trace_values, action : () -> <sample,sample|e> a) : <sample|e> (list<double>, a) {
+fun replay(trace: trace_values, action : () -> <sample|e> a) : <sample|e> (list<double>, a) {
+  replayx(trace, {mask behind<sample>(action)} )
+}
+
+private fun replayx(trace: trace_values, action : () -> <sample,sample|e> a) : <sample|e> (list<double>, a) {
   var extended_trace : list<double> := trace
   var index     := -1
   handle(action) {
@@ -51,10 +55,18 @@ fun finalize(action) {
   }
 }
 
-fun yield_on_score(action) {
+fun yield_on_score(action : () -> <score,yield|e> a ) : <score,yield|e> a {
+  yield_on_scorex({mask behind<score>(action)})
+}
+
+private fun yield_on_scorex(action : () -> <score,score,yield|e> a ) : <score,yield|e> a {
   handle(action) {
     return x -> x
-    score(w : exp) -> {score(w); yield(); resume(())}
+    score(w) -> {
+      score(w)
+      yield()
+      resume(())
+    }
   }
 }
 
