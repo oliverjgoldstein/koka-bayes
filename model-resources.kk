@@ -116,32 +116,32 @@ fun gamma(x) {
     return sqrt(2.0 * dbl-pi) * t^(hh + 0.5) * exp(0.0 - t) * !a
 }
 
-fun gamrand(alpha : double, lambda : double) {
-  if(alpha>1.0) {
-    val d = alpha - 1.0/3.0
-    val c = 1.0/sqrt(9.0*d)
-
-    var flag := True
-    val v = ref(0.0)
-    while {flag} {
-      val z = normal(0.0,1.0)
-      if (z > (0.0 - (1.0/c))) {
-        v := (1.0 + c * z)^3.0
-        if (log(sample()) > (0.5 * z^(2.0) + d - d * !v + d * log(!v))) {
-          flag := True
-        } else {
-          flag := False
-        }
-      }
-    }
-
-    return d * !v / lambda
+fun grand(alpha : double, beta : double) : <sample,div> double {
+  if(alpha <= 1.0) {
+    val x = grand(alpha + 1.0, beta)
+    x * sample()^(1.0/alpha)
   }
   else {
-    val x = gamrand(alpha+1.0,lambda);
-    return x * sample()^(1.0/alpha);
+    val d = alpha - 1.0/3.0
+    val c = 1.0/sqrt(9.0*d)
+    val v = grandx(d,c,0.0)
+    (d * v / beta)
   }
 }
+
+private fun grandx(d : double, c : double, v : double ) : <sample,div> double {
+  val z = normal(0.0,1.0)
+  val w = (1.0 + c * z)^3.0
+  if(z > (0.0 - (1.0/c))) {
+    if (log(sample()) > (0.5*(z^2.0)) + d - d * w + d * log(w)) {
+      grandx(d,c,w)
+    } else {
+      w
+    }
+  }
+  else grandx(d,c,w)
+}
+
 
 fun fit_1d_gaussian(model : nmodel<double>, dataset : data_1d) : nmodel<double> {
   val g = fun() {
