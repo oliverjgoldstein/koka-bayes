@@ -54,11 +54,11 @@ fun generate_synthetic_lr_data(num : int) : ndet list<(double, bool)> {
   }
 }
 
-fun logistic_regression(dat : list<(double,bool)>) : nmodel<(double,double)> {
+fun logistic_regression(dat : list<(double,bool)>) : model<(double,double), _e> {
   val g = fun() {
     val m = normal(0.0, 1.0)
     val b = normal(0.0, 1.0)
-    val sigma = normal(0.0,1.0)
+    val sigma = grand(0.0,1.0)
 
     fun y(x) {
       normal(m*x + b, sigma)
@@ -82,10 +82,6 @@ fun logistic_regression(dat : list<(double,bool)>) : nmodel<(double,double)> {
     }
 
     map(dat, obs)
-
-    /* for(0, dat.length) fun(i) {
-      score(Exp(1.0))
-    } */
     (m,b)
   }
   g

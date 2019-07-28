@@ -199,20 +199,29 @@ def trace_posterior():
     pyplot.figure()
 
 def smc_posterior():
-    li = read_in('./gaussian/smc_posterior')
+
+    li = read_in('./gaussian/rmsmc_posterior')
     x = [float(v[0]) for v in li]
     y = [float(v[1]) for v in li]
 
     pyplot.figure()
-    pyplot.plot(y,x, 'ro')
-    pyplot.ylabel('likelihood')
-    pyplot.xlabel('$\Theta$')
-    pyplot.savefig('./gaussian/smc_posterior_points.png')
-    pyplot.figure()
-    pyplot.hist(y, alpha=0.5, label='samples from the posterior')
+    pyplot.hist(y, alpha=0.5, label=' samples\n from\n the RMSMC\n posterior')
+
+    li = read_in('./gaussian/smc_posterior')
+    x = [float(v[0]) for v in li]
+    y = [float(v[1]) for v in li]
+    # pyplot.plot(y,x, 'ro')
+    # pyplot.ylabel('likelihood')
+    # pyplot.xlabel('$\Theta$')
+    # pyplot.savefig('./gaussian/smc_posterior_points.png')
+    # pyplot.figure()
+    pyplot.hist(y, alpha=0.5, label=' samples\n from\n the SMC\n posterior')
     pyplot.xlabel('$\Theta$')
     pyplot.ylabel('Frequency')
-    pyplot.legend(loc='upper right')
+    # pyplot.legend(loc='upper right')
+    pyplot.tight_layout(rect=[0,0,0.75,1])
+    pyplot.legend(bbox_to_anchor=(1.04,1), loc='upper left')
+    pyplot.subplots_adjust(right=0.7)
     pyplot.savefig('./gaussian/smc_posterior_hist.png')
     pyplot.figure()
 
@@ -235,6 +244,19 @@ def is_posterior():
     pyplot.savefig('./gaussian/is_posterior_hist.png')
     pyplot.figure()
 
+def rmsmc_posterior():
+    li = read_in('./gaussian/rmsmc_posterior')
+    x = [float(v[0]) for v in li]
+    y = [float(v[1]) for v in li]
+
+    pyplot.figure()
+    pyplot.hist(y, alpha=0.5, label='samples from the posterior')
+    pyplot.xlabel('$\Theta$')
+    pyplot.ylabel('Frequency')
+    pyplot.legend(loc='upper right')
+    pyplot.savefig('./gaussian/rmsmc_posterior_hist.png')
+    pyplot.figure()
+
 labels = ['1756 - 1776',
           '1776 - 1796',
           '1796 - 1816',
@@ -249,8 +271,10 @@ labels = ['1756 - 1776',
           '1976 - 1996',
           '1996 - 2016']
 
+rmsmc_posterior()
 smc_posterior()
 trace_posterior()
+is_posterior()
 is_posterior()
 
 

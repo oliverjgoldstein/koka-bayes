@@ -131,7 +131,7 @@ fun model_stepper_recursive(steps : int, trace : trace<a,<sample,score,div|e>>, 
 }
 
 
-fun rmsmc(particle_num : int, step_num : int, step_size : int, model : () -> <score,sample,pure> a) : <pure,ndet> histogram<a>
+fun rmsmc(particle_num : int, step_num : int, step_size : int, model : () -> <score,sample,pure> a, t_steps : int) : <pure,ndet> histogram<a>
 {
   val rmsmc_func = fun() {
     advance {
@@ -142,18 +142,18 @@ fun rmsmc(particle_num : int, step_num : int, step_size : int, model : () -> <sc
   }
   random_sampler {
     val pop = normalise(populate(particle_num, rmsmc_func))
-    rmsmc_loop(0, pop, step_num, step_size)
+    rmsmc_loop(0, pop, step_num, step_size, t_steps)
   }
 }
 
-fun rmsmc_func_2(step_size:int, wm : (exp, int -> <sample,score,yield,pure> a) ) : <sample,pure> (exp, int -> <sample,score,yield,pure> a) {
+fun rmsmc_func_2(step_size:int, wm : (exp, int -> <sample,score,yield,pure> a), t_steps : int ) : <sample,pure> (exp, int -> <sample,score,yield,pure> a) {
   match(wm) {
     (w, m) -> {
       weighted(w) {
         advance {
           fun f() { m(step_size) }
           val g : () -> <sample,score,yield,pure> _a
-                = mask<score>{tmcmc( f, 1, w, gaussian_proposal_dist, 100 ).snd.trace_m}
+                = mask<score>{tmcmc( f, t_steps, w, gaussian_proposal_dist, 0 ).snd.trace_m}
           g()
           //m(step_size)
           //error("hi")
@@ -176,11 +176,11 @@ fun pop_func(wm : (exp, int -> <sample,score,yield,pure> a) ) : <sample,pure> (e
 }
 
 
-fun rmsmc_loop(i : int, pop_hist : histogram<(int) -> <sample,score,yield,pure> a>, step_num : int, step_size : int) : <sample,pure> histogram<a> {
+fun rmsmc_loop(i : int, pop_hist : histogram<(int) -> <sample,score,yield,pure> a>, step_num : int, step_size : int, t_steps : int) : <sample,pure> histogram<a> {
     if (i < step_num) then {
       val resampled_histogram = resample(pop_hist)
-      val second_term = resampled_histogram.map(fun(wm){ rmsmc_func_2(step_size,wm) })
-      rmsmc_loop(i + 1, second_term, step_num, step_size)
+      val second_term = resampled_histogram.map(fun(wm){ rmsmc_func_2(step_size,wm, t_steps) })
+      rmsmc_loop(i + 1, second_term, step_num, step_size, t_steps)
     } else {
       val x = pop_hist.map(pop_func).normalise
       x

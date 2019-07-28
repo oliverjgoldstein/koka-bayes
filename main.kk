@@ -23,12 +23,19 @@ fun main() {
   val t_steps                  = 50000
   val burnin                   = 46000 // Koka cannot handle more than 4000 difference.
 
-  /*
+
+  println("Running Resample Move Sequential Monte Carlo...")
+  print-elapsed {
+    write(rmsmc(2000, 2, 10, sequential_gaussian(data_point), 5), "./gaussian/rmsmc_posterior.csv")
+  }
+  println("Completed Resample Move Sequential Monte Carlo!")
+
   println("Running Timing Experiments...")
   random_sampler {
     run_experiments()
   }
   println("Completed Timing Experiments!")
+
 
   // Note that if you change any filename - change output/plot_examples.py too if you want to show the histograms.
   println("Running Sequential Monte Carlo...")
@@ -49,11 +56,13 @@ fun main() {
     }
   }
   println("Completed Trace MCMC!")
-  */
+
+
   println("Running Climate Model...")
   run_climate_model(particles, resample_steps, scores_before_resampling, t_steps, burnin)
   println("Completed Climate Model!")
   println("Finished running...")
+
 }
 
 fun run_experiments() {
@@ -70,7 +79,38 @@ fun run_experiments() {
   val data_50   = generate_synthetic_lr_data(50)
   val data_0    = generate_synthetic_lr_data(0)
 
-  for(1, 2) fun(i) {
+  for(1, 4) fun(i) {
+    println("Running Resample Move Sequential Monte Carlo!")
+      print-elapsed {
+        // increasing data set size:
+        print-elapsed {rmsmc(10, 1000, 1000, logistic_regression(data_1000), 1)}
+        print-elapsed {rmsmc(10, 900 , 900, logistic_regression(data_900), 1)}
+        print-elapsed {rmsmc(10, 800 , 800, logistic_regression(data_800), 1)}
+        print-elapsed {rmsmc(10, 700 , 700, logistic_regression(data_700), 1)}
+        print-elapsed {rmsmc(10, 600 , 600, logistic_regression(data_600), 1)}
+        print-elapsed {rmsmc(10, 500 , 500, logistic_regression(data_500), 1)}
+        print-elapsed {rmsmc(10, 400 , 400, logistic_regression(data_400), 1)}
+        print-elapsed {rmsmc(10, 300 , 300, logistic_regression(data_300), 1)}
+        print-elapsed {rmsmc(10, 200 , 200, logistic_regression(data_200), 1)}
+        print-elapsed {rmsmc(10, 100 , 100, logistic_regression(data_100), 1)}
+        print-elapsed {rmsmc(10, 0   , 0,   logistic_regression(data_0), 1)}
+
+        println("Mid-way")
+
+        print-elapsed {rmsmc(10,50, 50,  logistic_regression(data_50), 100)}
+        print-elapsed {rmsmc(10, 50, 50,  logistic_regression(data_50), 90)}
+        print-elapsed {rmsmc(10, 50, 50,  logistic_regression(data_50), 80)}
+        print-elapsed {rmsmc(10, 50, 50,  logistic_regression(data_50), 70)}
+        print-elapsed {rmsmc(10, 50, 50,  logistic_regression(data_50), 60)}
+        print-elapsed {rmsmc(10, 50, 50,  logistic_regression(data_50), 50)}
+        print-elapsed {rmsmc(10, 50, 50,  logistic_regression(data_50), 40)}
+        print-elapsed {rmsmc(10, 50, 50,  logistic_regression(data_50), 30)}
+        print-elapsed {rmsmc(10, 50, 50,  logistic_regression(data_50), 20)}
+        print-elapsed {rmsmc(10, 50, 50,  logistic_regression(data_50), 10)}
+      }
+    println("Completed Resample Move Sequential Monte Carlo!")
+
+    println("Running Sequential Monte Carlo!")
     print-elapsed {
       // increasing data set size:
       print-elapsed {smc(100, 1000, 1000, logistic_regression(data_1000))}
@@ -99,7 +139,6 @@ fun run_experiments() {
       print-elapsed {smc(100, 50, 50,  logistic_regression(data_50))}
     }
     println("Completed Sequential Monte Carlo!")
-
 
     println("Running Trace MCMC...")
     print-elapsed {

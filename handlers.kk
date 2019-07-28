@@ -7,8 +7,14 @@ import effects-and-types
 
 fun random_sampler(action : () -> <sample|e> a) : <ndet|e> a {
   with fun sample() { random() }
-  mask<ndet>(action)  // mask out `ndet` from the `action` effect
+  mask<ndet>(action)
 }
+
+/* fun random_sampler(action) {
+  handle(action) {
+    sample() -> resume(random())
+  }
+} */
 
 fun replay(trace: trace_values, action : () -> <sample|e> a) : <sample|e> (list<double>, a) {
   replayx(trace, {mask behind<sample>(action)} )
