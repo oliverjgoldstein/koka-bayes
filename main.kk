@@ -24,11 +24,11 @@ fun main() {
   val burnin                   = 46000 // Koka cannot handle more than 4000 difference.
 
 
-  println("Running Resample Move Sequential Monte Carlo...")
+  /* println("Running Resample Move Sequential Monte Carlo...")
   print-elapsed {
     write(rmsmc(2000, 2, 10, sequential_gaussian(data_point), 5), "./gaussian/rmsmc_posterior.csv")
   }
-  println("Completed Resample Move Sequential Monte Carlo!")
+  println("Completed Resample Move Sequential Monte Carlo!") */
 
   println("Running Timing Experiments...")
   random_sampler {
@@ -38,7 +38,7 @@ fun main() {
 
 
   // Note that if you change any filename - change output/plot_examples.py too if you want to show the histograms.
-  println("Running Sequential Monte Carlo...")
+  /* println("Running Sequential Monte Carlo...")
   print-elapsed {
     write(smc(2000, 10, 1, sequential_gaussian(data_point)), "./gaussian/smc_posterior.csv")
   }
@@ -60,7 +60,7 @@ fun main() {
 
   println("Running Climate Model...")
   run_climate_model(particles, resample_steps, scores_before_resampling, t_steps, burnin)
-  println("Completed Climate Model!")
+  println("Completed Climate Model!") */
   println("Finished running...")
 
 }
@@ -110,7 +110,7 @@ fun run_experiments() {
       }
     println("Completed Resample Move Sequential Monte Carlo!")
 
-    println("Running Sequential Monte Carlo!")
+    /* println("Running Sequential Monte Carlo!")
     print-elapsed {
       // increasing data set size:
       print-elapsed {smc(100, 1000, 1000, logistic_regression(data_1000))}
@@ -138,38 +138,38 @@ fun run_experiments() {
       print-elapsed {smc(200, 50, 50,  logistic_regression(data_50))}
       print-elapsed {smc(100, 50, 50,  logistic_regression(data_50))}
     }
-    println("Completed Sequential Monte Carlo!")
+    println("Completed Sequential Monte Carlo!") */
 
     println("Running Trace MCMC...")
     print-elapsed {
       // increasing data set size:
-      print-elapsed {tmcmc(logistic_regression(data_1000),100, Exp(0.0), gaussian_proposal_dist, 0)}
-      print-elapsed {tmcmc(logistic_regression(data_900), 100, Exp(0.0), gaussian_proposal_dist, 0)}
-      print-elapsed {tmcmc(logistic_regression(data_800), 100, Exp(0.0), gaussian_proposal_dist, 0)}
-      print-elapsed {tmcmc(logistic_regression(data_700), 100, Exp(0.0), gaussian_proposal_dist, 0)}
-      print-elapsed {tmcmc(logistic_regression(data_600), 100, Exp(0.0), gaussian_proposal_dist, 0)}
-      print-elapsed {tmcmc(logistic_regression(data_500), 100, Exp(0.0), gaussian_proposal_dist, 0)}
-      print-elapsed {tmcmc(logistic_regression(data_400), 100, Exp(0.0), gaussian_proposal_dist, 0)}
-      print-elapsed {tmcmc(logistic_regression(data_300), 100, Exp(0.0), gaussian_proposal_dist, 0)}
-      print-elapsed {tmcmc(logistic_regression(data_200), 100, Exp(0.0), gaussian_proposal_dist, 0)}
-      print-elapsed {tmcmc(logistic_regression(data_100), 100, Exp(0.0), gaussian_proposal_dist, 0)}
-      print-elapsed {tmcmc(logistic_regression(data_0),   100, Exp(0.0), gaussian_proposal_dist, 0)}
+      print-elapsed {tmcmc(logistic_regression(data_1000),100, Exp(0.0), uniform_proposal_dist, 0)}
+      print-elapsed {tmcmc(logistic_regression(data_900), 100, Exp(0.0), uniform_proposal_dist, 0)}
+      print-elapsed {tmcmc(logistic_regression(data_800), 100, Exp(0.0), uniform_proposal_dist, 0)}
+      print-elapsed {tmcmc(logistic_regression(data_700), 100, Exp(0.0), uniform_proposal_dist, 0)}
+      print-elapsed {tmcmc(logistic_regression(data_600), 100, Exp(0.0), uniform_proposal_dist, 0)}
+      print-elapsed {tmcmc(logistic_regression(data_500), 100, Exp(0.0), uniform_proposal_dist, 0)}
+      print-elapsed {tmcmc(logistic_regression(data_400), 100, Exp(0.0), uniform_proposal_dist, 0)}
+      print-elapsed {tmcmc(logistic_regression(data_300), 100, Exp(0.0), uniform_proposal_dist, 0)}
+      print-elapsed {tmcmc(logistic_regression(data_200), 100, Exp(0.0), uniform_proposal_dist, 0)}
+      print-elapsed {tmcmc(logistic_regression(data_100), 100, Exp(0.0), uniform_proposal_dist, 0)}
+      print-elapsed {tmcmc(logistic_regression(data_0),   100, Exp(0.0), uniform_proposal_dist, 0)}
     }
 
     println("Mid-way")
 
     print-elapsed {
       // increasing data set size:
-      print-elapsed {tmcmc(logistic_regression(data_50), 1000, Exp(0.0), gaussian_proposal_dist, 0)}
-      print-elapsed {tmcmc(logistic_regression(data_50), 900,  Exp(0.0), gaussian_proposal_dist, 0)}
-      print-elapsed {tmcmc(logistic_regression(data_50), 800,  Exp(0.0), gaussian_proposal_dist, 0)}
-      print-elapsed {tmcmc(logistic_regression(data_50), 700,  Exp(0.0), gaussian_proposal_dist, 0)}
-      print-elapsed {tmcmc(logistic_regression(data_50), 600,  Exp(0.0), gaussian_proposal_dist, 0)}
-      print-elapsed {tmcmc(logistic_regression(data_50), 500,  Exp(0.0), gaussian_proposal_dist, 0)}
-      print-elapsed {tmcmc(logistic_regression(data_50), 400,  Exp(0.0), gaussian_proposal_dist, 0)}
-      print-elapsed {tmcmc(logistic_regression(data_50), 300,  Exp(0.0), gaussian_proposal_dist, 0)}
-      print-elapsed {tmcmc(logistic_regression(data_50), 200,  Exp(0.0), gaussian_proposal_dist, 0)}
-      print-elapsed {tmcmc(logistic_regression(data_50), 100,  Exp(0.0), gaussian_proposal_dist, 0)}
+      print-elapsed {tmcmc(logistic_regression(data_50), 1000, Exp(0.0), uniform_proposal_dist, 0)}
+      print-elapsed {tmcmc(logistic_regression(data_50), 900,  Exp(0.0), uniform_proposal_dist, 0)}
+      print-elapsed {tmcmc(logistic_regression(data_50), 800,  Exp(0.0), uniform_proposal_dist, 0)}
+      print-elapsed {tmcmc(logistic_regression(data_50), 700,  Exp(0.0), uniform_proposal_dist, 0)}
+      print-elapsed {tmcmc(logistic_regression(data_50), 600,  Exp(0.0), uniform_proposal_dist, 0)}
+      print-elapsed {tmcmc(logistic_regression(data_50), 500,  Exp(0.0), uniform_proposal_dist, 0)}
+      print-elapsed {tmcmc(logistic_regression(data_50), 400,  Exp(0.0), uniform_proposal_dist, 0)}
+      print-elapsed {tmcmc(logistic_regression(data_50), 300,  Exp(0.0), uniform_proposal_dist, 0)}
+      print-elapsed {tmcmc(logistic_regression(data_50), 200,  Exp(0.0), uniform_proposal_dist, 0)}
+      print-elapsed {tmcmc(logistic_regression(data_50), 100,  Exp(0.0), uniform_proposal_dist, 0)}
     }
     println("Completed Trace MCMC!")
   }

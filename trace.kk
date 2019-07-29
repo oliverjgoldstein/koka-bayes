@@ -49,6 +49,10 @@ fun gaussian_proposal_dist(x : double) : sample double {
   }
 }
 
+fun uniform_proposal_dist(x : double) : sample double {
+  sample()
+}
+
 fun perturb_trace(trace : trace<a,e>, proposal_dist : double -> sample double) : sample trace_values {
   val trace_values  = trace_v(trace)
   val perturb_index = random_range(trace_values.length)
@@ -153,7 +157,7 @@ fun rmsmc_func_2(step_size:int, wm : (exp, int -> <sample,score,yield,pure> a), 
         advance {
           fun f() { m(step_size) }
           val g : () -> <sample,score,yield,pure> _a
-                = mask<score>{tmcmc( f, t_steps, w, gaussian_proposal_dist, 0 ).snd.trace_m}
+                = mask<score>{tmcmc( f, t_steps, w, uniform_proposal_dist, 0 ).snd.trace_m}
           g()
           //m(step_size)
           //error("hi")
