@@ -38,27 +38,12 @@ fun trace_a(tr : trace<a,e>) : a {
   }
 }
 
-fun gaussian_proposal_dist(x : double) : sample double {
-  val a = normal(x, 0.2)
-  if (a > 1.0){
-    return 1.0
-  } elif (a < 0.0) {
-    return 0.0
-  } else {
-    return a
-  }
-}
-
-fun uniform_proposal_dist(x : double) : sample double {
-  sample()
-}
-
-fun perturb_trace(trace : trace<a,e>, proposal_dist : double -> sample double) : sample trace_values {
+fun perturb_trace(trace : trace<a,e>) : sample trace_values {
   val trace_values  = trace_v(trace)
   val perturb_index = random_range(trace_values.length)
   val div_trace     = split(trace_values, perturb_index)
   val new_trace     = match(div_trace) {
-    (l1, Cons(x, l2)) -> l1 + [proposal_dist(x)] + l2
+    (l1, Cons(_, l2)) -> l1 + [sample()] + l2
     (l1, l2) -> l1 + l2 // This should never be reached.
   }
   new_trace
@@ -74,8 +59,8 @@ fun with_randomness(model : () -> <sample,score|e> a, trace_values : trace_value
   likelihood_a_trace
 }
 
-fun mh_step(trace : trace<a,<sample,score|e>>, proposal_dist : double -> sample double) : <sample|e> trace<a,<sample,score|e>> {
-  val modified_trace = perturb_trace(trace, proposal_dist)
+fun mh_step(trace : trace<a,<sample,score|e>>) : <sample|e> trace<a,<sample,score|e>> {
+  val modified_trace = perturb_trace(trace)
   match(trace) {
     Trace(model, p1, old_trace, _) -> {
       val p2b = with_randomness(model, modified_trace)
@@ -99,7 +84,22 @@ fun random_range(upper_bound : int) : sample int {
   return int(sample() / (1.0 / double(upper_bound))) % upper_bound
 }
 
-fun tmcmc(model : () -> <sample,score,div|e> a, steps : int, init_weight : exp, proposal_dist : double -> sample double, burnin : int) : <sample,div|e> (list<(list<double>,a)>, trace<a,<sample,score,div|e>>) {
+fun split_tmcmc(lst : (list<(list<double>,a)>)) : div list<list<(list<double>,a)>> {
+  /* val lst_as = map(lst, snd) */
+  return splitter(lst, [])
+}
+
+fun splitter(lst_as : list<a>, build : list<list<a>>) : div list<list<a>> {
+  val split_v = split(lst_as, 4000)
+  match(split_v.fst) {
+    Nil -> build
+    Cons(_,_) -> {
+      splitter(split_v.snd, build + [split_v.fst])
+    }
+  }
+}
+
+fun tmcmc(model : () -> <sample,score,div|e> a, steps : int, init_weight : exp, burnin : int) : <sample,div|e> (list<(list<double>,a)>, trace<a,<sample,score,div|e>>) {
   val model_results = weighted(init_weight) {
                         replay([]) {
                           model()
@@ -118,18 +118,18 @@ fun tmcmc(model : () -> <sample,score,div|e> a, steps : int, init_weight : exp, 
     (_, (_, a)) -> a
   }
 
-  model_stepper_recursive(steps, Trace(model, p, d, a), proposal_dist, Nil, burnin)
+  model_stepper_recursive(steps, Trace(model, p, d, a), Nil, burnin)
 }
 
-fun model_stepper_recursive(steps : int, trace : trace<a,<sample,score,div|e>>, proposal_dist, posterior : list<(list<double>,a)>, burnin) : <sample,div|e> (list<(list<double>,a)>, trace<a,<sample,score,div|e>>) {
+fun model_stepper_recursive(steps : int, trace : trace<a,<sample,score,div|e>>, posterior : list<(list<double>,a)>, burnin) : <sample,div|e> (list<(list<double>,a)>, trace<a,<sample,score,div|e>>) {
   if(steps < 1) {
     (posterior, trace)
   } else {
-    val new_trace = mh_step(trace, proposal_dist)
+    val new_trace = mh_step(trace)
     if (burnin > 0) {
-      model_stepper_recursive(steps - 1, new_trace, proposal_dist, posterior, burnin - 1)
+      model_stepper_recursive(steps - 1, new_trace, posterior, burnin - 1)
     } else {
-      model_stepper_recursive(steps - 1, new_trace, proposal_dist, posterior + [(trace_v(new_trace), trace_a(new_trace))], burnin)
+      model_stepper_recursive(steps - 1, new_trace, posterior + [(trace_v(new_trace), trace_a(new_trace))], burnin)
     }
   }
 }
@@ -157,10 +157,8 @@ fun rmsmc_func_2(step_size:int, wm : (exp, int -> <sample,score,yield,pure> a), 
         advance {
           fun f() { m(step_size) }
           val g : () -> <sample,score,yield,pure> _a
-                = mask<score>{tmcmc( f, t_steps, w, uniform_proposal_dist, 0 ).snd.trace_m}
+                = mask<score>{tmcmc( f, t_steps, w, 0 ).snd.trace_m}
           g()
-          //m(step_size)
-          //error("hi")
         }
       }
     }

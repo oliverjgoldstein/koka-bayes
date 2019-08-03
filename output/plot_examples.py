@@ -2,6 +2,9 @@ import random
 import numpy as np
 from matplotlib import pyplot
 import csv
+import scipy.stats as stats
+import math
+import matplotlib.cm as cm
 
 def combine_csv(path, csv, csv_1, csv_2, csv_3, csv_4):
     fout = open((path+csv+'.csv'),"w+")
@@ -14,15 +17,22 @@ def combine_csv(path, csv, csv_1, csv_2, csv_3, csv_4):
     for line in open(path+csv_4+'.csv'):
         fout.write(line)
 
-def combine_csv_t(path, csv, csv_1, csv_2):
+def combine_csv_t(path, csv, csv_1, csv_2, csv_3, csv_4, csv_5):
     fout = open((path+csv+'.csv'),"w+")
     for line in open(path+csv_1+'.csv'):
         fout.write(line)
     for line in open(path+csv_2+'.csv'):
         fout.write(line)
+    for line in open(path+csv_3+'.csv'):
+        fout.write(line)
+    for line in open(path+csv_4+'.csv'):
+        fout.write(line)
+    for line in open(path+csv_5+'.csv'):
+        fout.write(line)
 
 
-def process_month(path, month, labels):
+
+def process_month(path, month, labels, ylim):
     li = read_in(path)
     # x1 = [float(v[0]) for v in li]
 
@@ -50,7 +60,7 @@ def process_month(path, month, labels):
 
     ys = [y1, y2, y3, y4, y5, y6, y7, y8, y9, y10, y11, y12, y13]
 
-    plot_hist(ys, month, path, labels)
+    plot_hist(ys, month, path, labels, ylim)
 
     plot_hist_comb(ys, month, path, labels)
 
@@ -79,20 +89,39 @@ def plot_hist_comb(ys, month, path, labels):
 
     pyplot.figure()
 
-    pyplot.ylim(0,4200)
-    pyplot.xlim(y_min, y_max)
-    pyplot.xlabel(month + ' temperature ($^\circ$ C)')
-    pyplot.ylabel('Frequency')
-    pyplot.tight_layout(rect=[0,0,0.75,1])
+    # pyplot.ylim(0,4200)
+    # pyplot.xlim(y_min, y_max)
+    # pyplot.xlabel(month + ' temperature ($^\circ$ C)')
+    # pyplot.ylabel('Frequency')
+    # pyplot.tight_layout(rect=[0,0,0.75,1])
+    #
+    # cols = ['red','red','red','red','red','red','red','blue','blue','blue','blue','blue','blue','blue']
+    #
+    # for val in range(0, len(ys)):
+    #     pyplot.hist(ys[val], alpha=0.2, label=labels[val], color=cols[val])
+    # pyplot.legend(bbox_to_anchor=(1.04,1), loc='upper left')
+    # pyplot.subplots_adjust(right=0.7)
+    # pyplot.savefig(path + '_hist_comb.png', bbox_inches="tight")
+    # pyplot.figure()
 
+
+    cols = ['blue','blue','blue','blue','blue','blue','blue','red','red','red','red','red','red','red']
+    # cols = cm.rainbow(np.linspace(0, 1, len(ys)))
     for val in range(0, len(ys)):
-        pyplot.hist(ys[val], alpha=0.5, label=labels[val])
+        mu      = np.mean(ys[val])
+        sigma   = np.std(ys[val])
+        x       = np.linspace(mu - 3*sigma, mu + 3*sigma, 100)
+        pyplot.plot(x, stats.norm.pdf(x, mu, sigma), label=labels[val], color=cols[val])
+
+    pyplot.xlabel(month + ' temperature ($^\circ$ C)')
+    pyplot.ylabel('Density')
+    pyplot.tight_layout(rect=[0,0,0.75,1])
     pyplot.legend(bbox_to_anchor=(1.04,1), loc='upper left')
     pyplot.subplots_adjust(right=0.7)
     pyplot.savefig(path + '_hist_comb.png', bbox_inches="tight")
     pyplot.figure()
 
-def plot_hist(ys, month, path, labels):
+def plot_hist(ys, month, path, labels, ylim):
 
     y_reduced = reduce(list.__add__, ys)
 
@@ -101,7 +130,7 @@ def plot_hist(ys, month, path, labels):
 
     for val in range(0, len(ys)):
         pyplot.figure()
-        pyplot.ylim(0,4200)
+        pyplot.ylim(0,ylim)
         pyplot.hist(ys[val], alpha=0.5, label='Temperature')
         pyplot.xlim(y_min, y_max)
         pyplot.xlabel(month + ' temperature ($^\circ$ C) : ' + labels[val])
@@ -275,7 +304,6 @@ rmsmc_posterior()
 smc_posterior()
 trace_posterior()
 is_posterior()
-is_posterior()
 
 
 combine_csv('./months/jan/', 'comb_smc', 'jan_5', 'jan_6', 'jan_3', 'jan_4')
@@ -291,18 +319,18 @@ combine_csv('./months/oct/', 'comb_smc', 'oct_5', 'oct_6', 'oct_3', 'oct_4')
 combine_csv('./months/nov/', 'comb_smc', 'nov_5', 'nov_6', 'nov_3', 'nov_4')
 combine_csv('./months/dec/', 'comb_smc', 'dec_5', 'dec_6', 'dec_3', 'dec_4')
 
-combine_csv_t('./months/jan/', 'comb_tmcmc', 'jan_1', 'jan_2')
-combine_csv_t('./months/feb/', 'comb_tmcmc', 'feb_1', 'feb_2')
-combine_csv_t('./months/mar/', 'comb_tmcmc', 'mar_1', 'mar_2')
-combine_csv_t('./months/apr/', 'comb_tmcmc', 'apr_1', 'apr_2')
-combine_csv_t('./months/may/', 'comb_tmcmc', 'may_1', 'may_2')
-combine_csv_t('./months/jun/', 'comb_tmcmc', 'jun_1', 'jun_2')
-combine_csv_t('./months/jul/', 'comb_tmcmc', 'jul_1', 'jul_2')
-combine_csv_t('./months/aug/', 'comb_tmcmc', 'aug_1', 'aug_2')
-combine_csv_t('./months/sep/', 'comb_tmcmc', 'sep_1', 'sep_2')
-combine_csv_t('./months/oct/', 'comb_tmcmc', 'oct_1', 'oct_2')
-combine_csv_t('./months/nov/', 'comb_tmcmc', 'nov_1', 'nov_2')
-combine_csv_t('./months/dec/', 'comb_tmcmc', 'dec_1', 'dec_2')
+combine_csv_t('./months/jan/', 'comb_tmcmc', 'jan_1', 'jan_2', 'jan_7', 'jan_8', 'jan_9')
+combine_csv_t('./months/feb/', 'comb_tmcmc', 'feb_1', 'feb_2', 'feb_7', 'feb_8', 'feb_9')
+combine_csv_t('./months/mar/', 'comb_tmcmc', 'mar_1', 'mar_2', 'mar_7', 'mar_8', 'mar_9')
+combine_csv_t('./months/apr/', 'comb_tmcmc', 'apr_1', 'apr_2', 'apr_7', 'apr_8', 'apr_9')
+combine_csv_t('./months/may/', 'comb_tmcmc', 'may_1', 'may_2', 'may_7', 'may_8', 'may_9')
+combine_csv_t('./months/jun/', 'comb_tmcmc', 'jun_1', 'jun_2', 'jun_7', 'jun_8', 'jun_9')
+combine_csv_t('./months/jul/', 'comb_tmcmc', 'jul_1', 'jul_2', 'jul_7', 'jul_8', 'jul_9')
+combine_csv_t('./months/aug/', 'comb_tmcmc', 'aug_1', 'aug_2', 'aug_7', 'aug_8', 'aug_9')
+combine_csv_t('./months/sep/', 'comb_tmcmc', 'sep_1', 'sep_2', 'sep_7', 'sep_8', 'sep_9')
+combine_csv_t('./months/oct/', 'comb_tmcmc', 'oct_1', 'oct_2', 'oct_7', 'oct_8', 'oct_9')
+combine_csv_t('./months/nov/', 'comb_tmcmc', 'nov_1', 'nov_2', 'nov_7', 'nov_8', 'nov_9')
+combine_csv_t('./months/dec/', 'comb_tmcmc', 'dec_1', 'dec_2', 'dec_7', 'dec_8', 'dec_9')
 
 
 labels = ['1756 - 1776',
@@ -320,18 +348,18 @@ labels = ['1756 - 1776',
           '1996 - 2016']
 
 
-jan = process_month('./months/jan/comb_smc', 'January'  , labels)
-feb = process_month('./months/feb/comb_smc', 'Feburary' , labels)
-mar = process_month('./months/mar/comb_smc', 'March'    , labels)
-apr = process_month('./months/apr/comb_smc', 'April'    , labels)
-may = process_month('./months/may/comb_smc', 'May'      , labels)
-jun = process_month('./months/jun/comb_smc', 'June'     , labels)
-jul = process_month('./months/jul/comb_smc', 'July'     , labels)
-aug = process_month('./months/aug/comb_smc', 'August'   , labels)
-sep = process_month('./months/sep/comb_smc', 'September', labels)
-oct = process_month('./months/oct/comb_smc', 'October'  , labels)
-nov = process_month('./months/nov/comb_smc', 'November' , labels)
-dec = process_month('./months/dec/comb_smc', 'December' , labels)
+jan = process_month('./months/jan/comb_smc', 'January'  , labels, 4200)
+feb = process_month('./months/feb/comb_smc', 'Feburary' , labels, 4200)
+mar = process_month('./months/mar/comb_smc', 'March'    , labels, 4200)
+apr = process_month('./months/apr/comb_smc', 'April'    , labels, 4200)
+may = process_month('./months/may/comb_smc', 'May'      , labels, 4200)
+jun = process_month('./months/jun/comb_smc', 'June'     , labels, 4200)
+jul = process_month('./months/jul/comb_smc', 'July'     , labels, 4200)
+aug = process_month('./months/aug/comb_smc', 'August'   , labels, 4200)
+sep = process_month('./months/sep/comb_smc', 'September', labels, 4200)
+oct = process_month('./months/oct/comb_smc', 'October'  , labels, 4200)
+nov = process_month('./months/nov/comb_smc', 'November' , labels, 4200)
+dec = process_month('./months/dec/comb_smc', 'December' , labels, 4200)
 
 
 graph_vals('./months/jan/', labels, jan, 'January'  , True)
@@ -349,18 +377,18 @@ graph_vals('./months/dec/', labels, dec, 'December' , True)
 
 graph_vals("./smc_", labels, calculate_global_temperature_change("_smc"), "Global", False)
 
-jan = process_month('./months/jan/comb_tmcmc', 'January'  , labels)
-feb = process_month('./months/feb/comb_tmcmc', 'Feburary' , labels)
-mar = process_month('./months/mar/comb_tmcmc', 'March'    , labels)
-apr = process_month('./months/apr/comb_tmcmc', 'April'    , labels)
-may = process_month('./months/may/comb_tmcmc', 'May'      , labels)
-jun = process_month('./months/jun/comb_tmcmc', 'June'     , labels)
-jul = process_month('./months/jul/comb_tmcmc', 'July'     , labels)
-aug = process_month('./months/aug/comb_tmcmc', 'August'   , labels)
-sep = process_month('./months/sep/comb_tmcmc', 'September', labels)
-oct = process_month('./months/oct/comb_tmcmc', 'October'  , labels)
-nov = process_month('./months/nov/comb_tmcmc', 'November' , labels)
-dec = process_month('./months/dec/comb_tmcmc', 'December' , labels)
+jan = process_month('./months/jan/comb_tmcmc', 'January'  , labels, 20000)
+feb = process_month('./months/feb/comb_tmcmc', 'Feburary' , labels, 20000)
+mar = process_month('./months/mar/comb_tmcmc', 'March'    , labels, 20000)
+apr = process_month('./months/apr/comb_tmcmc', 'April'    , labels, 20000)
+may = process_month('./months/may/comb_tmcmc', 'May'      , labels, 20000)
+jun = process_month('./months/jun/comb_tmcmc', 'June'     , labels, 20000)
+jul = process_month('./months/jul/comb_tmcmc', 'July'     , labels, 20000)
+aug = process_month('./months/aug/comb_tmcmc', 'August'   , labels, 20000)
+sep = process_month('./months/sep/comb_tmcmc', 'September', labels, 20000)
+oct = process_month('./months/oct/comb_tmcmc', 'October'  , labels, 20000)
+nov = process_month('./months/nov/comb_tmcmc', 'November' , labels, 20000)
+dec = process_month('./months/dec/comb_tmcmc', 'December' , labels, 20000)
 
 graph_vals('./months/jan/tmcmc_', labels, jan, 'January'  , True)
 graph_vals('./months/feb/tmcmc_', labels, feb, 'Feburary' , True)

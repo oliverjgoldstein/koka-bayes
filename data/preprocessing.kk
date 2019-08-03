@@ -14,25 +14,25 @@ fun pre_process_data() : _e (list<list<row_vector>>, list<list<row_vector>>) {
 
   val maybe_uncertainties = concat([uncertainties1, uncertainties2])
   val maybe_temperatures  = concat([temperatures1, temperatures2])
-  
+
   val uncertainties = remove_maybes(maybe_uncertainties, Nil)
   val temperatures = remove_maybes(maybe_temperatures, Nil)
-  
+
   val uncertainties_by_year = list_of_lists(uncertainties, 12)
   val temperatures_by_year  = list_of_lists(temperatures, 12)
-  
+
   val uncertainties_by_month = months(uncertainties_by_year)
   val temperatures_by_month = months(temperatures_by_year)
-  
+
   val grouped_uncertainties_by_month = convert_to_groups(uncertainties_by_month, 20)
   val grouped_temperatures_by_month = convert_to_groups(temperatures_by_month, 20)
-  
+
   (grouped_uncertainties_by_month, grouped_temperatures_by_month)
 }
 
 fun remove_maybes(list : list<maybe<double>>, return_list : list<double>) : exn list<double> {
   match(list) {
-    Nil -> return_list 
+    Nil -> return_list
     Cons(x,y) -> {
       match(x) {
         Nothing -> error("Preprocessing error: There are nothings! Please check the input file!")
@@ -68,7 +68,7 @@ fun length_months( months : list<list<double>> ) : list<int> {
   }
 }
 
-fun all_elements_equal( list : list<int> ) : exn bool { 
+fun all_elements_equal( list : list<int> ) : exn bool {
   assert("List must be non_empty!", non_empty(list))
   val first_length = exn-get(list, 0)
   var bool_val := True
@@ -78,7 +78,7 @@ fun all_elements_equal( list : list<int> ) : exn bool {
     }
   }
   return bool_val
-} 
+}
 
 /* [[1,2,3,4,5,6,...12],[1,2,3,4,5,6...12]...] -> [[1,1,1,1,1,..........1,1,1,1],[2,2,2,2,2,2,......2,2,2,]] */
 fun months( months : list<list<double>> ) : exn list<list<double>> {

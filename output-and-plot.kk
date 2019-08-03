@@ -28,6 +28,41 @@ fun write( hist : histogram<(list<double>)> , filename : string ) {
    write-text(path("./output/" + filename), show(hist))
 }
 
+fun write-awk( trace_vals : list<list<(list<double>, list<double>)>>, filename : string ) {
+  val filenames = gen-filenames(filename)
+  for(0, trace_vals.length - 1) fun(i) {
+    match(trace_vals[i]) {
+      Nothing -> error("No list!")
+      Just(lst_lst) -> {
+        match(filenames[i]) {
+          Nothing -> error("No filename!")
+          Just(fname) -> {
+            write-text(path("./output/" + fname), showspecial(lst_lst))
+          }
+        }
+      }
+    }
+  }
+}
+
+fun gen-filenames(filename : string) : list<string> {
+  [filename + "_1.csv", filename + "_2.csv", filename + "_7.csv", filename + "_8.csv",
+   filename + "_9.csv", filename + "_10.csv", filename + "_11.csv", filename + "_12.csv",
+   filename + "_13.csv", filename + "_14.csv", filename + "_15.csv", filename + "_16.csv"]
+}
+
+fun showspecial(tmcmc_result : list<(list<double>, list<double>)> ) : string {
+  var total_string := ""
+  for(0, tmcmc_result.length - 1) fun(i) {
+    val str = match(tmcmc_result[i]) {
+      Nothing -> "EMPTY"
+      Just((_,a)) -> list_to_csv(a)
+    }
+    total_string := total_string + str
+  }
+  total_string
+}
+
 
 fun plot( f : (double -> double) ) : string {
   val lft = 0.0
