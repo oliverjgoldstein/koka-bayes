@@ -133,10 +133,11 @@ def plot_hist(ys, month, path, labels, ylim):
         pyplot.ylim(0,ylim)
         pyplot.hist(ys[val], alpha=0.5, label='Temperature')
         pyplot.xlim(y_min, y_max)
-        pyplot.xlabel(month + ' temperature ($^\circ$ C) : ' + labels[val])
-        pyplot.ylabel('Frequency')
+        pyplot.tick_params(labelsize=20)
+        pyplot.xlabel(month + ' temperature ($^\circ$ C) : ' + labels[val], fontsize=20)
+        pyplot.ylabel('Frequency', fontsize=20)
         pyplot.legend(loc='upper right')
-        pyplot.savefig(path + '_hist_'+str(val+1)+'.png')
+        pyplot.savefig(path + '_hist_'+str(val+1)+'.png', bbox_inches = "tight")
         pyplot.tight_layout()
         pyplot.figure()
 
@@ -197,15 +198,16 @@ def graph_vals(path, labels, month_vals, month_name, display_bar):
             means,
             align='center')
 
-    ax.set_ylabel('Temperature ($^\circ$ C)')
+    ax.set_ylabel('Temperature ($^\circ$ C)', fontsize=20)
     ax.set_xticks(x_pos)
-    ax.set_xticklabels(labels, rotation='vertical', fontsize=16)
-    ax.set_title(month_name + ' temperature change over time.')
+    ax.set_xticklabels(labels, rotation='vertical', fontsize=20)
+    ax.tick_params(labelsize=20)
+    ax.set_title(month_name + ' temperature change over time.', fontsize=20)
     ax.yaxis.grid(True)
 
     # Save the figure and show
     pyplot.tight_layout()
-    pyplot.savefig(path+'aggregate.png')
+    pyplot.savefig(path+'aggregate.png', bbox_inches="tight")
 
 def trace_posterior():
     li = read_in('./gaussian/trace_posterior')
@@ -213,18 +215,20 @@ def trace_posterior():
 
     pyplot.figure()
     pyplot.hist(y, alpha=0.5, label='samples from the posterior', bins=100)
-    pyplot.xlabel('$\Theta$')
-    pyplot.ylabel('Frequency')
+    pyplot.tick_params(labelsize=20)
+    pyplot.xlabel('$\Theta$', fontsize=20)
+    pyplot.ylabel('Frequency', fontsize=20)
     pyplot.legend(loc='upper right')
-    pyplot.savefig('./gaussian/trace_posterior_hist.png')
+    pyplot.savefig('./gaussian/trace_posterior_hist.png', bbox_inches="tight")
     pyplot.figure()
 
     y = y[500:]
     pyplot.hist(y, alpha=0.5, label='samples from the posterior')
-    pyplot.xlabel('$\Theta$ with burn in of 500 samples')
-    pyplot.ylabel('Frequency')
+    pyplot.xlabel('$\Theta$ with burn in of 500 samples', fontsize=20)
+    pyplot.ylabel('Frequency', fontsize=20)
+    pyplot.tick_params(labelsize=20)
     pyplot.legend(loc='upper right')
-    pyplot.savefig('./gaussian/trace_posterior_hist_burnin.png')
+    pyplot.savefig('./gaussian/trace_posterior_hist_burnin.png', bbox_inches="tight")
     pyplot.figure()
 
 def smc_posterior():
@@ -245,13 +249,14 @@ def smc_posterior():
     # pyplot.savefig('./gaussian/smc_posterior_points.png')
     # pyplot.figure()
     pyplot.hist(y, alpha=0.5, label=' samples\n from\n the SMC\n posterior')
-    pyplot.xlabel('$\Theta$')
-    pyplot.ylabel('Frequency')
+    pyplot.xlabel('$\Theta$', fontsize=20)
+    pyplot.ylabel('Frequency', fontsize=20)
+    pyplot.tick_params(labelsize=20)
     # pyplot.legend(loc='upper right')
     pyplot.tight_layout(rect=[0,0,0.75,1])
     pyplot.legend(bbox_to_anchor=(1.04,1), loc='upper left')
     pyplot.subplots_adjust(right=0.7)
-    pyplot.savefig('./gaussian/smc_posterior_hist.png')
+    pyplot.savefig('./gaussian/smc_posterior_hist.png', bbox_inches="tight")
     pyplot.figure()
 
 def is_posterior():
@@ -261,16 +266,17 @@ def is_posterior():
 
     pyplot.figure()
     pyplot.plot(y,x, 'ro', label='samples from the posterior')
-    pyplot.ylabel('likelihood')
+    pyplot.ylabel('likelihood', fontsize=20)
     pyplot.legend(loc='upper left')
-    pyplot.xlabel('$\Theta$')
-    pyplot.savefig('./gaussian/is_posterior_points.png')
+    pyplot.xlabel('$\Theta$', fontsize=20)
+    pyplot.tick_params(labelsize=20)
+    pyplot.savefig('./gaussian/is_posterior_points.png', bbox_inches="tight")
     pyplot.figure()
     pyplot.hist(y, alpha=0.5, label='samples from the prior')
-    pyplot.xlabel('$\Theta$')
-    pyplot.ylabel('Frequency')
+    pyplot.xlabel('$\Theta$', fontsize=20)
+    pyplot.ylabel('Frequency', fontsize=20)
     pyplot.legend(loc='upper right')
-    pyplot.savefig('./gaussian/is_posterior_hist.png')
+    pyplot.savefig('./gaussian/is_posterior_hist.png', bbox_inches="tight")
     pyplot.figure()
 
 def rmsmc_posterior():
@@ -280,10 +286,10 @@ def rmsmc_posterior():
 
     pyplot.figure()
     pyplot.hist(y, alpha=0.5, label='samples from the posterior')
-    pyplot.xlabel('$\Theta$')
-    pyplot.ylabel('Frequency')
+    pyplot.xlabel('$\Theta$',  fontsize=20)
+    pyplot.ylabel('Frequency', fontsize=20)
     pyplot.legend(loc='upper right')
-    pyplot.savefig('./gaussian/rmsmc_posterior_hist.png')
+    pyplot.savefig('./gaussian/rmsmc_posterior_hist.png', bbox_inches="tight")
     pyplot.figure()
 
 labels = ['1756 - 1776',
