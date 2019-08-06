@@ -272,6 +272,7 @@ def is_posterior():
     pyplot.tick_params(labelsize=20)
     pyplot.savefig('./gaussian/is_posterior_points.png', bbox_inches="tight")
     pyplot.figure()
+    pyplot.tick_params(labelsize=20)
     pyplot.hist(y, alpha=0.5, label='samples from the prior')
     pyplot.xlabel('$\Theta$', fontsize=20)
     pyplot.ylabel('Frequency', fontsize=20)
