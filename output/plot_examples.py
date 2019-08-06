@@ -292,6 +292,12 @@ def rmsmc_posterior():
     pyplot.savefig('./gaussian/rmsmc_posterior_hist.png', bbox_inches="tight")
     pyplot.figure()
 
+def add_together(list1, list2):
+    list_build = []
+    for i in range(0, len(list1)):
+        list_build += [(np.mean([list1[i][0], list2[i][0]]), np.std([list1[i][0], list2[i][0]]))]
+    return list_build
+
 labels = ['1756 - 1776',
           '1776 - 1796',
           '1796 - 1816',
@@ -338,6 +344,31 @@ combine_csv_t('./months/oct/', 'comb_tmcmc', 'oct_1', 'oct_2', 'oct_7', 'oct_8',
 combine_csv_t('./months/nov/', 'comb_tmcmc', 'nov_1', 'nov_2', 'nov_7', 'nov_8', 'nov_9')
 combine_csv_t('./months/dec/', 'comb_tmcmc', 'dec_1', 'dec_2', 'dec_7', 'dec_8', 'dec_9')
 
+combine_csv('./months/jan/', 'comb_smc2', 'jan_smc_7', 'jan_smc_8', 'jan_smc_9', 'jan_smc_10')
+combine_csv('./months/feb/', 'comb_smc2', 'feb_smc_7', 'feb_smc_8', 'feb_smc_9', 'feb_smc_10')
+combine_csv('./months/mar/', 'comb_smc2', 'mar_smc_7', 'mar_smc_8', 'mar_smc_9', 'mar_smc_10')
+combine_csv('./months/apr/', 'comb_smc2', 'apr_smc_7', 'apr_smc_8', 'apr_smc_9', 'apr_smc_10')
+combine_csv('./months/may/', 'comb_smc2', 'may_smc_7', 'may_smc_8', 'may_smc_9', 'may_smc_10')
+combine_csv('./months/jun/', 'comb_smc2', 'jun_smc_7', 'jun_smc_8', 'jun_smc_9', 'jun_smc_10')
+combine_csv('./months/jul/', 'comb_smc2', 'jul_smc_7', 'jul_smc_8', 'jul_smc_9', 'jul_smc_10')
+combine_csv('./months/aug/', 'comb_smc2', 'aug_smc_7', 'aug_smc_8', 'aug_smc_9', 'aug_smc_10')
+combine_csv('./months/sep/', 'comb_smc2', 'sep_smc_7', 'sep_smc_8', 'sep_smc_9', 'sep_smc_10')
+combine_csv('./months/oct/', 'comb_smc2', 'oct_smc_7', 'oct_smc_8', 'oct_smc_9', 'oct_smc_10')
+combine_csv('./months/nov/', 'comb_smc2', 'nov_smc_7', 'nov_smc_8', 'nov_smc_9', 'nov_smc_10')
+combine_csv('./months/dec/', 'comb_smc2', 'dec_smc_7', 'dec_smc_8', 'dec_smc_9', 'dec_smc_10')
+
+combine_csv_t('./months/jan/', 'comb_tmcmc2', 'jan_10', 'jan_11', 'jan_12', 'jan_13', 'jan_14')
+combine_csv_t('./months/feb/', 'comb_tmcmc2', 'feb_10', 'feb_11', 'feb_12', 'feb_13', 'feb_14')
+combine_csv_t('./months/mar/', 'comb_tmcmc2', 'mar_10', 'mar_11', 'mar_12', 'mar_13', 'mar_14')
+combine_csv_t('./months/apr/', 'comb_tmcmc2', 'apr_10', 'apr_11', 'apr_12', 'apr_13', 'apr_14')
+combine_csv_t('./months/may/', 'comb_tmcmc2', 'may_10', 'may_11', 'may_12', 'may_13', 'may_14')
+combine_csv_t('./months/jun/', 'comb_tmcmc2', 'jun_10', 'jun_11', 'jun_12', 'jun_13', 'jun_14')
+combine_csv_t('./months/jul/', 'comb_tmcmc2', 'jul_10', 'jul_11', 'jul_12', 'jul_13', 'jul_14')
+combine_csv_t('./months/aug/', 'comb_tmcmc2', 'aug_10', 'aug_11', 'aug_12', 'aug_13', 'aug_14')
+combine_csv_t('./months/sep/', 'comb_tmcmc2', 'sep_10', 'sep_11', 'sep_12', 'sep_13', 'sep_14')
+combine_csv_t('./months/oct/', 'comb_tmcmc2', 'oct_10', 'oct_11', 'oct_12', 'oct_13', 'oct_14')
+combine_csv_t('./months/nov/', 'comb_tmcmc2', 'nov_10', 'nov_11', 'nov_12', 'nov_13', 'nov_14')
+combine_csv_t('./months/dec/', 'comb_tmcmc2', 'dec_10', 'dec_11', 'dec_12', 'dec_13', 'dec_14')
 
 labels = ['1756 - 1776',
           '1776 - 1796',
@@ -381,7 +412,10 @@ graph_vals('./months/oct/', labels, oct, 'October'  , True)
 graph_vals('./months/nov/', labels, nov, 'November' , True)
 graph_vals('./months/dec/', labels, dec, 'December' , True)
 
-graph_vals("./smc_", labels, calculate_global_temperature_change("_smc"), "Global", False)
+vals_smc = calculate_global_temperature_change("_smc")
+vals_smc2 = calculate_global_temperature_change("_smc2")
+smc_added = add_together(vals_smc, vals_smc2)
+graph_vals("./smc_", labels, smc_added, "Global", True)
 
 jan = process_month('./months/jan/comb_tmcmc', 'January'  , labels, 20000)
 feb = process_month('./months/feb/comb_tmcmc', 'Feburary' , labels, 20000)
@@ -409,4 +443,7 @@ graph_vals('./months/oct/tmcmc_', labels, oct, 'October'  , True)
 graph_vals('./months/nov/tmcmc_', labels, nov, 'November' , True)
 graph_vals('./months/dec/tmcmc_', labels, dec, 'December' , True)
 
-graph_vals("./tmcmc_", labels, calculate_global_temperature_change("_tmcmc"), "Global", False)
+vals_tmcmc = calculate_global_temperature_change("_tmcmc")
+vals_tmcmc2 = calculate_global_temperature_change("_tmcmc2")
+tmcmc_added = add_together(vals_tmcmc, vals_tmcmc2)
+graph_vals("./tmcmc_", labels, tmcmc_added, "Global", True)
