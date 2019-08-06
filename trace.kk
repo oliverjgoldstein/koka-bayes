@@ -67,7 +67,7 @@ fun mh_step(trace : trace<a,<sample,score|e>>) : <sample|e> trace<a,<sample,scor
       match(p2b) {
         (new_trace, (p2, b)) -> {
           // This update procedure copies that of Monad Bayes:
-          val ratio = min(1.0, ((exp_to_double(p2) * new_trace.length.double) / (exp_to_double(p1) * old_trace.length.double)))
+          val ratio = min(1.0, ((exp_to_double(p2) * old_trace.length.double) / (exp_to_double(p1) * new_trace.length.double)))
           val accept = bernoulli(ratio)
           if(accept) {
             Trace(model, p2, new_trace, b)
