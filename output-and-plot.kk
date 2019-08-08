@@ -48,8 +48,8 @@ fun write-awk( trace_vals : list<list<(list<double>, list<double>)>>, filename :
 fun gen-filenames(filename : string) : list<string> {
   /* [filename + "_1.csv", filename + "_2.csv", filename + "_7.csv", filename + "_8.csv", */
    /* filename + "_9.csv",  */
-   [filename + "_10.csv", filename + "_11.csv", filename + "_12.csv", filename + "_13.csv", filename + "_14.csv"]
-   /* [filename + "_15.csv", filename + "_16.csv"] */
+   /* [filename + "_10.csv", filename + "_11.csv", filename + "_12.csv", filename + "_13.csv", filename + "_14.csv"] */
+   [filename + "_15.csv", filename + "_16.csv", filename + "_17.csv", filename + "_18.csv", filename + "_19.csv"]
 }
 
 fun showspecial(tmcmc_result : list<(list<double>, list<double>)> ) : string {

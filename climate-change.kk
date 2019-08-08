@@ -59,7 +59,7 @@ fun score_predictions(true_values : row_vector, predicted_values : row_vector, s
 
 fun score_thunk(score_std_dev : double) {
   return fun(true_val : double, pred_val : double) {
-    score(normal_pdf(true_val, score_std_dev, pred_val))
+    score(normal_pdf(pred_val, score_std_dev, true_val))
   }
 }
 
