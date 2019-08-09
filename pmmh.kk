@@ -11,16 +11,17 @@ import model-resources
 import trace
 import sequential
 
-fun new_model(param_prior : () -> e b, smc_model : b -> model<a,e>, particle_num : int, step_num : int) {
-  val params = param_prior()
-  random_sampler {
+fun new_model(param_prior : () -> <pure,sample,score,ndet|e> b, smc_model : b -> model<a,<yield,div,exn,sample,score|e>>, particle_num : int, step_num : int) : (() -> <pure,sample,score,ndet|e> b) {
+  val g = fun() {
+    val params = param_prior()
     val smc_hist = smc(particle_num, step_num, 1, smc_model(params))
     score(sum_weights(smc_hist))
+    params
   }
-  params
+  g
 }
 
-fun pmmh(smc_model : b -> model<a,e>, param_prior : trace<b,e>) {
-  val pmmh_model = new_model(trace_m(param_prior), smc_model, 10, 10)
-  tmcmc(pmmh_model, 10, trace_p(param_prior), 0)
+fun pmmh(smc_model, param_prior) {
+  val pmmh_model = new_model(param_prior, smc_model, 10, 10)
+  tmcmc(pmmh_model, 10, Exp(0.0), 0)
 }
