@@ -24,26 +24,27 @@ fun linear_gaussian_climate_data(ys : list<row_vector>, vs : list<row_vector>, p
     val a_mean                            = 1.0
     val a_std_dev                         = 0.4
 
-    val x = ref([])
+    var x := []
     for(0, 12) fun(i) {
       if(i == 0) {
-        x := !x + [(sample() * diff) + subtract]
+        x := x + [(sample() * diff) + subtract]
       } else {
         val a_val = normal(a_mean,a_std_dev)
         val w_val = normal(w_mean,w_std_dev)
-        x := !x + [exn-get(!x, i - 1) * a_val + w_val]
+        x := x + [exn-get(x, i - 1) * a_val + w_val]
       }
       val month_ys = exn-get(ys,i)
       val month_vs = exn-get(vs,i)
       val c_row = multivariate_gaussian(month_ys.length, 1.0 + mult_bias_of_thermometer, mult_bias_of_thermometer_std_dev)
       val v_row = convert_uncertainty_to_rand(month_vs)
-      val predictions = plus(mult(exn-get(!x, i), c_row), v_row)
+      val predictions = plus(mult(exn-get(x, i), c_row), v_row)
+
       score_predictions(month_ys, predictions, score_var)
       ()
     }
 
     list(0,12) fun(i) {
-      exn-get(!x, i)
+      exn-get(x, i)
     }
   }
   g
