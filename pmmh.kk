@@ -11,10 +11,10 @@ import model-resources
 import trace
 import sequential
 
-fun new_model(param_model : () -> <pure,sample,score,ndet|_e> b, main_model : b -> model<a,_e1>, particle_num : int, step_num : int) : (() -> <pure,sample,score,ndet|_e> b) {
+fun new_model(param_model : model<b,<pure,ndet|_e>>, main_model : b -> model<a,_e1>, particle_num : int, step_num : int) : model<b, <pure,ndet|_e>> {
   val g = fun() {
     val params = param_model()
-    val smc_hist = smc(particle_num, step_num, 1, main_model(params))
+    val smc_hist = smc(particle_num, step_num, 1, main_model(params), False)
     score(sum_weights(smc_hist))
     params
   }
