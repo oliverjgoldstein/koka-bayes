@@ -46,7 +46,7 @@ fun main() {
   // Note that if you change any filename - change output/plot_examples.py too if you want to show the histograms.
   println("Running Sequential Monte Carlo...")
   print-elapsed {
-    write(smc(2000, 10, 1, sequential_gaussian(data_point)), "./gaussian/smc_posterior.csv")
+    write(smc(2000, 10, 1, sequential_gaussian(data_point), True), "./gaussian/smc_posterior.csv")
   }
   println("Completed Sequential Monte Carlo!")
 
@@ -125,7 +125,7 @@ fun run_experiments() {
         print-elapsed {rmsmc(10, 300 , 300, logistic_regression(data_300), 1)}
         print-elapsed {rmsmc(10, 200 , 200, logistic_regression(data_200), 1)}
         print-elapsed {rmsmc(10, 100 , 100, logistic_regression(data_100), 1)}
-        /* print-elapsed {rmsmc(10, 0   , 0,   logistic_regression(data_0), 1)} */
+        print-elapsed {rmsmc(10, 0   , 0,   logistic_regression(data_0), 1)}
 
         println("Mid-way")
 
@@ -219,14 +219,14 @@ fun run_climate_model(pt : int, rs : int, sbrs : int, t_steps : int, burnin : in
 
   print-elapsed {
     println("Begin SMC:")
-    print-elapsed{write(smc(pt, rs, sbrs, linear_gaussian_climate_data(exn-get(data.snd, 0), exn-get(data.fst, 0), False, 10.0, -3.0, 4.7), True), "./months/jan/jan_smc_1.csv")}
+    /* print-elapsed{write(smc(pt, rs, sbrs, linear_gaussian_climate_data(exn-get(data.snd, 0), exn-get(data.fst, 0), False, 10.0, -3.0, 4.7), True), "./months/jan/jan_smc_1.csv")}
     print-elapsed{write(smc(pt, rs, sbrs, linear_gaussian_climate_data(exn-get(data.snd, 0), exn-get(data.fst, 0), False, 10.0, -3.0, 4.7), True), "./months/jan/jan_smc_2.csv")}
     print-elapsed{write(smc(pt, rs, sbrs, linear_gaussian_climate_data(exn-get(data.snd, 1), exn-get(data.fst, 1), False, 8.0 , -1.0, 4.7), True), "./months/feb/feb_smc_1.csv")}
     print-elapsed{write(smc(pt, rs, sbrs, linear_gaussian_climate_data(exn-get(data.snd, 1), exn-get(data.fst, 1), False, 8.0 , -1.0, 4.7), True), "./months/feb/feb_smc_2.csv")}
     print-elapsed{write(smc(pt, rs, sbrs, linear_gaussian_climate_data(exn-get(data.snd, 2), exn-get(data.fst, 2), False, 7.0 ,  1.0, 4.7), True), "./months/mar/mar_smc_1.csv")}
     print-elapsed{write(smc(pt, rs, sbrs, linear_gaussian_climate_data(exn-get(data.snd, 2), exn-get(data.fst, 2), False, 7.0 ,  1.0, 4.7), True), "./months/mar/mar_smc_2.csv")}
     print-elapsed{write(smc(pt, rs, sbrs, linear_gaussian_climate_data(exn-get(data.snd, 3), exn-get(data.fst, 3), False, 6.0 ,  5.0, 4.7), True), "./months/apr/apr_smc_1.csv")}
-    print-elapsed{write(smc(pt, rs, sbrs, linear_gaussian_climate_data(exn-get(data.snd, 3), exn-get(data.fst, 3), False, 6.0 ,  5.0, 4.7), True), "./months/apr/apr_smc_2.csv")}
+    print-elapsed{write(smc(pt, rs, sbrs, linear_gaussian_climate_data(exn-get(data.snd, 3), exn-get(data.fst, 3), False, 6.0 ,  5.0, 4.7), True), "./months/apr/apr_smc_2.csv")} */
     print-elapsed{write(smc(pt, rs, sbrs, linear_gaussian_climate_data(exn-get(data.snd, 4), exn-get(data.fst, 4), False, 8.0 ,  9.0, 4.7), True), "./months/may/may_smc_1.csv")}
     print-elapsed{write(smc(pt, rs, sbrs, linear_gaussian_climate_data(exn-get(data.snd, 4), exn-get(data.fst, 4), False, 8.0 ,  9.0, 4.7), True), "./months/may/may_smc_2.csv")}
     print-elapsed{write(smc(pt, rs, sbrs, linear_gaussian_climate_data(exn-get(data.snd, 5), exn-get(data.fst, 5), False, 8.0 , 10.0, 4.7), True), "./months/jun/jun_smc_1.csv")}
