@@ -152,6 +152,47 @@ fun fit_1d_gaussian(model : nmodel<double>, dataset : data_1d) : nmodel<double> 
   g
 }
 
+
+fun params()  {
+  val g = fun() {
+    val s = grand(1.0,1.0)
+    s
+  }
+  g
+}
+
+fun random_walk( zs : list<double> ) : ((s : double) -> (nmodel<list<double>>)) {
+  val g = fun(s : double) {
+    val f = fun() {
+      fun obs(x,y) {
+        score(normal_pdf(x, 1.0, y))
+      }
+
+      fun expand(xss : list<double>, yss : list<double>) {
+        match(yss) {
+          Nil -> return xss
+          Cons(y, ys) -> {
+            match(xss) {
+              Nil -> return Nil
+              Cons(x, xs) -> {
+                val x' = normal(x,s)
+                obs(x', y)
+                expand([x', x] + xs, ys)
+              }
+            }
+          }
+        }
+      }
+
+      val xs = expand([0.0], zs)
+      return xs.reverse
+    }
+    f
+  }
+  g
+}
+
+
 fun bernoulli(p : double) : sample bool {
   val g = sample()
   if (g < p) {

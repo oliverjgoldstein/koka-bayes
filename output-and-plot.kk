@@ -45,12 +45,32 @@ fun write-awk( trace_vals : list<list<(list<double>, list<double>)>>, filename :
   }
 }
 
-fun gen-filenames(filename : string) : list<string> {
-  /* [filename + "_1.csv", filename + "_2.csv", filename + "_7.csv", filename + "_8.csv", */
-   /* filename + "_9.csv",  */
-   /* [filename + "_10.csv", filename + "_11.csv", filename + "_12.csv", filename + "_13.csv", filename + "_14.csv"] */
-   [filename + "_15.csv", filename + "_16.csv", filename + "_17.csv", filename + "_18.csv", filename + "_19.csv"]
+fun write-awk2( trace_vals : list<list<(list<double>, list<double>)>>, filename : string ) {
+  val filenames = gen-filenames2(filename)
+  for(0, trace_vals.length - 1) fun(i) {
+    match(trace_vals[i]) {
+      Nothing -> error("No list!")
+      Just(lst_lst) -> {
+        match(filenames[i]) {
+          Nothing -> error("No filename!")
+          Just(fname) -> {
+            write-text(path("./output/" + fname), showspecial(lst_lst))
+          }
+        }
+      }
+    }
+  }
 }
+
+
+fun gen-filenames(filename : string) : list<string> {
+   [filename + "_tmcmc_1.csv", filename + "_tmcmc_2.csv", filename + "_tmcmc_3.csv", filename + "_tmcmc_4.csv", filename + "_tmcmc_5.csv"]
+}
+
+fun gen-filenames2(filename : string) : list<string> {
+   [filename + "_tmcmc_6.csv", filename + "_tmcmc_7.csv", filename + "_tmcmc_8.csv", filename + "_tmcmc_9.csv", filename + "_tmcmc_10.csv"]
+}
+
 
 fun showspecial(tmcmc_result : list<(list<double>, list<double>)> ) : string {
   var total_string := ""
