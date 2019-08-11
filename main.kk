@@ -26,9 +26,9 @@ fun main() {
 
 
 
-  println("Running Importance Sampling...")
+  /* println("Running Importance Sampling...")
   print-elapsed{write(importance_sampling(sequential_gaussian(data_point)), "./gaussian/importance_sampling.csv")}
-  println("Completed Importance Sampling!")
+  println("Completed Importance Sampling!") */
 
   /* println("Running Timing Experiments...")
   random_sampler {
@@ -37,7 +37,7 @@ fun main() {
   println("Completed Timing Experiments!") */
 
 
-  println("Running Resample Move Sequential Monte Carlo...")
+  /* println("Running Resample Move Sequential Monte Carlo...")
   print-elapsed {
     write(rmsmc(2000, 2, 10, sequential_gaussian(data_point), 5), "./gaussian/rmsmc_posterior.csv")
   }
@@ -58,13 +58,12 @@ fun main() {
     }
   }
   println("Completed Trace MCMC!")
-
+ */
 
   println("Running Climate Model...")
   run_climate_model(particles, resample_steps, scores_before_resampling, t_steps, burnin)
   println("Completed Climate Model!")
   println("Finished running...")
-
 }
 
 fun run_experiments() {
@@ -181,7 +180,7 @@ fun run_climate_model(pt : int, rs : int, sbrs : int, t_steps : int, burnin : in
 
   val data = pre_process_data()
 
-  print-elapsed {
+  /* print-elapsed {
     random_sampler {
       print-elapsed{write-awk(split_tmcmc(tmcmc(linear_gaussian_climate_data(exn-get(data.snd, 0), exn-get(data.fst, 0), False, 10.0, -3.0, 4.7), t_steps, Exp(0.0), burnin).fst), "./months/jan/jan")}
       print-elapsed{write-awk(split_tmcmc(tmcmc(linear_gaussian_climate_data(exn-get(data.snd, 1), exn-get(data.fst, 1), False, 8.0 , -1.0, 4.7), t_steps, Exp(0.0), burnin).fst), "./months/feb/feb")}
@@ -213,7 +212,7 @@ fun run_climate_model(pt : int, rs : int, sbrs : int, t_steps : int, burnin : in
       print-elapsed{write-awk2(split_tmcmc(tmcmc(linear_gaussian_climate_data(exn-get(data.snd, 11), exn-get(data.fst, 11), False, 6.0, -1.0,4.7), t_steps, Exp(0.0), burnin).fst), "./months/dec/dec")}
       println("End TMCMC:")
     }
-  }
+  } */
 
 
 
