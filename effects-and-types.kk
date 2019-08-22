@@ -17,5 +17,5 @@ type exp {
 
 effect control yield() : ()
 
-effect fun sample() : double
-effect fun score( s : exp ) : ()
+effect control sample() : double
+effect control score( s : exp ) : ()

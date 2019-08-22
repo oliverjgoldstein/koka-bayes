@@ -16,6 +16,20 @@ fun random_sampler(action : () -> <sample|e> a) : <ndet|e> a {
   }
 } */
 
+/* fun condition(action : () -> <condition|e> a) {
+  var s := True
+  handle(action) {
+    return x -> (s,x)
+    condition( s ) -> {
+      if(s == True) {
+        resume()
+      } else {
+        ()
+      }
+    }
+  }
+} */
+
 fun replay(trace: trace_values, action : () -> <sample|e> a) : <sample|e> (list<double>, a) {
   replayx(trace, {mask behind<sample>(action)} )
 }

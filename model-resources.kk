@@ -5,6 +5,7 @@ import std/num/double
 import effects-and-types
 import handlers
 import exponents
+import exn-get
 
 fun gaussian_model() : nmodel<double> {
   return fun() {
@@ -14,22 +15,18 @@ fun gaussian_model() : nmodel<double> {
 
 fun sequential_gaussian(data_point : double) : nmodel<double> {
   val g = fun() {
-    val seed = normal(0.0, 1.0)
-    score(normal_pdf(seed, 0.3, data_point))
-    val seed2 = normal(seed, 1.0)
-    score(normal_pdf(seed2, 0.3, data_point))
-    val seed3 = normal(seed2, 0.5)
-    score(normal_pdf(seed3, 0.3, data_point))
-    val seed4 = normal(seed3, 0.4)
-    score(normal_pdf(seed4, 0.3, data_point))
-    val seed5 = normal(seed4, 0.2)
-    score(normal_pdf(seed5, 0.2, data_point))
-    val seed6 = normal(seed5, 0.1)
-    score(normal_pdf(seed6, 0.1, data_point))
-    seed6
+    var x          := 0.0
+    val vars       = 1.0
+    val score-var  = 0.2
+    for(0, 5) fun(i) {
+      x := normal(x, vars)
+      score(normal_pdf(x, score-var, data_point))
+    }
+    x
   }
   g
 }
+
 
 fun fit(model : regression, dataset : two_d_data) : regression {
     val g = fun() {

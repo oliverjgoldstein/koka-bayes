@@ -26,20 +26,13 @@ fun main() {
 
 
 
-  /* println("Running Importance Sampling...")
+  println("Running Importance Sampling...")
   print-elapsed{write(importance_sampling(sequential_gaussian(data_point)), "./gaussian/importance_sampling.csv")}
-  println("Completed Importance Sampling!") */
+  println("Completed Importance Sampling!")
 
-  /* println("Running Timing Experiments...")
-  random_sampler {
-    run_experiments()
-  }
-  println("Completed Timing Experiments!") */
-
-
-  /* println("Running Resample Move Sequential Monte Carlo...")
+  println("Running Resample Move Sequential Monte Carlo...")
   print-elapsed {
-    write(rmsmc(2000, 2, 10, sequential_gaussian(data_point), 5), "./gaussian/rmsmc_posterior.csv")
+    write(rmsmc(2000, 2, 10, sequential_gaussian(data_point), 5), "./gaussian/rmsmc_posteriors.csv")
   }
   println("Completed Resample Move Sequential Monte Carlo!")
 
@@ -57,8 +50,14 @@ fun main() {
       write(trace_and_values, "./gaussian/trace_posterior.csv")
     }
   }
-  println("Completed Trace MCMC!")
- */
+  println("Completed Trace MCMC!") */
+
+
+  println("Running Timing Experiments...")
+  random_sampler {
+   run_experiments()
+  }
+  println("Completed Timing Experiments!") */
 
   println("Running Climate Model...")
   run_climate_model(particles, resample_steps, scores_before_resampling, t_steps, burnin)
