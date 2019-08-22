@@ -14,3 +14,8 @@ From the root directory of where you download koka-bayes:
 2. <code> make clean </code> - this cleans the compiled koka files.
 3. <code> make clean-data </code> - this removes all the data and png files - not recommended unless you have reason to do so.
 4. <code> make interactive </code> - this launches an interactive script with the library loaded.
+
+The koka (kk) files at the root of the directory correspond to the implementation of the library.
+The output files contain the output of inference and post-processing files for the markov chain and climate model.
+The bin directory contains the make files.
+The data directory contains pre-processing files and the data for the climate model.
