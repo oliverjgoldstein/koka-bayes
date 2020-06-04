@@ -11,6 +11,8 @@ import model-resources
 import trace
 import sequential
 
+// PMMH is under development and does not currently work as expected.
+
 fun new_model(param_model : model<b,<pure,ndet|_e>>, main_model : b -> model<a,_e1>, particle_num : int, step_num : int) : model<b, <pure,ndet|_e>> {
   val g = fun() {
     val params = param_model()

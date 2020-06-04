@@ -1,4 +1,14 @@
-N.B. This library uses shell scripts and thus requires unix/linux.
+This library has been tested on OSX Catalina, GHCI version 7.10.3, and Koka (commit c348fa7 : March 28th 2019)
+This library uses shell scripts and thus requires unix/linux.
+
+This is a probabilistic programming library that uses algebraic effects. It is based on Ohad Kammar's Eff Bayes.
+
+This library has three working inference methods.
+1. <b> Importance Sampling </b>
+2. <b> Sequential Monte Carlo </b>
+3. <b> Trace Markov Chain Monte Carlo </b>
+
+Please see main.kk for a short demonstration of all three inference algorithms.
 
 To install and run this library:
 

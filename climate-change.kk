@@ -71,12 +71,6 @@ fun convert_uncertainty_to_rand(vs : row_vector) : <exn, sample> row_vector {
   }
 }
 
-/* fun tester() {
-  show(random_sampler {
-    plus([5.0,7.4], [2.0,5.0])
-  })
-} */
-
 fun mult_thunk(x : double) {
   return fun(v : double) {
     x * v
