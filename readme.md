@@ -8,6 +8,8 @@ This library has three working inference methods.
 2. <b> Sequential Monte Carlo </b>
 3. <b> Trace Markov Chain Monte Carlo </b>
 
+The library also contains Particle Marginal Metropolis Hastings, but it does not currently work as expected.
+
 Please see main.kk for a short demonstration of all three inference algorithms.
 
 To install and run this library:
