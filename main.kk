@@ -50,14 +50,14 @@ fun main() {
       write(trace_and_values, "./gaussian/trace_posterior.csv")
     }
   }
-  println("Completed Trace MCMC!") */
+  println("Completed Trace MCMC!")
 
 
   println("Running Timing Experiments...")
   random_sampler {
    run_experiments()
   }
-  println("Completed Timing Experiments!") */
+  println("Completed Timing Experiments!") 
 
   println("Running Climate Model...")
   run_climate_model(particles, resample_steps, scores_before_resampling, t_steps, burnin)
