@@ -17,15 +17,15 @@ To install and run this library:
 <b>To install koka-bayes:</b> <br />
 From the root directory of where you download koka-bayes:
 1. <code> make install </code>
-2. <code> make dev </code> - this compiles the code.
-3. <code> make analyze </code> - this runs the data analysis.
+2. <code> make clean </code> - this cleans the compiled koka files - this is fine to do.
+3. <code> make dev </code> - this compiles the code.
 4. <code> make run </code> - this compiles and runs the main.kk file.
-5. <code> make clean </code> - this cleans the compiled koka files - this is fine to do.
-6. <code> make interactive </code> - this launches an interactive script with the library loaded.
 
-<b>Alternative commands:</b> <br />
+<b>Alternative commands implemented</b> <br />
 From the root directory of where you download koka-bayes:
 1. <code> make clean-data </code> - this removes all the data (csv files and png images) from running the climate-experiments.kk file - not recommended unless you have reason to do so.
+2. <code> make analyze </code> - this runs the data analysis.
+3. <code> make interactive </code> - this launches an interactive script with the library loaded.
 
 The koka (kk) files at the root of the directory correspond to the implementation of the library.
 The <b>output</b> directory contains the output of inference and post-processing files for the markov chain and climate model (the climate model is contained in climate-experiments.kk).
