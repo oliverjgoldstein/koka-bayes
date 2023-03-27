@@ -1,0 +1,158 @@
+module interface output-and-plot
+ 
+//------------------------------
+//#kki: import declarations
+ 
+private import std/core/types = std/core/types = "";
+private import std/core/hnd = std/core/hnd = "";
+private import std/core = std/core = "";
+private import std/num/ddouble = std/num/ddouble = "";
+private import std/os/path = std/os/path = "";
+private import std/os/file = std/os/file = "";
+private import effects-and-types = effects-and-types = "";
+ 
+//------------------------------
+//#kki: fixity declarations
+ 
+ 
+//------------------------------
+//#kki: local imported aliases
+ 
+local alias effects-and-types/histogram<a> :: V -> V = (std/core/list :: V -> V)<(effects-and-types/exp, a)> = 1;
+ 
+//------------------------------
+//#kki: type declarations
+ 
+ 
+//------------------------------
+//#kki: declarations
+ 
+// monadic lift
+private fun .mlift6203-list-join : forall<(e :: E)> (xs : (std/core/list :: V -> V)<std/core/types/string>) -> (e :: E) std/core/types/string;
+public fun list-join : forall<(e :: E)> (len : std/core/types/int, elem : (std/core/types/int) -> (e :: E) std/core/types/string) -> (e :: E) std/core/types/string;
+public fun list_to_csv : (xs : (std/core/list :: V -> V)<std/core/types/double>) -> std/core/types/string;
+public fun gen-filenames : (filename : std/core/types/string) -> (std/core/list :: V -> V)<std/core/types/string>;
+public fun gen-filenames2 : (filename : std/core/types/string) -> (std/core/list :: V -> V)<std/core/types/string>;
+public fun show_head : (tmcmc_result : (std/core/list :: V -> V)<((std/core/list :: V -> V)<std/core/types/double>, std/core/types/double)>) -> std/core/types/string;
+// These both ignore the trace of the results.
+public fun show : (tmcmc_result : (std/core/list :: V -> V)<((std/core/list :: V -> V)<std/core/types/double>, std/core/types/double)>) -> std/core/types/string;
+public fun show.1 : (tmcmc_result : (std/core/list :: V -> V)<((std/core/list :: V -> V)<std/core/types/double>, (std/core/list :: V -> V)<std/core/types/double>)>) -> std/core/types/string;
+public fun show.2 : (hist : (effects-and-types/histogram :: V -> V)<std/core/types/double>) -> std/core/types/string;
+public fun show.3 : (hist : (effects-and-types/histogram :: V -> V)<(std/core/types/double, std/core/types/double)>) -> std/core/types/string;
+public fun show.4 : (hist : (effects-and-types/histogram :: V -> V)<(std/core/list :: V -> V)<std/core/types/double>>) -> std/core/types/string;
+public fun show.5 : (ls : ((std/core/list :: V -> V)<std/core/types/int>, (std/core/list :: V -> V)<std/core/types/int>)) -> std/core/types/string;
+public fun show.6 : (xs : (std/core/list :: V -> V)<std/core/types/double>) -> std/core/types/string;
+public fun show.7 : (x : (std/core/list :: V -> V)<(std/core/list :: V -> V)<std/core/types/double>>) -> std/core/types/string;
+public fun show.8 : (x : (std/core/list :: V -> V)<(std/core/list :: V -> V)<(std/core/list :: V -> V)<std/core/types/double>>>) -> std/core/types/string;
+public fun show.9 : (hist : (effects-and-types/histogram :: V -> V)<(std/core/types/double) -> std/core/types/double>) -> <(std/core/console :: X)> std/core/types/int;
+public fun plot : (f : (std/core/types/double) -> std/core/types/double) -> std/core/types/string;
+public fun example-plot : () -> std/core/types/string;
+public fun showspecial : (tmcmc_result : (std/core/list :: V -> V)<((std/core/list :: V -> V)<std/core/types/double>, (std/core/list :: V -> V)<std/core/types/double>)>) -> std/core/types/string;
+public fun write : (trace : (std/core/list :: V -> V)<((std/core/list :: V -> V)<std/core/types/double>, std/core/types/double)>, filename : std/core/types/string) -> <(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/fsys :: X)> ();
+public fun write.1 : (trace : (std/core/list :: V -> V)<((std/core/list :: V -> V)<std/core/types/double>, (std/core/list :: V -> V)<std/core/types/double>)>, filename : std/core/types/string) -> <(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/fsys :: X)> ();
+public fun write.2 : (hist : (effects-and-types/histogram :: V -> V)<std/core/types/double>, filename : std/core/types/string) -> <(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/fsys :: X)> ();
+public fun write.3 : (hist : (effects-and-types/histogram :: V -> V)<(std/core/types/double, std/core/types/double)>, filename : std/core/types/string) -> <(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/fsys :: X)> ();
+public fun write.4 : (hist : (effects-and-types/histogram :: V -> V)<(std/core/list :: V -> V)<std/core/types/double>>, filename : std/core/types/string) -> <(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/fsys :: X)> ();
+// monadic lift
+private fun .mlift6204-write-awk : (fname : std/core/types/string, wild_ : ()) -> <(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/fsys :: X)> ();
+public fun write-awk : (trace_vals : (std/core/list :: V -> V)<(std/core/list :: V -> V)<((std/core/list :: V -> V)<std/core/types/double>, (std/core/list :: V -> V)<std/core/types/double>)>>, filename : std/core/types/string) -> <(std/core/console :: X),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/fsys :: X)> ();
+public fun write-awk2 : (trace_vals : (std/core/list :: V -> V)<(std/core/list :: V -> V)<((std/core/list :: V -> V)<std/core/types/double>, (std/core/list :: V -> V)<std/core/types/double>)>>, filename : std/core/types/string) -> <(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/fsys :: X)> ();
+ 
+//------------------------------
+//#kki: external declarations
+ 
+ 
+//------------------------------
+//#kki: inline definitions
+ 
+//.inline-section
+fun list-join // inline size: 9
+  = forall<(e :: E)> fn<(e :: E)>(len: std/core/types/int, elem: (std/core/types/int) -> (e :: E) std/core/types/string){
+    val x.6207 : (std/core/list :: V -> V)<std/core/types/string>
+          = std/core/.lift21054-list.1<std/core/types/string,(e :: E)>(elem, 1, len, (std/core/Nil<std/core/types/string>));
+    (match ((std/core/hnd/yielding())) {
+      ((std/core/types/True() : std/core/types/bool ) as .pat: std/core/types/bool)
+         -> std/core/hnd/yield-extend<(std/core/list :: V -> V)<std/core/types/string>,std/core/types/string,(e :: E)>((fn<(e :: E)>(xs: (std/core/list :: V -> V)<std/core/types/string>){
+          (output-and-plot/.mlift6203-list-join<(e :: E)>(xs));
+        }));
+      ((.skip std/core/types/False() : std/core/types/bool ) as .pat0: std/core/types/bool)
+         -> std/core/(++.1)("[", (std/core/(++.1)((match (x.6207) {
+              ((std/core/Nil() : (std/core/list :: V -> V)<std/core/types/string> ) as .pat1: ((std/core/list :: V -> V)<std/core/types/string>))
+                 -> "";
+              ((.skip std/core/Cons((x: std/core/types/string) : std/core/types/string, (xx: (std/core/list :: V -> V)<std/core/types/string>) : (std/core/list :: V -> V)<std/core/types/string>) : (std/core/list :: V -> V)<std/core/types/string> ) as .pat00: ((std/core/list :: V -> V)<std/core/types/string>))
+                 -> std/core/.lift21050-joinsep(",", xx, x);
+            }), "]")));
+    });
+  };
+fun gen-filenames // inline size: 10
+  = fn(filename: std/core/types/string){
+    std/core/Cons<std/core/types/string>((std/core/(++.1)(filename, "_tmcmc_1.csv")), (std/core/Cons<std/core/types/string>((std/core/(++.1)(filename, "_tmcmc_2.csv")), (std/core/Cons<std/core/types/string>((std/core/(++.1)(filename, "_tmcmc_3.csv")), (std/core/Cons<std/core/types/string>((std/core/(++.1)(filename, "_tmcmc_4.csv")), (std/core/Cons<std/core/types/string>((std/core/(++.1)(filename, "_tmcmc_5.csv")), (std/core/Nil<std/core/types/string>))))))))));
+  };
+fun gen-filenames2 // inline size: 10
+  = fn(filename: std/core/types/string){
+    std/core/Cons<std/core/types/string>((std/core/(++.1)(filename, "_tmcmc_6.csv")), (std/core/Cons<std/core/types/string>((std/core/(++.1)(filename, "_tmcmc_7.csv")), (std/core/Cons<std/core/types/string>((std/core/(++.1)(filename, "_tmcmc_8.csv")), (std/core/Cons<std/core/types/string>((std/core/(++.1)(filename, "_tmcmc_9.csv")), (std/core/Cons<std/core/types/string>((std/core/(++.1)(filename, "_tmcmc_10.csv")), (std/core/Nil<std/core/types/string>))))))))));
+  };
+fun show_head // inline size: 3
+  = fn(tmcmc_result: (std/core/list :: V -> V)<((std/core/list :: V -> V)<std/core/types/double>, std/core/types/double)>){
+    match ((std/core/last<((std/core/list :: V -> V)<std/core/types/double>, std/core/types/double)>(tmcmc_result))) {
+      ((std/core/types/Nothing() : (std/core/types/maybe :: V -> V)<((std/core/list :: V -> V)<std/core/types/double>, std/core/types/double)> ) as .pat: ((std/core/types/maybe :: V -> V)<((std/core/list :: V -> V)<std/core/types/double>, std/core/types/double)>))
+         -> "";
+      ((.skip std/core/types/Just(((.skip std/core/types/(,)((.pat2: (std/core/list :: V -> V)<std/core/types/double>) : (std/core/list :: V -> V)<std/core/types/double>, (a: std/core/types/double) : std/core/types/double) : ((std/core/list :: V -> V)<std/core/types/double>, std/core/types/double) ) as .pat1: ((std/core/list :: V -> V)<std/core/types/double>, std/core/types/double)) : ((std/core/list :: V -> V)<std/core/types/double>, std/core/types/double)) : (std/core/types/maybe :: V -> V)<((std/core/list :: V -> V)<std/core/types/double>, std/core/types/double)> ) as .pat0: ((std/core/types/maybe :: V -> V)<((std/core/list :: V -> V)<std/core/types/double>, std/core/types/double)>))
+         -> std/core/show-fixed(a, (std/core/types/None<std/core/types/int>));
+    };
+  };
+fun show.5 // inline size: 3
+  = fn(ls: ((std/core/list :: V -> V)<std/core/types/int>, (std/core/list :: V -> V)<std/core/types/int>)){
+    match (ls) {
+      ((.skip std/core/types/(,)((l1: (std/core/list :: V -> V)<std/core/types/int>) : (std/core/list :: V -> V)<std/core/types/int>, (l2: (std/core/list :: V -> V)<std/core/types/int>) : (std/core/list :: V -> V)<std/core/types/int>) : ((std/core/list :: V -> V)<std/core/types/int>, (std/core/list :: V -> V)<std/core/types/int>) ) as .pat: ((std/core/list :: V -> V)<std/core/types/int>, (std/core/list :: V -> V)<std/core/types/int>))
+         -> std/core/(++.1)((std/core/show.8(l1)), (std/core/show.8(l2)));
+    };
+  };
+fun show.7 // inline size: 3
+  = fn(x: (std/core/list :: V -> V)<(std/core/list :: V -> V)<std/core/types/double>>){
+    val xs.6268 : (std/core/list :: V -> V)<std/core/types/string>
+          = std/core/map.5<(std/core/list :: V -> V)<std/core/types/double>,std/core/types/string,(std/core/types/(<>) :: E)>(x, output-and-plot/show.6);
+    match (xs.6268) {
+      ((std/core/Nil() : (std/core/list :: V -> V)<std/core/types/string> ) as .pat: ((std/core/list :: V -> V)<std/core/types/string>))
+         -> "";
+      ((.skip std/core/Cons((x0: std/core/types/string) : std/core/types/string, (xx: (std/core/list :: V -> V)<std/core/types/string>) : (std/core/list :: V -> V)<std/core/types/string>) : (std/core/list :: V -> V)<std/core/types/string> ) as .pat0: ((std/core/list :: V -> V)<std/core/types/string>))
+         -> std/core/.lift21050-joinsep("", xx, x0);
+    };
+  };
+fun show.8 // inline size: 3
+  = fn(x: (std/core/list :: V -> V)<(std/core/list :: V -> V)<(std/core/list :: V -> V)<std/core/types/double>>>){
+    val xs.6269 : (std/core/list :: V -> V)<std/core/types/string>
+          = std/core/map.5<(std/core/list :: V -> V)<(std/core/list :: V -> V)<std/core/types/double>>,std/core/types/string,(std/core/types/(<>) :: E)>(x, output-and-plot/show.7);
+    match (xs.6269) {
+      ((std/core/Nil() : (std/core/list :: V -> V)<std/core/types/string> ) as .pat: ((std/core/list :: V -> V)<std/core/types/string>))
+         -> "";
+      ((.skip std/core/Cons((x0: std/core/types/string) : std/core/types/string, (xx: (std/core/list :: V -> V)<std/core/types/string>) : (std/core/list :: V -> V)<std/core/types/string>) : (std/core/list :: V -> V)<std/core/types/string> ) as .pat0: ((std/core/list :: V -> V)<std/core/types/string>))
+         -> std/core/.lift21050-joinsep("", xx, x0);
+    };
+  };
+fun example-plot // inline size: 2
+  = fn(){
+    output-and-plot/plot((fn(x: std/core/types/double){
+      (std/core/(*.1)(2.0, x));
+    }));
+  };
+fun write // inline size: 3
+  = fn<<(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/fsys :: X)>>(trace: (std/core/list :: V -> V)<((std/core/list :: V -> V)<std/core/types/double>, std/core/types/double)>, filename: std/core/types/string){
+    std/os/file/write-text-file((std/core/hnd/.open-none1<std/core/types/string,std/os/path/path,(std/core/types/(<>) :: E),<(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/fsys :: X)>>(std/os/path/path, filename)), (std/core/hnd/.open-none1<(std/core/list :: V -> V)<((std/core/list :: V -> V)<std/core/types/double>, std/core/types/double)>,std/core/types/string,(std/core/types/(<>) :: E),<(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/fsys :: X)>>(output-and-plot/show, trace)), (std/core/types/None<std/core/types/bool>));
+  };
+fun write.1 // inline size: 3
+  = fn<<(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/fsys :: X)>>(trace: (std/core/list :: V -> V)<((std/core/list :: V -> V)<std/core/types/double>, (std/core/list :: V -> V)<std/core/types/double>)>, filename: std/core/types/string){
+    std/os/file/write-text-file((std/core/hnd/.open-none1<std/core/types/string,std/os/path/path,(std/core/types/(<>) :: E),<(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/fsys :: X)>>(std/os/path/path, filename)), (std/core/hnd/.open-none1<(std/core/list :: V -> V)<((std/core/list :: V -> V)<std/core/types/double>, (std/core/list :: V -> V)<std/core/types/double>)>,std/core/types/string,(std/core/types/(<>) :: E),<(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/fsys :: X)>>(output-and-plot/show.1, trace)), (std/core/types/None<std/core/types/bool>));
+  };
+fun write.2 // inline size: 3
+  = fn<<(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/fsys :: X)>>(hist: (effects-and-types/histogram :: V -> V)<std/core/types/double>, filename: std/core/types/string){
+    std/os/file/write-text-file((std/core/hnd/.open-none1<std/core/types/string,std/os/path/path,(std/core/types/(<>) :: E),<(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/fsys :: X)>>(std/os/path/path, filename)), (std/core/hnd/.open-none1<(effects-and-types/histogram :: V -> V)<std/core/types/double>,std/core/types/string,(std/core/types/(<>) :: E),<(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/fsys :: X)>>(output-and-plot/show.2, hist)), (std/core/types/None<std/core/types/bool>));
+  };
+fun write.3 // inline size: 3
+  = fn<<(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/fsys :: X)>>(hist: (effects-and-types/histogram :: V -> V)<(std/core/types/double, std/core/types/double)>, filename: std/core/types/string){
+    std/os/file/write-text-file((std/core/hnd/.open-none1<std/core/types/string,std/os/path/path,(std/core/types/(<>) :: E),<(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/fsys :: X)>>(std/os/path/path, filename)), (std/core/hnd/.open-none1<(effects-and-types/histogram :: V -> V)<(std/core/types/double, std/core/types/double)>,std/core/types/string,(std/core/types/(<>) :: E),<(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/fsys :: X)>>(output-and-plot/show.3, hist)), (std/core/types/None<std/core/types/bool>));
+  };
+fun write.4 // inline size: 3
+  = fn<<(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/fsys :: X)>>(hist: (effects-and-types/histogram :: V -> V)<(std/core/list :: V -> V)<std/core/types/double>>, filename: std/core/types/string){
+    std/os/file/write-text-file((std/core/hnd/.open-none1<std/core/types/string,std/os/path/path,(std/core/types/(<>) :: E),<(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/fsys :: X)>>(std/os/path/path, filename)), (std/core/hnd/.open-none1<(effects-and-types/histogram :: V -> V)<(std/core/list :: V -> V)<std/core/types/double>>,std/core/types/string,(std/core/types/(<>) :: E),<(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/fsys :: X)>>(output-and-plot/show.4, hist)), (std/core/types/None<std/core/types/bool>));
+  };

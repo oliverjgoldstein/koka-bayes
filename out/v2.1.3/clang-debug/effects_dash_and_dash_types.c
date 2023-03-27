@@ -1,0 +1,64 @@
+// Koka generated module: "effects-and-types", koka version: 2.1.3
+#include "effects_dash_and_dash_types.h"
+ 
+// runtime tag for the `:sample` effect
+
+kk_std_core_hnd__htag kk_effects_dash_and_dash_types__tag_sample;
+ 
+// handler for the `:sample` effect
+
+kk_box_t kk_effects_dash_and_dash_types__handle_sample(int32_t cfc, kk_effects_dash_and_dash_types__hnd_sample hnd, kk_function_t ret, kk_function_t action, kk_context_t* _ctx) { /* forall<a,e,b> (cfc : int32, hnd : .hnd-sample<e,b>, ret : (res : a) -> e b, action : () -> <sample|e> a) -> e b */ 
+  kk_std_core_hnd__htag _x489 = kk_std_core_hnd__htag_dup(kk_effects_dash_and_dash_types__tag_sample); /*std/core/hnd/htag<effects-and-types/.hnd-sample>*/
+  return kk_std_core_hnd__hhandle(_x489, cfc, kk_effects_dash_and_dash_types__hnd_sample_box(hnd, _ctx), ret, action, _ctx);
+}
+ 
+// runtime tag for the `:score` effect
+
+kk_std_core_hnd__htag kk_effects_dash_and_dash_types__tag_score;
+ 
+// handler for the `:score` effect
+
+kk_box_t kk_effects_dash_and_dash_types__handle_score(int32_t cfc, kk_effects_dash_and_dash_types__hnd_score hnd, kk_function_t ret, kk_function_t action, kk_context_t* _ctx) { /* forall<a,e,b> (cfc : int32, hnd : .hnd-score<e,b>, ret : (res : a) -> e b, action : () -> <score|e> a) -> e b */ 
+  kk_std_core_hnd__htag _x492 = kk_std_core_hnd__htag_dup(kk_effects_dash_and_dash_types__tag_score); /*std/core/hnd/htag<effects-and-types/.hnd-score>*/
+  return kk_std_core_hnd__hhandle(_x492, cfc, kk_effects_dash_and_dash_types__hnd_score_box(hnd, _ctx), ret, action, _ctx);
+}
+ 
+// runtime tag for the `:yield` effect
+
+kk_std_core_hnd__htag kk_effects_dash_and_dash_types__tag_yield;
+ 
+// handler for the `:yield` effect
+
+kk_box_t kk_effects_dash_and_dash_types__handle_yield(int32_t cfc, kk_effects_dash_and_dash_types__hnd_yield hnd, kk_function_t ret, kk_function_t action, kk_context_t* _ctx) { /* forall<a,e,b> (cfc : int32, hnd : .hnd-yield<e,b>, ret : (res : a) -> e b, action : () -> <yield|e> a) -> e b */ 
+  kk_std_core_hnd__htag _x495 = kk_std_core_hnd__htag_dup(kk_effects_dash_and_dash_types__tag_yield); /*std/core/hnd/htag<effects-and-types/.hnd-yield>*/
+  return kk_std_core_hnd__hhandle(_x495, cfc, kk_effects_dash_and_dash_types__hnd_yield_box(hnd, _ctx), ret, action, _ctx);
+}
+
+// initialization
+void kk_effects_dash_and_dash_types__init(kk_context_t* _ctx){
+  static bool _initialized = false;
+  if (_initialized) return;
+  _initialized = true;
+  kk_std_core_types__init(_ctx);
+  kk_std_core_hnd__init(_ctx);
+  kk_std_core__init(_ctx);
+  kk_std_num_random__init(_ctx);
+  {
+    kk_string_t _x487;
+    kk_define_string_literal(, _s488, 24, "sample.effects-and-types")
+    _x487 = kk_string_dup(_s488); /*string*/
+    kk_effects_dash_and_dash_types__tag_sample = kk_std_core_hnd__new_Htag(_x487, _ctx); /*std/core/hnd/htag<effects-and-types/.hnd-sample>*/
+  }
+  {
+    kk_string_t _x490;
+    kk_define_string_literal(, _s491, 23, "score.effects-and-types")
+    _x490 = kk_string_dup(_s491); /*string*/
+    kk_effects_dash_and_dash_types__tag_score = kk_std_core_hnd__new_Htag(_x490, _ctx); /*std/core/hnd/htag<effects-and-types/.hnd-score>*/
+  }
+  {
+    kk_string_t _x493;
+    kk_define_string_literal(, _s494, 23, "yield.effects-and-types")
+    _x493 = kk_string_dup(_s494); /*string*/
+    kk_effects_dash_and_dash_types__tag_yield = kk_std_core_hnd__new_Htag(_x493, _ctx); /*std/core/hnd/htag<effects-and-types/.hnd-yield>*/
+  }
+}

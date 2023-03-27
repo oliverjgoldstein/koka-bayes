@@ -1,0 +1,115 @@
+module interface sampling
+ 
+//------------------------------
+//#kki: import declarations
+ 
+private import std/core/types = std/core/types = "";
+private import std/core/hnd = std/core/hnd = "";
+private import std/core = std/core = "";
+private import std/num/double = std/num/double = "";
+private import std/num/random = std/num/random = "";
+private import effects-and-types = effects-and-types = "";
+private import exponents = exponents = "";
+private import handlers = handlers = "";
+ 
+//------------------------------
+//#kki: external imports
+ 
+ 
+//------------------------------
+//#kki: fixity declarations
+ 
+ 
+//------------------------------
+//#kki: local imported aliases
+ 
+local alias effects-and-types/histogram<a> :: V -> V = (std/core/list :: V -> V)<(effects-and-types/exp, a)> = 1;
+local alias effects-and-types/model<a,(e :: E)> :: (V, E) -> V = () -> <(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>|(e :: E)> a = 1;
+ 
+//------------------------------
+//#kki: type declarations
+ 
+ 
+//------------------------------
+//#kki: declarations
+ 
+public fun sum_weights : forall<a> (histogram : (effects-and-types/histogram :: V -> V)<a>) -> effects-and-types/exp;
+// monadic lift
+private fun .mlift749-populate : forall<a,(e :: E)> (model : () -> <(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>|(e :: E)> a, wild_ : ()) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>|(e :: E)> a;
+public fun populate : forall<a,(e :: E)> (k : std/core/types/int, model : () -> <(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>|(e :: E)> a) -> (e :: E) (effects-and-types/histogram :: V -> V)<a>;
+public fun sum_histogram : forall<a> (hist : (effects-and-types/histogram :: V -> V)<a>) -> std/core/types/double;
+public fun normalise : forall<a> (histogram : (effects-and-types/histogram :: V -> V)<a>) -> (effects-and-types/histogram :: V -> V)<a>;
+// monadic lift
+private fun .mlift750-importance_sampling : forall<a,(e :: E)> ((effects-and-types/histogram :: V -> V)<a>) -> <(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>|(e :: E)> (effects-and-types/histogram :: V -> V)<a>;
+public fun importance_sampling : forall<a,(e :: E)> (model : (effects-and-types/model :: (V, E) -> V)<a,<(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>|(e :: E)>>) -> <(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>|(e :: E)> (effects-and-types/histogram :: V -> V)<a>;
+// lift
+private fun .lift737-weighted_choice : forall<a> (fuel : std/core/types/double, ws : (std/core/list :: V -> V)<(effects-and-types/exp, a)>) -> <(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>> a;
+// monadic lift
+private fun .mlift751-weighted_choice : forall<a> (histogram : (effects-and-types/histogram :: V -> V)<a>, total_w : effects-and-types/exp, std/core/types/double) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>> a;
+// This chooses a histogram with the probabilirt of
+public fun weighted_choice : forall<a> (histogram : (effects-and-types/histogram :: V -> V)<a>) -> <(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>> a;
+// monadic lift
+private fun .mlift752-resample : forall<a> (histogram : (effects-and-types/histogram :: V -> V)<a>, wild_ : ()) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>> a;
+public fun resample : forall<a> (histogram : (effects-and-types/histogram :: V -> V)<a>) -> <(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>> (effects-and-types/histogram :: V -> V)<a>;
+ 
+//------------------------------
+//#kki: external declarations
+ 
+ 
+//------------------------------
+//#kki: inline definitions
+ 
+//.inline-section
+fun sum_weights // inline size: 4
+  = forall<a> fn(histogram: (effects-and-types/histogram :: V -> V)<a>){
+    std/core/foldl<(effects-and-types/exp, a),effects-and-types/exp,(std/core/types/(<>) :: E)>(histogram, (effects-and-types/Exp((std/num/double/log(0.0)))), (fn(acc: effects-and-types/exp, wx: (effects-and-types/exp, a)){
+        (match (wx) {
+          ((.skip std/core/types/(,)(((.skip effects-and-types/Exp((.pat0: std/core/types/double) : std/core/types/double) : effects-and-types/exp ) as w: effects-and-types/exp) : effects-and-types/exp, (.pat1: a) : a) : (effects-and-types/exp, a) ) as .pat: (effects-and-types/exp, a))
+             -> exponents/plus_exp(acc, w);
+        });
+      }));
+  };
+fun sum_histogram // inline size: 3
+  = forall<a> fn(hist: (effects-and-types/histogram :: V -> V)<a>){
+    std/core/foldl<(effects-and-types/exp, a),std/core/types/double,(std/core/types/(<>) :: E)>(hist, 0.0, (fn(init: std/core/types/double, ws: (effects-and-types/exp, a)){
+        (match (ws) {
+          ((.skip std/core/types/(,)(((.skip effects-and-types/Exp((w: std/core/types/double) : std/core/types/double) : effects-and-types/exp ) as .pat0: effects-and-types/exp) : effects-and-types/exp, (.pat1: a) : a) : (effects-and-types/exp, a) ) as .pat: (effects-and-types/exp, a))
+             -> std/core/(+.3)((std/core/(^)(2.718281828459045, w)), init);
+        });
+      }));
+  };
+fun normalise // inline size: 5
+  = forall<a> fn(histogram: (effects-and-types/histogram :: V -> V)<a>){
+    val total : effects-and-types/exp
+          = sampling/sum_weights<a>(histogram);
+    std/core/map.5<(effects-and-types/exp, a),(effects-and-types/exp, a),(std/core/types/(<>) :: E)>(histogram, (fn(wt: (effects-and-types/exp, a)){
+        (std/core/types/(,)<effects-and-types/exp,a>((match ((match (wt) {
+            ((.skip std/core/types/(,)((.x: effects-and-types/exp) : effects-and-types/exp, (.pat00: a) : a) : (effects-and-types/exp, a) ) as .pat1: (effects-and-types/exp, a))
+               -> .x;
+          })) {
+            ((.skip effects-and-types/Exp((j: std/core/types/double) : std/core/types/double) : effects-and-types/exp ) as .pat: effects-and-types/exp)
+               -> (match (total) {
+                ((.skip effects-and-types/Exp((t: std/core/types/double) : std/core/types/double) : effects-and-types/exp ) as .pat0: effects-and-types/exp)
+                   -> effects-and-types/Exp((std/core/(-.3)(j, t)));
+              });
+          }), (match (wt) {
+            ((.skip std/core/types/(,)((.pat01: effects-and-types/exp) : effects-and-types/exp, (.x0: a) : a) : (effects-and-types/exp, a) ) as .pat2: (effects-and-types/exp, a))
+               -> .x0;
+          })));
+      }));
+  };
+fun importance_sampling // inline size: 7
+  = forall<a,(e :: E)> fn<<(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>|(e :: E)>>(model: (effects-and-types/model :: (V, E) -> V)<a,<(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>|(e :: E)>>){
+    handlers/random_sampler<(effects-and-types/histogram :: V -> V)<a>,(e :: E)>((fn<<(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>|(e :: E)>>(){
+      val x.767 : ((effects-and-types/histogram :: V -> V)<a>)
+            = (sampling/populate<a,<(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>|(e :: E)>>(2000, model));
+      (match ((std/core/hnd/yielding())) {
+        ((std/core/types/True() : std/core/types/bool ) as .pat: std/core/types/bool)
+           -> std/core/hnd/yield-extend<(effects-and-types/histogram :: V -> V)<a>,(effects-and-types/histogram :: V -> V)<a>,<(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>|(e :: E)>>((fn<<(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>|(e :: E)>>(.y.4: (effects-and-types/histogram :: V -> V)<a>){
+            (sampling/.mlift750-importance_sampling<a,(e :: E)>(.y.4));
+          }));
+        ((.skip std/core/types/False() : std/core/types/bool ) as .pat0: std/core/types/bool)
+           -> sampling/.mlift750-importance_sampling<a,(e :: E)>(x.767);
+      });
+    }));
+  };

@@ -1,0 +1,149 @@
+module interface trace
+ 
+//------------------------------
+//#kki: import declarations
+ 
+private import std/core/types = std/core/types = "";
+private import std/core/hnd = std/core/hnd = "";
+private import std/core = std/core = "";
+private import effects-and-types = effects-and-types = "";
+private import exponents = exponents = "";
+private import handlers = handlers = "";
+private import model-resources = model-resources = "";
+ 
+//------------------------------
+//#kki: fixity declarations
+ 
+ 
+//------------------------------
+//#kki: local imported aliases
+ 
+local alias effects-and-types/trace_values = (std/core/list :: V -> V)<std/core/types/double> = 1;
+ 
+//------------------------------
+//#kki: type declarations
+ 
+public type trace <a,(e :: E)> :: (V, E) -> V {
+  public con Trace(m: () -> (e :: E) a, p: effects-and-types/exp, l: (effects-and-types/trace_values == 1 (std/core/list :: V -> V)<std/core/types/double>), a: a) : forall<a,(e :: E)> (m : () -> (e :: E) a, p : effects-and-types/exp, l : (effects-and-types/trace_values == 1 (std/core/list :: V -> V)<std/core/types/double>), a : a) -> (trace :: (V, E) -> V)<a,(e :: E)>;
+};
+ 
+//------------------------------
+//#kki: declarations
+ 
+// Automatically generated. Retrieves the `m` constructor field of the `:trace` type.
+public fun m : forall<a,(e :: E)> (trace : (trace :: (V, E) -> V)<a,(e :: E)>) -> (() -> (e :: E) a);
+// Automatically generated. Retrieves the `p` constructor field of the `:trace` type.
+public fun p : forall<a,(e :: E)> (trace : (trace :: (V, E) -> V)<a,(e :: E)>) -> effects-and-types/exp;
+// Automatically generated. Retrieves the `l` constructor field of the `:trace` type.
+public fun l : forall<a,(e :: E)> (trace : (trace :: (V, E) -> V)<a,(e :: E)>) -> effects-and-types/trace_values;
+// Automatically generated. Retrieves the `a` constructor field of the `:trace` type.
+public fun a : forall<a,(e :: E)> (trace : (trace :: (V, E) -> V)<a,(e :: E)>) -> a;
+// monadic lift
+private fun .mlift1391-op : forall<a,(e :: E)> (() -> (e :: E) a, effects-and-types/exp, effects-and-types/trace_values, a) -> (trace :: (V, E) -> V)<a,(e :: E)>;
+// monadic lift
+private fun .mlift1392-op : forall<a,(e :: E)> (() -> (e :: E) a, effects-and-types/exp, (trace :: (V, E) -> V)<a,(e :: E)>, a : (std/core/types/optional :: V -> V)<a>, effects-and-types/trace_values) -> (trace :: (V, E) -> V)<a,(e :: E)>;
+// monadic lift
+private fun .mlift1393-op : forall<a,(e :: E)> (() -> (e :: E) a, (trace :: (V, E) -> V)<a,(e :: E)>, a : (std/core/types/optional :: V -> V)<a>, l : (std/core/types/optional :: V -> V)<effects-and-types/trace_values>, effects-and-types/exp) -> (trace :: (V, E) -> V)<a,(e :: E)>;
+// monadic lift
+private fun .mlift1394-op : forall<a,(e :: E)> ((trace :: (V, E) -> V)<a,(e :: E)>, a : (std/core/types/optional :: V -> V)<a>, l : (std/core/types/optional :: V -> V)<effects-and-types/trace_values>, p : (std/core/types/optional :: V -> V)<effects-and-types/exp>, () -> (e :: E) a) -> (trace :: (V, E) -> V)<a,(e :: E)>;
+public fun .copy : forall<a,(e :: E)> ((trace :: (V, E) -> V)<a,(e :: E)>, m : (std/core/types/optional :: V -> V)<() -> (e :: E) a>, p : (std/core/types/optional :: V -> V)<effects-and-types/exp>, l : (std/core/types/optional :: V -> V)<effects-and-types/trace_values>, a : (std/core/types/optional :: V -> V)<a>) -> (trace :: (V, E) -> V)<a,(e :: E)>;
+// monadic lift
+private fun .mlift1395-random_range : (upper_bound : std/core/types/int, std/core/types/double) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>> std/core/types/int;
+public fun random_range : (upper_bound : std/core/types/int) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>> std/core/types/int;
+public fun with_randomness : forall<a,(e :: E)> (model : () -> <(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>|(e :: E)> a, trace_values : effects-and-types/trace_values) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>|(e :: E)> (effects-and-types/trace_values, (effects-and-types/exp, a));
+// monadic lift
+private fun .mlift1396-perturb_trace : (l1 : (std/core/list :: V -> V)<std/core/types/double>, l2 : (std/core/list :: V -> V)<std/core/types/double>, std/core/types/double) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>> (std/core/list :: V -> V)<std/core/types/double>;
+// monadic lift
+private fun .mlift1397-perturb_trace : (trace_values : effects-and-types/trace_values, perturb_index : std/core/types/int) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>> (std/core/list :: V -> V)<std/core/types/double>;
+public fun perturb_trace : forall<a,(e :: E)> (trace : (trace :: (V, E) -> V)<a,(e :: E)>) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>> effects-and-types/trace_values;
+// monadic lift
+private fun .mlift1398-mh_step : forall<a,(e :: E)> (b : a, model : () -> <(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>|(e :: E)> a, new_trace : effects-and-types/trace_values, p2 : effects-and-types/exp, trace : (trace :: (V, E) -> V)<a,<(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>|(e :: E)>>, accept : std/core/types/bool) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>|(e :: E)> (trace :: (V, E) -> V)<a,<(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>|(e :: E)>>;
+// monadic lift
+private fun .mlift1399-mh_step : forall<a,(e :: E)> (model : () -> <(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>|(e :: E)> a, old_trace : effects-and-types/trace_values, p1 : effects-and-types/exp, trace : (trace :: (V, E) -> V)<a,<(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>|(e :: E)>>, p2b : (effects-and-types/trace_values, (effects-and-types/exp, a))) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>|(e :: E)> (trace :: (V, E) -> V)<a,<(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>|(e :: E)>>;
+// monadic lift
+private fun .mlift1400-mh_step : forall<a,(e :: E)> (trace : (trace :: (V, E) -> V)<a,<(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>|(e :: E)>>, modified_trace : effects-and-types/trace_values) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>|(e :: E)> (trace :: (V, E) -> V)<a,<(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>|(e :: E)>>;
+public fun mh_step : forall<a,(e :: E)> (trace : (trace :: (V, E) -> V)<a,<(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>|(e :: E)>>) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>|(e :: E)> (trace :: (V, E) -> V)<a,<(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>|(e :: E)>>;
+// monadic lift
+private fun .mlift1401-model_stepper_recursive : forall<a,(e :: E)> (burnin : std/core/types/int, posterior : (std/core/list :: V -> V)<((std/core/list :: V -> V)<std/core/types/double>, a)>, steps : std/core/types/int, new_trace : (trace :: (V, E) -> V)<a,<(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/div :: X)|(e :: E)>>) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/div :: X)|(e :: E)> ((std/core/list :: V -> V)<((std/core/list :: V -> V)<std/core/types/double>, a)>, (trace :: (V, E) -> V)<a,<(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/div :: X)|(e :: E)>>);
+public fun model_stepper_recursive : forall<a,(e :: E)> (steps : std/core/types/int, trace : (trace :: (V, E) -> V)<a,<(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/div :: X)|(e :: E)>>, posterior : (std/core/list :: V -> V)<((std/core/list :: V -> V)<std/core/types/double>, a)>, burnin : std/core/types/int) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/div :: X)|(e :: E)> ((std/core/list :: V -> V)<((std/core/list :: V -> V)<std/core/types/double>, a)>, (trace :: (V, E) -> V)<a,<(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/div :: X)|(e :: E)>>);
+public fun splitter : forall<a> (lst_as : (std/core/list :: V -> V)<a>, build : (std/core/list :: V -> V)<(std/core/list :: V -> V)<a>>) -> <(std/core/types/div :: E)> (std/core/list :: V -> V)<(std/core/list :: V -> V)<a>>;
+public fun split_tmcmc : forall<a> (lst : (std/core/list :: V -> V)<((std/core/list :: V -> V)<std/core/types/double>, a)>) -> <(std/core/types/div :: X)> (std/core/list :: V -> V)<(std/core/list :: V -> V)<((std/core/list :: V -> V)<std/core/types/double>, a)>>;
+// monadic lift
+private fun .mlift1402-tmcmc : forall<a,(e :: E)> (burnin : std/core/types/int, model : () -> <(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/div :: X)|(e :: E)> a, steps : std/core/types/int, model_results : (effects-and-types/exp, ((std/core/list :: V -> V)<std/core/types/double>, a))) -> <(std/core/types/div :: X),(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>|(e :: E)> ((std/core/list :: V -> V)<((std/core/list :: V -> V)<std/core/types/double>, a)>, (trace :: (V, E) -> V)<a,<(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/div :: X)|(e :: E)>>);
+public fun tmcmc : forall<a,(e :: E)> (model : () -> <(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/div :: X)|(e :: E)> a, steps : std/core/types/int, init_weight : effects-and-types/exp, burnin : std/core/types/int) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/div :: X)|(e :: E)> ((std/core/list :: V -> V)<((std/core/list :: V -> V)<std/core/types/double>, a)>, (trace :: (V, E) -> V)<a,<(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/div :: X)|(e :: E)>>);
+ 
+//------------------------------
+//#kki: external declarations
+ 
+ 
+//------------------------------
+//#kki: inline definitions
+ 
+//.inline-section
+inline fun m // inline size: 0
+  = forall<a,(e :: E)> fn(trace: (trace :: (V, E) -> V)<a,(e :: E)>){
+    (match (trace) {
+      ((.skip trace/Trace((.x: () -> (e :: E) a) : () -> (e :: E) a, ((.skip effects-and-types/Exp((.pat1: std/core/types/double) : std/core/types/double) : effects-and-types/exp ) as .pat0: effects-and-types/exp) : effects-and-types/exp, (.pat2: effects-and-types/trace_values) : effects-and-types/trace_values, (.pat3: a) : a) : (trace :: (V, E) -> V)<a,(e :: E)> ) as .pat: ((trace :: (V, E) -> V)<a,(e :: E)>))
+         -> .x;
+    });
+  };
+inline fun p // inline size: 0
+  = forall<a,(e :: E)> fn(trace: (trace :: (V, E) -> V)<a,(e :: E)>){
+    (match (trace) {
+      ((.skip trace/Trace((.pat0: () -> (e :: E) a) : () -> (e :: E) a, ((.skip effects-and-types/Exp((.pat1: std/core/types/double) : std/core/types/double) : effects-and-types/exp ) as .x: effects-and-types/exp) : effects-and-types/exp, (.pat2: effects-and-types/trace_values) : effects-and-types/trace_values, (.pat3: a) : a) : (trace :: (V, E) -> V)<a,(e :: E)> ) as .pat: ((trace :: (V, E) -> V)<a,(e :: E)>))
+         -> .x;
+    });
+  };
+inline fun l // inline size: 0
+  = forall<a,(e :: E)> fn(trace: (trace :: (V, E) -> V)<a,(e :: E)>){
+    (match (trace) {
+      ((.skip trace/Trace((.pat0: () -> (e :: E) a) : () -> (e :: E) a, ((.skip effects-and-types/Exp((.pat2: std/core/types/double) : std/core/types/double) : effects-and-types/exp ) as .pat1: effects-and-types/exp) : effects-and-types/exp, (.x: effects-and-types/trace_values) : effects-and-types/trace_values, (.pat3: a) : a) : (trace :: (V, E) -> V)<a,(e :: E)> ) as .pat: ((trace :: (V, E) -> V)<a,(e :: E)>))
+         -> .x;
+    });
+  };
+inline fun a // inline size: 0
+  = forall<a,(e :: E)> fn(trace: (trace :: (V, E) -> V)<a,(e :: E)>){
+    (match (trace) {
+      ((.skip trace/Trace((.pat0: () -> (e :: E) a) : () -> (e :: E) a, ((.skip effects-and-types/Exp((.pat2: std/core/types/double) : std/core/types/double) : effects-and-types/exp ) as .pat1: effects-and-types/exp) : effects-and-types/exp, (.pat3: effects-and-types/trace_values) : effects-and-types/trace_values, (.x: a) : a) : (trace :: (V, E) -> V)<a,(e :: E)> ) as .pat: ((trace :: (V, E) -> V)<a,(e :: E)>))
+         -> .x;
+    });
+  };
+fun random_range // inline size: 10
+  = fn<<(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>>>(upper_bound: std/core/types/int){
+    val x.1432 : std/core/types/double
+          = effects-and-types/sample();
+    match ((std/core/hnd/yielding())) {
+      ((std/core/types/True() : std/core/types/bool ) as .pat: std/core/types/bool)
+         -> std/core/hnd/yield-extend<std/core/types/double,std/core/types/int,<(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>>>((fn<<(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>>>(.y.5: std/core/types/double){
+          (trace/.mlift1395-random_range(upper_bound, .y.5));
+        }));
+      ((.skip std/core/types/False() : std/core/types/bool ) as .pat0: std/core/types/bool)
+         -> std/core/(%)((std/core/int.3((std/core/(/.1)(x.1432, (std/core/(/.1)(1.0, (std/core/double(upper_bound)))))))), upper_bound);
+    };
+  };
+recursive fun splitter // inline size: 7
+  = forall<a> fn<<(std/core/types/div :: X)>>(lst_as: (std/core/list :: V -> V)<a>, build: (std/core/list :: V -> V)<(std/core/list :: V -> V)<a>>){
+    val split_v : ((std/core/list :: V -> V)<a>, (std/core/list :: V -> V)<a>)
+          = std/core/types/(,)<(std/core/list :: V -> V)<a>,(std/core/list :: V -> V)<a>>((std/core/take<a>(lst_as, 4000)), (std/core/drop<a>(lst_as, 4000)));
+    (match ((match (split_v) {
+      ((.skip std/core/types/(,)((.x: (std/core/list :: V -> V)<a>) : (std/core/list :: V -> V)<a>, (.pat0: (std/core/list :: V -> V)<a>) : (std/core/list :: V -> V)<a>) : ((std/core/list :: V -> V)<a>, (std/core/list :: V -> V)<a>) ) as .pat: ((std/core/list :: V -> V)<a>, (std/core/list :: V -> V)<a>))
+         -> .x;
+    })) {
+      ((std/core/Nil() : (std/core/list :: V -> V)<a> ) as .pat1: ((std/core/list :: V -> V)<a>))
+         -> build;
+      ((.skip std/core/Cons((.pat10: a) : a, (.pat2: (std/core/list :: V -> V)<a>) : (std/core/list :: V -> V)<a>) : (std/core/list :: V -> V)<a> ) as .pat00: ((std/core/list :: V -> V)<a>))
+         -> trace/splitter<a>((match (split_v) {
+            ((.skip std/core/types/(,)((.pat01: (std/core/list :: V -> V)<a>) : (std/core/list :: V -> V)<a>, (.x0: (std/core/list :: V -> V)<a>) : (std/core/list :: V -> V)<a>) : ((std/core/list :: V -> V)<a>, (std/core/list :: V -> V)<a>) ) as .pat3: ((std/core/list :: V -> V)<a>, (std/core/list :: V -> V)<a>))
+               -> .x0;
+          }), val ys.1513 : ((std/core/list :: V -> V)<(std/core/list :: V -> V)<a>>)
+                    = (std/core/Cons<(std/core/list :: V -> V)<a>>((match (split_v) {
+                        ((.skip std/core/types/(,)((.x1: (std/core/list :: V -> V)<a>) : (std/core/list :: V -> V)<a>, (.pat02: (std/core/list :: V -> V)<a>) : (std/core/list :: V -> V)<a>) : ((std/core/list :: V -> V)<a>, (std/core/list :: V -> V)<a>) ) as .pat4: ((std/core/list :: V -> V)<a>, (std/core/list :: V -> V)<a>))
+                           -> .x1;
+                      }), (std/core/Nil<(std/core/list :: V -> V)<a>>)));
+          (std/core/append<(std/core/list :: V -> V)<a>>(build, ys.1513)));
+    });
+  };
+fun split_tmcmc // inline size: 1
+  = forall<a> fn<<(std/core/types/div :: X)>>(lst: (std/core/list :: V -> V)<((std/core/list :: V -> V)<std/core/types/double>, a)>){
+    trace/splitter<((std/core/list :: V -> V)<std/core/types/double>, a)>(lst, (std/core/Nil<(std/core/list :: V -> V)<((std/core/list :: V -> V)<std/core/types/double>, a)>>));
+  };

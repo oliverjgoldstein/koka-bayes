@@ -8,78 +8,36 @@ import std/num/ddouble
 import effects-and-types
 import exponents
 
+
+
 fun write( trace : list<(list<double>,double)>, filename : string ) {
-    write-text(path("./output/" + filename), show(trace))
+    write-text-file(path(filename), show_trace_single(trace))
 }
 
 fun write( trace : list<(list<double>,list<double>)>, filename : string ) {
-    write-text(path("./output/" + filename), show(trace))
+    write-text-file(path(filename), show_trace(trace))
 }
 
 fun write( hist : histogram<double>, filename : string ) {
-   write-text(path("./output/" + filename), show(hist))
+   write-text-file(path(filename), show(hist))
 }
 
 fun write( hist : histogram<(double, double)> , filename : string ) {
-   write-text(path("./output/" + filename), show(hist))
+   write-text-file(path(filename), show(hist))
 }
 
 fun write( hist : histogram<(list<double>)> , filename : string ) {
-   write-text(path("./output/" + filename), show(hist))
+   write-text-file(path(filename), show(hist))
 }
 
-fun write-awk( trace_vals : list<list<(list<double>, list<double>)>>, filename : string ) {
-  val filenames = gen-filenames(filename)
-  for(0, trace_vals.length - 1) fun(i) {
-    match(trace_vals[i]) {
-      Nothing -> error("No list!")
-      Just(lst_lst) -> {
-        match(filenames[i]) {
-          Nothing -> error("No filename!")
-          Just(fname) -> {
-            write-text(path("./output/" + fname), showspecial(lst_lst))
-          }
-        }
-      }
-    }
-  }
-}
-
-fun write-awk2( trace_vals : list<list<(list<double>, list<double>)>>, filename : string ) {
-  val filenames = gen-filenames2(filename)
-  for(0, trace_vals.length - 1) fun(i) {
-    match(trace_vals[i]) {
-      Nothing -> error("No list!")
-      Just(lst_lst) -> {
-        match(filenames[i]) {
-          Nothing -> error("No filename!")
-          Just(fname) -> {
-            write-text(path("./output/" + fname), showspecial(lst_lst))
-          }
-        }
-      }
-    }
-  }
-}
-
-
-fun gen-filenames(filename : string) : list<string> {
-   [filename + "_tmcmc_1.csv", filename + "_tmcmc_2.csv", filename + "_tmcmc_3.csv", filename + "_tmcmc_4.csv", filename + "_tmcmc_5.csv"]
-}
-
-fun gen-filenames2(filename : string) : list<string> {
-   [filename + "_tmcmc_6.csv", filename + "_tmcmc_7.csv", filename + "_tmcmc_8.csv", filename + "_tmcmc_9.csv", filename + "_tmcmc_10.csv"]
-}
-
-
-fun showspecial(tmcmc_result : list<(list<double>, list<double>)> ) : string {
+fun show_trace(tmcmc_result : list<(list<double>,list<double>)>) : string {
   var total_string := ""
-  for(0, tmcmc_result.length - 1) fun(i) {
+  for(0, tmcmc_result.length - 1) fn(i) {
     val str = match(tmcmc_result[i]) {
-      Nothing -> "EMPTY"
+      Nothing -> ""
       Just((_,a)) -> list_to_csv(a)
     }
-    total_string := total_string + str
+    total_string := total_string ++ str
   }
   total_string
 }
@@ -90,59 +48,49 @@ fun plot( f : (double -> double) ) : string {
   val rgt = 4.0
   val steps = 100
   val stp = (rgt - lft) / steps.double
-  list-join(steps) fun(i:int) {
+  list-join(steps) fn(i:int) {
     val x = lft + (stp * i.double)
     val y = f( x )
-    "[" + x.show(6) + "," + y.show(6) + "]"
+    "[" ++ x.show(6) ++ "," ++ y.show(6) ++ "]"
   }
 }
 // These both ignore the trace of the results.
-fun show(tmcmc_result : list<(list<double>,double)>) : string {
+fun show_trace_single(tmcmc_result : list<(list<double>,double)>) : string {
   var total_string := ""
-  for(0, tmcmc_result.length - 1) fun(i) {
+  for(0, tmcmc_result.length - 1) fn(i) {
     val str = match(tmcmc_result[i]) {
       Nothing -> ""
-      Just((_,a)) -> show-fixed(a)
+      Just((_,a)) -> show-fixed(a, 1)
     }
-    total_string := total_string + str + "\n"
+    total_string := total_string ++ str ++ "\n"
   }
   total_string
 }
 
-fun show(tmcmc_result : list<(list<double>,list<double>)>) : string {
-  var total_string := ""
-  for(0, tmcmc_result.length - 1) fun(i) {
-    val str = match(tmcmc_result[i]) {
-      Nothing -> ""
-      Just((_,a)) -> list_to_csv(a)
-    }
-    total_string := total_string + str
-  }
-  total_string
-}
+
 
 fun show_head(tmcmc_result : list<(list<double>,double)>) : string {
   match(last(tmcmc_result)) {
     Nothing -> ""
-    Just((_,a)) -> show-fixed(a)
+    Just((_,a)) -> show-fixed(a, 1)
   }
 }
 
 fun list_to_csv(xs : list<double>) : string {
   var total_string := ""
-  for(0, xs.length - 2) fun(i) {
+  for(0, xs.length - 2) fn(i) {
     val str = match(xs[i]) {
       Nothing -> ""
-      Just(x) -> show-fixed(x) + ","
+      Just(x) -> show-fixed(x, 1) ++ ","
     }
-    total_string := total_string + str
+    total_string := total_string ++ str
   }
 
   val str = match(xs[xs.length - 1]) {
     Nothing -> ""
-    Just(x) -> show-fixed(x)
+    Just(x) -> show-fixed(x, 1)
   }
-  total_string := total_string + str + "\n"
+  total_string := total_string ++ str ++ "\n"
 
   total_string
 }
@@ -150,86 +98,86 @@ fun list_to_csv(xs : list<double>) : string {
 
 fun show(hist : histogram<double>) : string {
   var total_string := ""
-  for(0, hist.length - 1) fun(i) {
+  for(0, hist.length - 1) fn(i) {
     val str = match(hist[i]) {
       Nothing -> ""
       Just(x) -> match(x) {
-        (Exp(dbl), a) -> {show-fixed(exp(ddouble(dbl))) + ", " + show-fixed(a)}
+        (Exp(dbl), a) -> {show-fixed(exp(ddouble(dbl)), 1) ++ ", " ++ show-fixed(a, 1)}
       }
     }
-    total_string := total_string + str + "\n"
+    total_string := total_string ++ str ++ "\n"
   }
   total_string
 }
 
 fun show(hist : histogram<(double, double)>) : string {
   var total_string := ""
-  for(0, hist.length - 1) fun(i) {
+  for(0, hist.length - 1) fn(i) {
     val str = match(hist[i]) {
       Nothing -> ""
       Just(x) -> match(x) {
-        (Exp(dbl), (db1, db2)) -> {show-fixed(exp(ddouble(dbl))) + ", " + show-fixed(db1) + ", " + show-fixed(db2)}
+        (Exp(dbl), (db1, db2)) -> {show-fixed(exp(ddouble(dbl)), 1) ++ ", " ++ show-fixed(db1, 1) ++ ", " ++ show-fixed(db2, 1)}
       }
     }
-    total_string := total_string + str + "\n"
+    total_string := total_string ++ str ++ "\n"
   }
   total_string
 }
 
 fun show(hist : histogram<(list<double>)>) : string {
   var total_string := ""
-  for(0, hist.length - 1) fun(i) {
+  for(0, hist.length - 1) fn(i) {
     match(hist[i]) {
-      Nothing -> {total_string := total_string + ""}
+      Nothing -> {total_string := total_string ++ ""}
       Just(x) -> match(x) {
         (_, lst : list<double>) -> {
-          for(0, lst.length - 2) fun(j) {
+          for(0, lst.length - 2) fn(j) {
             val str = match(lst[j]) {
               Nothing -> ""
-              Just(u) -> (show-fixed(u) + ",")
+              Just(u) -> (show-fixed(u, 1) ++ ",")
             }
-            total_string := total_string + str
+            total_string := total_string ++ str
           }
 
           val str = match(lst[lst.length - 1]) {
             Nothing -> ""
-            Just(u) -> (show-fixed(u))
+            Just(u) -> (show-fixed(u, 1))
           }
-          total_string := total_string + str
+          total_string := total_string ++ str
         }
       }
     }
 
-    total_string := total_string + "\n"
+    total_string := total_string ++ "\n"
   }
   total_string
 }
 
 fun show( ls : (list<int>, list<int>) ) : string {
   match(ls) {
-    (l1, l2) -> {show(l1) + show(l2)}
+    (l1, l2) -> {show(l1) ++ show(l2)}
   }
 }
 
 fun show(xs : list<double>) : string {
   var total_string := "["
-  for(0, xs.length - 1) fun(i) {
+  for(0, xs.length - 1) fn(i) {
 
     if(i < xs.length - 1) {
       val str = match(xs[i]) {
         Nothing -> ""
-        Just(x) -> show-fixed(x) + ","
+        Just(x) -> show-fixed(x, 1) ++ ","
       }
-      total_string := total_string + str
+      total_string := total_string ++ str
     } else {
       val str = match(xs[i]) {
         Nothing -> ""
-        Just(x) -> show-fixed(x)
+        Just(x) -> show-fixed(x, 1)
       }
-      total_string := total_string + str
+      total_string := total_string ++ str
     }
   }
-  total_string := total_string + "]"
+  total_string := total_string ++ "]"
   total_string
 }
 
@@ -242,11 +190,11 @@ fun show( x : list<list<list<double>>> ) : string {
 }
 
 fun show(hist : histogram<(double -> double)>) : console int {
-  for(0, hist.length - 1) fun(i) {
+  for(0, hist.length - 1) fn(i) {
     val str = match(hist[i]) {
       Nothing -> ""
       Just(x) -> match(x) {
-        (Exp(dbl), func) -> {"(" + show-fixed(exp(ddouble(dbl))) + ", " + show-fixed(func(100.0)) + ")"}
+        (Exp(dbl), func) -> {"(" ++ show-fixed(exp(ddouble(dbl)), 1) ++ ", " ++ show-fixed(func(100.0), 1) ++ ")"}
       }
     }
     println(str)
@@ -255,10 +203,10 @@ fun show(hist : histogram<(double -> double)>) : console int {
 }
 
 fun example-plot() {
-  plot( fun(x){ 2.0 * x } )
+  plot( fn(x){ 2.0 * x } )
 }
 
 fun list-join(len : int, elem) {
   val xs = list(1,len,elem)
-  "[" + xs.join(",") + "]"
+  "[" ++ xs.join(",") ++ "]"
 }

@@ -1,0 +1,73 @@
+module interface exn-get
+ 
+//------------------------------
+//#kki: import declarations
+ 
+private import std/core/types = std/core/types = "";
+private import std/core/hnd = std/core/hnd = "";
+private import std/core = std/core = "";
+ 
+//------------------------------
+//#kki: fixity declarations
+ 
+ 
+//------------------------------
+//#kki: local imported aliases
+ 
+ 
+//------------------------------
+//#kki: type declarations
+ 
+ 
+//------------------------------
+//#kki: declarations
+ 
+public fun exn-get : forall<a> (xs : (std/core/list :: V -> V)<a>, index : std/core/types/int) -> <(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>> a;
+public fun non_empty : forall<a> (l : (std/core/list :: V -> V)<a>) -> std/core/types/bool;
+ 
+//------------------------------
+//#kki: external declarations
+ 
+ 
+//------------------------------
+//#kki: inline definitions
+ 
+//.inline-section
+fun exn-get // inline size: 9
+  = forall<a> fn<<(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>>>(xs: (std/core/list :: V -> V)<a>, index: std/core/types/int){
+    (match ((std/core/([].2)<a>(xs, index))) {
+      ((std/core/types/Nothing() : (std/core/types/maybe :: V -> V)<a> ) as .pat: ((std/core/types/maybe :: V -> V)<a>))
+         -> val message.205 : std/core/types/string
+              = std/core/(++.1)("ListIndexError: Invalid list indexing at index: ", (std/core/show(index)));
+            val exn.21565 : std/core/exception
+              = std/core/Exception(message.205, (match ((std/core/types/None<std/core/exception-info>)) {
+                  ((std/core/types/Optional((.info.14279: std/core/exception-info) : std/core/exception-info) : (std/core/types/optional :: V -> V)<std/core/exception-info> ) as .pat4: ((std/core/types/optional :: V -> V)<std/core/exception-info>))
+                     -> .info.14279;
+                  ((.skip std/core/types/None() : (std/core/types/optional :: V -> V)<std/core/exception-info> ) as .pat00: ((std/core/types/optional :: V -> V)<std/core/exception-info>))
+                     -> std/core/ExnError;
+                }));
+            val ev.21566 : (std/core/hnd/ev :: ((E, V) -> V) -> V)<(std/core/.hnd-exn :: (E, V) -> V)>
+              = std/core/hnd/.evv-at<(std/core/.hnd-exn :: (E, V) -> V)>((std/core/size_t(0)));
+        (match (ev.21566) {
+          ((.skip std/core/hnd/Ev<(e :: E),b>((.pat01: (std/core/hnd/htag :: ((E, V) -> V) -> V)<(std/core/.hnd-exn :: (E, V) -> V)>) : (std/core/hnd/htag :: ((E, V) -> V) -> V)<(std/core/.hnd-exn :: (E, V) -> V)>, (m: (std/core/hnd/marker :: (E, V) -> V)<(e :: E),b>) : (std/core/hnd/marker :: (E, V) -> V)<(e :: E),b>, (h: (std/core/.hnd-exn :: (E, V) -> V)<(e :: E),b>) : (std/core/.hnd-exn :: (E, V) -> V)<(e :: E),b>, (.pat1: std/core/hnd/cfc) : std/core/hnd/cfc, (.pat2: (std/core/hnd/evv :: E -> V)<(e :: E)>) : (std/core/hnd/evv :: E -> V)<(e :: E)>) : (std/core/hnd/ev :: ((E, V) -> V) -> V)<(std/core/.hnd-exn :: (E, V) -> V)> ) as .pat0: ((std/core/hnd/ev :: ((E, V) -> V) -> V)<(std/core/.hnd-exn :: (E, V) -> V)>))
+             -> (match ((match (h) {
+              ((.skip std/core/.Hnd-exn((except-throw-exn: (forall<c> (std/core/hnd/clause1 :: (V, V, (E, V) -> V, E, V) -> V)<std/core/exception,c,(std/core/.hnd-exn :: (E, V) -> V),(e :: E),b>)) : (forall<c> (std/core/hnd/clause1 :: (V, V, (E, V) -> V, E, V) -> V)<std/core/exception,c,(std/core/.hnd-exn :: (E, V) -> V),(e :: E),b>)) : (std/core/.hnd-exn :: (E, V) -> V)<(e :: E),b> ) as .pat3: ((std/core/.hnd-exn :: (E, V) -> V)<(e :: E),b>))
+                 -> except-throw-exn<a>;
+            })) {
+              ((.skip std/core/hnd/Clause1((f: ((std/core/hnd/marker :: (E, V) -> V)<(e :: E),b>, (std/core/hnd/ev :: ((E, V) -> V) -> V)<(std/core/.hnd-exn :: (E, V) -> V)>, std/core/exception) -> (e :: E) a) : ((std/core/hnd/marker :: (E, V) -> V)<(e :: E),b>, (std/core/hnd/ev :: ((E, V) -> V) -> V)<(std/core/.hnd-exn :: (E, V) -> V)>, std/core/exception) -> (e :: E) a) : (std/core/hnd/clause1 :: (V, V, (E, V) -> V, E, V) -> V)<std/core/exception,a,(std/core/.hnd-exn :: (E, V) -> V),(e :: E),b> ) as .pat30: ((std/core/hnd/clause1 :: (V, V, (E, V) -> V, E, V) -> V)<std/core/exception,a,(std/core/.hnd-exn :: (E, V) -> V),(e :: E),b>))
+                 -> f(m, ev.21566, exn.21565);
+            });
+        });
+      ((.skip std/core/types/Just((x: a) : a) : (std/core/types/maybe :: V -> V)<a> ) as .pat02: ((std/core/types/maybe :: V -> V)<a>))
+         -> x;
+    });
+  };
+fun non_empty // inline size: 1
+  = forall<a> fn(l: (std/core/list :: V -> V)<a>){
+    (match (l) {
+      ((std/core/Nil() : (std/core/list :: V -> V)<a> ) as .pat: ((std/core/list :: V -> V)<a>))
+         -> std/core/types/False;
+      ((.skip std/core/Cons((.pat1: a) : a, (.pat2: (std/core/list :: V -> V)<a>) : (std/core/list :: V -> V)<a>) : (std/core/list :: V -> V)<a> ) as .pat0: ((std/core/list :: V -> V)<a>))
+         -> std/core/types/True;
+    });
+  };

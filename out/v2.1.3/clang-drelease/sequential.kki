@@ -1,0 +1,76 @@
+module interface sequential
+ 
+//------------------------------
+//#kki: import declarations
+ 
+private import std/core/types = std/core/types = "";
+private import std/core/hnd = std/core/hnd = "";
+private import std/core = std/core = "";
+private import std/num/random = std/num/random = "";
+private import effects-and-types = effects-and-types = "";
+private import handlers = handlers = "";
+private import sampling = sampling = "";
+ 
+//------------------------------
+//#kki: external imports
+ 
+ 
+//------------------------------
+//#kki: fixity declarations
+ 
+ 
+//------------------------------
+//#kki: local imported aliases
+ 
+local alias effects-and-types/histogram<a> :: V -> V = (std/core/list :: V -> V)<(effects-and-types/exp, a)> = 1;
+// An alias for pure effects: a pure function always returns the same result
+// when called with the same arguments but may not terminate or raise an exception.
+local alias std/core/pure :: E = <(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/div :: X)> = 1;
+ 
+//------------------------------
+//#kki: type declarations
+ 
+ 
+//------------------------------
+//#kki: declarations
+ 
+// monadic lift
+private fun .mlift739-smc_loop : forall<a,(e :: E)> (i : std/core/types/int, normalize : std/core/types/bool, step_num : std/core/types/int, step_size : std/core/types/int, (std/core/list :: V -> V)<(effects-and-types/exp, (a : std/core/types/int) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/yield :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/div :: E)|(e :: E)> a)>) -> <(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/div :: E)|(e :: E)> (effects-and-types/histogram :: V -> V)<a>;
+// monadic lift
+private fun .mlift740-smc_loop : forall<a,(e :: E)> (i : std/core/types/int, normalize : std/core/types/bool, step_num : std/core/types/int, step_size : std/core/types/int, (std/core/list :: V -> V)<(effects-and-types/exp, (a : std/core/types/int) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/yield :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/div :: E)|(e :: E)> a)>) -> <(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/div :: E)|(e :: E)> (effects-and-types/histogram :: V -> V)<a>;
+// monadic lift
+private fun .mlift741-smc_loop : forall<a,(e :: E)> (i : std/core/types/int, normalize : std/core/types/bool, step_num : std/core/types/int, step_size : std/core/types/int, resampled_histogram : (effects-and-types/histogram :: V -> V)<(std/core/types/int) -> <(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/yield :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/div :: E)|(e :: E)> a>) -> <(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/div :: E)|(e :: E)> (effects-and-types/histogram :: V -> V)<a>;
+// monadic lift
+private fun .mlift742-smc_loop : forall<a,(e :: E)> ((std/core/list :: V -> V)<(effects-and-types/exp, a)>) -> <(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/div :: E)|(e :: E)> (effects-and-types/histogram :: V -> V)<a>;
+public fun smc_loop : forall<a,(e :: E)> (i : std/core/types/int, populated_hist : (effects-and-types/histogram :: V -> V)<(std/core/types/int) -> <(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/yield :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/div :: E)|(e :: E)> a>, step_num : std/core/types/int, step_size : std/core/types/int, normalize : std/core/types/bool) -> <(std/core/pure :: E),(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>|(e :: E)> (effects-and-types/histogram :: V -> V)<a>;
+// monadic lift
+private fun .mlift743-smc : forall<a,(e :: E)> (normalize : std/core/types/bool, step_num : std/core/types/int, step_size : std/core/types/int, (effects-and-types/histogram :: V -> V)<(a : std/core/types/int) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/yield :: HX)>,(std/core/types/div :: E),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>|(e :: E)> a>) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/div :: E),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>|(e :: E)> (effects-and-types/histogram :: V -> V)<a>;
+public fun smc : forall<a,(e :: E)> (particle_num : std/core/types/int, step_num : std/core/types/int, step_size : std/core/types/int, model : () -> <(std/core/pure :: E),(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/yield :: HX)>|(e :: E)> a, normalize : std/core/types/bool) -> <(std/core/pure :: E),(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>|(e :: E)> (effects-and-types/histogram :: V -> V)<a>;
+ 
+//------------------------------
+//#kki: external declarations
+ 
+ 
+//------------------------------
+//#kki: inline definitions
+ 
+//.inline-section
+fun smc // inline size: 9
+  = forall<a,(e :: E)> fn<<(std/core/types/div :: X),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>|(e :: E)>>(particle_num: std/core/types/int, step_num: std/core/types/int, step_size: std/core/types/int, model: () -> <(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/yield :: HX)>,(std/core/types/div :: E),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>|(e :: E)> a, normalize: std/core/types/bool){
+    handlers/random_sampler<(effects-and-types/histogram :: V -> V)<a>,<(std/core/types/div :: X),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>|(e :: E)>>((fn<<(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>,(std/core/types/div :: X),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>|(e :: E)>>(){
+      val x.775 : ((effects-and-types/histogram :: V -> V)<(a : std/core/types/int) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/yield :: HX)>,(std/core/types/div :: E),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>|(e :: E)> a>)
+            = (sampling/populate<(a : std/core/types/int) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/yield :: HX)>,(std/core/types/div :: E),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>|(e :: E)> a,<(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/div :: E),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>|(e :: E)>>(particle_num, (fn<<(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/div :: E),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>|(e :: E)>>(){
+                (handlers/advance<a,<(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/div :: E),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>|(e :: E)>>((fn<<(std/core/types/handled :: HX -> X)<(effects-and-types/yield :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/div :: E),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>|(e :: E)>>(){
+                  (handlers/yield_on_score<a,<(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/div :: E),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>|(e :: E)>>(model));
+                })));
+              })));
+      (match ((std/core/hnd/yielding())) {
+        ((std/core/types/True() : std/core/types/bool ) as .pat: std/core/types/bool)
+           -> std/core/hnd/yield-extend<(effects-and-types/histogram :: V -> V)<(a : std/core/types/int) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/yield :: HX)>,(std/core/types/div :: E),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>|(e :: E)> a>,(effects-and-types/histogram :: V -> V)<a>,<(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/div :: E),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>|(e :: E)>>((fn<<(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/div :: E),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>|(e :: E)>>(.y.20: (effects-and-types/histogram :: V -> V)<(a : std/core/types/int) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/yield :: HX)>,(std/core/types/div :: E),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>|(e :: E)> a>){
+            (sequential/.mlift743-smc<a,(e :: E)>(normalize, step_num, step_size, .y.20));
+          }));
+        ((.skip std/core/types/False() : std/core/types/bool ) as .pat0: std/core/types/bool)
+           -> sequential/.mlift743-smc<a,(e :: E)>(normalize, step_num, step_size, x.775);
+      });
+    }));
+  };

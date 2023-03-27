@@ -1,0 +1,2 @@
+/usr/bin/ar qc libkklib.a CMakeFiles/kklib.dir/src/bits.c.o CMakeFiles/kklib.dir/src/box.c.o CMakeFiles/kklib.dir/src/bytes.c.o CMakeFiles/kklib.dir/src/init.c.o CMakeFiles/kklib.dir/src/integer.c.o CMakeFiles/kklib.dir/src/os.c.o CMakeFiles/kklib.dir/src/process.c.o CMakeFiles/kklib.dir/src/random.c.o CMakeFiles/kklib.dir/src/refcount.c.o CMakeFiles/kklib.dir/src/ref.c.o CMakeFiles/kklib.dir/src/string.c.o CMakeFiles/kklib.dir/src/time.c.o CMakeFiles/kklib.dir/mimalloc/src/static.c.o
+/usr/bin/ranlib libkklib.a

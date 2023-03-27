@@ -1,0 +1,127 @@
+module interface climate-change
+ 
+//------------------------------
+//#kki: import declarations
+ 
+private import std/core/types = std/core/types = "";
+private import std/core/hnd = std/core/hnd = "";
+private import std/core = std/core = "";
+private import effects-and-types = effects-and-types = "";
+private import model-resources = model-resources = "";
+private import exn-get = exn-get = "";
+ 
+//------------------------------
+//#kki: external imports
+ 
+ 
+//------------------------------
+//#kki: fixity declarations
+ 
+ 
+//------------------------------
+//#kki: local imported aliases
+ 
+local alias effects-and-types/model<a,(e :: E)> :: (V, E) -> V = () -> <(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>|(e :: E)> a = 1;
+local alias effects-and-types/row_vector = (std/core/list :: V -> V)<std/core/types/double> = 1;
+ 
+//------------------------------
+//#kki: type declarations
+ 
+ 
+//------------------------------
+//#kki: declarations
+ 
+// monadic lift
+private fun .mlift2678-convert_uncertainty_to_rand : (uncertainty : std/core/types/double) -> <(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>> std/core/types/double;
+public fun convert_uncertainty_to_rand : (vs : effects-and-types/row_vector) -> <(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>> effects-and-types/row_vector;
+public fun mult_thunk : forall<(e :: E)> (x : std/core/types/double) -> ((v : std/core/types/double) -> (e :: E) std/core/types/double);
+public fun multivariate_gaussian : (dimension : std/core/types/int, mean : std/core/types/double, std_dev : std/core/types/double) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>> (std/core/list :: V -> V)<std/core/types/double>;
+public fun plus : (xs : effects-and-types/row_vector, ys : effects-and-types/row_vector) -> <(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>> effects-and-types/row_vector;
+public fun score_thunk : forall<(e :: E)> (score_std_dev : std/core/types/double) -> ((true_val : std/core/types/double, pred_val : std/core/types/double) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>|(e :: E)> ());
+public fun mult : (x : std/core/types/double, ys : effects-and-types/row_vector) -> effects-and-types/row_vector;
+public fun score_predictions : (true_values : effects-and-types/row_vector, predicted_values : effects-and-types/row_vector, score_std_dev : std/core/types/double) -> <(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>> (std/core/list :: V -> V)<()>;
+// monadic lift
+private fun .mlift2679-linear_gaussian_climate_data : forall<(h :: H)> (i0 : std/core/types/int, (std/core/list :: V -> V)<std/core/types/double>) -> <(std/core/types/local :: H -> X)<(h :: H)>,(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>> std/core/types/double;
+// monadic lift
+private fun .mlift2680-linear_gaussian_climate_data : forall<(h :: H)> (wild_0 : (std/core/list :: V -> V)<()>) -> <(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/local :: H -> X)<(h :: H)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>> ();
+// monadic lift
+private fun .mlift2681-linear_gaussian_climate_data : forall<(h :: H)> (month_ys : effects-and-types/row_vector, score_var : std/core/types/double, predictions : effects-and-types/row_vector) -> <(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/local :: H -> X)<(h :: H)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>> ();
+// monadic lift
+private fun .mlift2682-linear_gaussian_climate_data : forall<(h :: H)> (c_row : (std/core/list :: V -> V)<std/core/types/double>, month_ys : effects-and-types/row_vector, score_var : std/core/types/double, v_row : effects-and-types/row_vector, std/core/types/double) -> <(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/local :: H -> X)<(h :: H)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>> ();
+// monadic lift
+private fun .mlift2683-linear_gaussian_climate_data : forall<(h :: H)> (c_row : (std/core/list :: V -> V)<std/core/types/double>, i : std/core/types/int, month_ys : effects-and-types/row_vector, score_var : std/core/types/double, v_row : effects-and-types/row_vector, (std/core/list :: V -> V)<std/core/types/double>) -> <(std/core/types/local :: H -> X)<(h :: H)>,(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>> ();
+// monadic lift
+private fun .mlift2684-linear_gaussian_climate_data : forall<(h :: H)> (c_row : (std/core/list :: V -> V)<std/core/types/double>, i : std/core/types/int, month_ys : effects-and-types/row_vector, score_var : std/core/types/double, x : (std/core/types/local-var :: (H, V) -> V)<(h :: H),(std/core/list :: V -> V)<std/core/types/double>>, v_row : effects-and-types/row_vector) -> <(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/local :: H -> X)<(h :: H)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>> ();
+// monadic lift
+private fun .mlift2685-linear_gaussian_climate_data : forall<(h :: H)> (i : std/core/types/int, month_vs : effects-and-types/row_vector, month_ys : effects-and-types/row_vector, score_var : std/core/types/double, x : (std/core/types/local-var :: (H, V) -> V)<(h :: H),(std/core/list :: V -> V)<std/core/types/double>>, c_row : (std/core/list :: V -> V)<std/core/types/double>) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/local :: H -> X)<(h :: H)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>> ();
+// monadic lift
+private fun .mlift2686-linear_gaussian_climate_data : forall<(h :: H)> (i : std/core/types/int, month_ys : effects-and-types/row_vector, score_var : std/core/types/double, x : (std/core/types/local-var :: (H, V) -> V)<(h :: H),(std/core/list :: V -> V)<std/core/types/double>>, month_vs : effects-and-types/row_vector) -> <(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/local :: H -> X)<(h :: H)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>> ();
+// monadic lift
+private fun .mlift2687-linear_gaussian_climate_data : forall<(h :: H)> (i : std/core/types/int, score_var : std/core/types/double, vs : (std/core/list :: V -> V)<effects-and-types/row_vector>, x : (std/core/types/local-var :: (H, V) -> V)<(h :: H),(std/core/list :: V -> V)<std/core/types/double>>, month_ys : effects-and-types/row_vector) -> <(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/local :: H -> X)<(h :: H)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>> ();
+// monadic lift
+private fun .mlift2688-linear_gaussian_climate_data : forall<(h :: H)> ((std/core/list :: V -> V)<std/core/types/double>, diff : std/core/types/double, subtract : std/core/types/double, x : (std/core/types/local-var :: (H, V) -> V)<(h :: H),(std/core/list :: V -> V)<std/core/types/double>>, std/core/types/double) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/local :: H -> X)<(h :: H)>,(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>> ();
+// monadic lift
+private fun .mlift2689-linear_gaussian_climate_data : forall<(h :: H)> (diff : std/core/types/double, subtract : std/core/types/double, x : (std/core/types/local-var :: (H, V) -> V)<(h :: H),(std/core/list :: V -> V)<std/core/types/double>>, (std/core/list :: V -> V)<std/core/types/double>) -> <(std/core/types/local :: H -> X)<(h :: H)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>> ();
+// monadic lift
+private fun .mlift2690-linear_gaussian_climate_data : forall<(h :: H)> ((std/core/list :: V -> V)<std/core/types/double>, a_val : std/core/types/double, w_val : std/core/types/double, x : (std/core/types/local-var :: (H, V) -> V)<(h :: H),(std/core/list :: V -> V)<std/core/types/double>>, std/core/types/double) -> <(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/local :: H -> X)<(h :: H)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>> ();
+// monadic lift
+private fun .mlift2691-linear_gaussian_climate_data : forall<(h :: H)> ((std/core/list :: V -> V)<std/core/types/double>, a_val : std/core/types/double, i : std/core/types/int, w_val : std/core/types/double, x : (std/core/types/local-var :: (H, V) -> V)<(h :: H),(std/core/list :: V -> V)<std/core/types/double>>, (std/core/list :: V -> V)<std/core/types/double>) -> <(std/core/types/local :: H -> X)<(h :: H)>,(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>> ();
+// monadic lift
+private fun .mlift2692-linear_gaussian_climate_data : forall<(h :: H)> (a_val : std/core/types/double, i : std/core/types/int, w_val : std/core/types/double, x : (std/core/types/local-var :: (H, V) -> V)<(h :: H),(std/core/list :: V -> V)<std/core/types/double>>, (std/core/list :: V -> V)<std/core/types/double>) -> <(std/core/types/local :: H -> X)<(h :: H)>,(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>> ();
+// monadic lift
+private fun .mlift2693-linear_gaussian_climate_data : forall<(h :: H)> (a_val : std/core/types/double, i : std/core/types/int, x : (std/core/types/local-var :: (H, V) -> V)<(h :: H),(std/core/list :: V -> V)<std/core/types/double>>, w_val : std/core/types/double) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/local :: H -> X)<(h :: H)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>> ();
+// monadic lift
+private fun .mlift2694-linear_gaussian_climate_data : forall<(h :: H)> (i : std/core/types/int, x : (std/core/types/local-var :: (H, V) -> V)<(h :: H),(std/core/list :: V -> V)<std/core/types/double>>, a_val : std/core/types/double) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/local :: H -> X)<(h :: H)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>> ();
+// monadic lift
+private fun .mlift2695-linear_gaussian_climate_data : forall<(h :: H)> (i : std/core/types/int, score_var : std/core/types/double, vs : (std/core/list :: V -> V)<effects-and-types/row_vector>, x : (std/core/types/local-var :: (H, V) -> V)<(h :: H),(std/core/list :: V -> V)<std/core/types/double>>, ys : (std/core/list :: V -> V)<effects-and-types/row_vector>, ()) -> ();
+// monadic lift
+private fun .mlift2696-linear_gaussian_climate_data : forall<(h :: H)> (x : (std/core/types/local-var :: (H, V) -> V)<(h :: H),(std/core/list :: V -> V)<std/core/types/double>>, wild_1 : ()) -> <(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/local :: H -> X)<(h :: H)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>> (std/core/list :: V -> V)<std/core/types/double>;
+public fun linear_gaussian_climate_data : (ys : (std/core/list :: V -> V)<effects-and-types/row_vector>, vs : (std/core/list :: V -> V)<effects-and-types/row_vector>, print : std/core/types/bool, diff : std/core/types/double, subtract : std/core/types/double, score_var : std/core/types/double) -> (effects-and-types/model :: (V, E) -> V)<(std/core/list :: V -> V)<std/core/types/double>,<(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>>>;
+ 
+//------------------------------
+//#kki: external declarations
+ 
+ 
+//------------------------------
+//#kki: inline definitions
+ 
+//.inline-section
+fun mult_thunk // inline size: 1
+  = forall<(e :: E)> fn(x: std/core/types/double){
+    fn<(e :: E)>(v: std/core/types/double){
+      std/core/(*.1)(x, v);
+    };
+  };
+fun multivariate_gaussian // inline size: 2
+  = fn<<(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>>>(dimension: std/core/types/int, mean: std/core/types/double, std_dev: std/core/types/double){
+    std/core/.lift21054-list.1<std/core/types/double,<(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>>>((fn<<(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>>>(i: std/core/types/int){
+        (model-resources/normal(mean, std_dev));
+      }), 1, dimension, (std/core/Nil<std/core/types/double>));
+  };
+fun score_thunk // inline size: 9
+  = forall<(e :: E)> fn(score_std_dev: std/core/types/double){
+    fn<<(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>|(e :: E)>>(true_val: std/core/types/double, pred_val: std/core/types/double){
+      val .x1 : effects-and-types/exp
+        = std/core/hnd/.open-none3<std/core/types/double,std/core/types/double,std/core/types/double,effects-and-types/exp,(std/core/types/(<>) :: E),<(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>|(e :: E)>>(model-resources/normal_pdf, pred_val, score_std_dev, true_val);
+      val i.2715 : std/core/hnd/ev-index
+        = std/core/hnd/.evv-index<<(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>|(e :: E)>,(effects-and-types/.hnd-score :: (E, V) -> V)>(effects-and-types/.tag-score);
+      val w : (std/core/hnd/evv :: E -> V)<<(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>|(e :: E)>>
+        = std/core/hnd/evv-swap-create1<<(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>|(e :: E)>>(i.2715);
+      val y : ()
+        = effects-and-types/score(.x1);
+      val _w-l700-c9 : ()
+        = std/core/hnd/evv-set<<(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>|(e :: E)>,<(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>|(e :: E)>>(w);
+      (match ((std/core/hnd/yielding())) {
+        ((std/core/types/True() : std/core/types/bool ) as .pat: std/core/types/bool)
+           -> std/core/hnd/yield-cont<(),<(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>|(e :: E)>,()>((fn<<(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>|(e :: E)>>(cont: (()) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>|(e :: E)> (), res: ()){
+            (std/core/hnd/open-at1<(),(),<(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>|(e :: E)>,<(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>|(e :: E)>>(i.2715, cont, res));
+          }));
+        ((.skip std/core/types/False() : std/core/types/bool ) as .pat0: std/core/types/bool)
+           -> y;
+      });
+    };
+  };
+fun mult // inline size: 2
+  = fn(x: std/core/types/double, ys: effects-and-types/row_vector){
+    std/core/map.5<std/core/types/double,std/core/types/double,(std/core/types/(<>) :: E)>(ys, (climate-change/mult_thunk<(std/core/types/(<>) :: E)>(x)));
+  };

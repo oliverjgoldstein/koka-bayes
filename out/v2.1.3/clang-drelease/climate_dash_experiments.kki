@@ -1,0 +1,121 @@
+module interface climate-experiments
+ 
+//------------------------------
+//#kki: import declarations
+ 
+private import std/core/types = std/core/types = "";
+private import std/core/hnd = std/core/hnd = "";
+private import std/core = std/core = "";
+private import std/text/parse = std/text/parse = "";
+private import std/num/int32 = std/num/int32 = "";
+private import std/num/double = std/num/double = "";
+private import std/num/decimal = std/num/decimal = "";
+private import std/num/ddouble = std/num/ddouble = "";
+private import std/num/random = std/num/random = "";
+private import std/time/date = std/time/date = "";
+private import std/time/timestamp = std/time/timestamp = "";
+private import std/time/duration = std/time/duration = "";
+private import std/time/timer = std/time/timer = "";
+private import std/os/path = std/os/path = "";
+private import std/os/dir = std/os/dir = "";
+private import std/os/file = std/os/file = "";
+private import effects-and-types = effects-and-types = "";
+private import output-and-plot = output-and-plot = "";
+private import exponents = exponents = "";
+private import handlers = handlers = "";
+private import sampling = sampling = "";
+private import smc = smc = "";
+private import model-resources = model-resources = "";
+private import tmcmc = tmcmc = "";
+private import pmmh = pmmh = "";
+private import exn-get = exn-get = "";
+private import climate-change = climate-change = "";
+private import data/preprocessing = data/preprocessing = "";
+ 
+//------------------------------
+//#kki: external imports
+ 
+ 
+//------------------------------
+//#kki: fixity declarations
+ 
+ 
+//------------------------------
+//#kki: local imported aliases
+ 
+local alias effects-and-types/histogram<a> :: V -> V = (std/core/list :: V -> V)<(effects-and-types/exp, a)> = 1;
+local alias effects-and-types/row_vector = (std/core/list :: V -> V)<std/core/types/double> = 1;
+// An alias for pure effects: a pure function always returns the same result
+// when called with the same arguments but may not terminate or raise an exception.
+local alias std/core/pure :: E = <(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/div :: X)> = 1;
+ 
+//------------------------------
+//#kki: type declarations
+ 
+ 
+//------------------------------
+//#kki: declarations
+ 
+// monadic lift
+private fun .mlift4683-run_climate_model : (name0 : std/core/types/string, ((std/core/list :: V -> V)<((std/core/list :: V -> V)<std/core/types/double>, (std/core/list :: V -> V)<std/core/types/double>)>, (tmcmc/trace :: (V, E) -> V)<(std/core/list :: V -> V)<std/core/types/double>,<(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/div :: X),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/fsys :: X),(std/core/console :: X),(std/core/types/ndet :: X),(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>>>)) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/div :: X),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/fsys :: X),(std/core/console :: X),(std/core/types/ndet :: X),(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>> ();
+// monadic lift
+private fun .mlift4684-run_climate_model : (burnin : std/core/types/int, data : ((std/core/list :: V -> V)<(std/core/list :: V -> V)<effects-and-types/row_vector>>, (std/core/list :: V -> V)<(std/core/list :: V -> V)<effects-and-types/row_vector>>), diff0 : std/core/types/double, ind0 : std/core/types/int, name0 : std/core/types/string, subtract0 : std/core/types/double, t_steps : std/core/types/int, (std/core/list :: V -> V)<effects-and-types/row_vector>) -> <(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/div :: X),(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/fsys :: X),(std/core/console :: X),(std/core/types/ndet :: X),(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>> ();
+// monadic lift
+private fun .mlift4685-run_climate_model : (burnin : std/core/types/int, data : ((std/core/list :: V -> V)<(std/core/list :: V -> V)<effects-and-types/row_vector>>, (std/core/list :: V -> V)<(std/core/list :: V -> V)<effects-and-types/row_vector>>), diff0 : std/core/types/double, ind0 : std/core/types/int, name0 : std/core/types/string, subtract0 : std/core/types/double, t_steps : std/core/types/int, (std/core/list :: V -> V)<effects-and-types/row_vector>) -> <(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/div :: X),(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/fsys :: X),(std/core/console :: X),(std/core/types/ndet :: X),(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>> ();
+// monadic lift
+private fun .mlift4686-run_climate_model : (name : std/core/types/string, ((std/core/list :: V -> V)<((std/core/list :: V -> V)<std/core/types/double>, (std/core/list :: V -> V)<std/core/types/double>)>, (tmcmc/trace :: (V, E) -> V)<(std/core/list :: V -> V)<std/core/types/double>,<(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/div :: X),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/fsys :: X),(std/core/console :: X),(std/core/types/ndet :: X),(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>>>)) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/div :: X),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/fsys :: X),(std/core/console :: X),(std/core/types/ndet :: X),(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>> ();
+// monadic lift
+private fun .mlift4687-run_climate_model : (burnin : std/core/types/int, data : ((std/core/list :: V -> V)<(std/core/list :: V -> V)<effects-and-types/row_vector>>, (std/core/list :: V -> V)<(std/core/list :: V -> V)<effects-and-types/row_vector>>), diff : std/core/types/double, ind : std/core/types/int, name : std/core/types/string, subtract : std/core/types/double, t_steps : std/core/types/int, (std/core/list :: V -> V)<effects-and-types/row_vector>) -> <(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/div :: X),(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/fsys :: X),(std/core/console :: X),(std/core/types/ndet :: X),(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>> ();
+// monadic lift
+private fun .mlift4688-run_climate_model : (burnin : std/core/types/int, data : ((std/core/list :: V -> V)<(std/core/list :: V -> V)<effects-and-types/row_vector>>, (std/core/list :: V -> V)<(std/core/list :: V -> V)<effects-and-types/row_vector>>), diff : std/core/types/double, ind : std/core/types/int, name : std/core/types/string, subtract : std/core/types/double, t_steps : std/core/types/int, (std/core/list :: V -> V)<effects-and-types/row_vector>) -> <(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/div :: X),(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/fsys :: X),(std/core/console :: X),(std/core/types/ndet :: X),(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>> ();
+// monadic lift
+private fun .mlift4689-run_climate_model : (burnin : std/core/types/int, data : ((std/core/list :: V -> V)<(std/core/list :: V -> V)<effects-and-types/row_vector>>, (std/core/list :: V -> V)<(std/core/list :: V -> V)<effects-and-types/row_vector>>), pre_data : (std/core/list :: V -> V)<(std/core/types/double, std/core/types/double, std/core/types/string)>, t_steps : std/core/types/int, wild_1 : (std/core/list :: V -> V)<()>) -> <(std/core/types/ndet :: X),(std/core/console :: X),(std/core/types/div :: X),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/fsys :: X),(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>> (std/core/list :: V -> V)<()>;
+// monadic lift
+private fun .mlift4690-run_climate_model : (burnin : std/core/types/int, t_steps : std/core/types/int, data : ((std/core/list :: V -> V)<(std/core/list :: V -> V)<effects-and-types/row_vector>>, (std/core/list :: V -> V)<(std/core/list :: V -> V)<effects-and-types/row_vector>>)) -> <(std/core/types/div :: X),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/fsys :: X),(std/core/console :: X),(std/core/types/ndet :: X),(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>> (std/core/list :: V -> V)<()>;
+public fun run_climate_model : (pt : std/core/types/int, rs : std/core/types/int, sbrs : std/core/types/int, t_steps : std/core/types/int, burnin : std/core/types/int, repeat_num : (std/core/types/optional :: V -> V)<std/core/types/int>) -> <(std/core/pure :: E),(std/core/console :: X),(std/core/fsys :: X),(std/core/types/ndet :: X),(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>> (std/core/list :: V -> V)<()>;
+// monadic lift
+private fun .mlift4691-run_experiments : (i1 : std/core/types/int, wild_10 : (std/core/list :: V -> V)<((std/core/list :: V -> V)<((std/core/list :: V -> V)<std/core/types/double>, (std/core/types/double, std/core/types/double))>, (tmcmc/trace :: (V, E) -> V)<(std/core/types/double, std/core/types/double),<(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/div :: X),(std/core/console :: X),(std/core/types/ndet :: X),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>>>)>) -> <(std/core/console :: X),(std/core/types/div :: X),(std/core/types/ndet :: X),(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>> ();
+// monadic lift
+private fun .mlift4692-run_experiments : (data_50 : (std/core/list :: V -> V)<(std/core/types/double, std/core/types/bool)>, data_points : (std/core/list :: V -> V)<(std/core/types/int, (std/core/list :: V -> V)<(std/core/types/double, std/core/types/bool)>)>, i1 : std/core/types/int, wild_7 : (std/core/list :: V -> V)<((std/core/list :: V -> V)<((std/core/list :: V -> V)<std/core/types/double>, (std/core/types/double, std/core/types/double))>, (tmcmc/trace :: (V, E) -> V)<(std/core/types/double, std/core/types/double),<(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/div :: X),(std/core/console :: X),(std/core/types/ndet :: X),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>>>)>) -> <(std/core/console :: X),(std/core/types/div :: X),(std/core/types/ndet :: X),(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>> ();
+// monadic lift
+private fun .mlift4693-run_experiments : (data_50 : (std/core/list :: V -> V)<(std/core/types/double, std/core/types/bool)>, data_points : (std/core/list :: V -> V)<(std/core/types/int, (std/core/list :: V -> V)<(std/core/types/double, std/core/types/bool)>)>, i1 : std/core/types/int, wild_4 : (std/core/list :: V -> V)<(effects-and-types/histogram :: V -> V)<(std/core/types/double, std/core/types/double)>>) -> <(std/core/console :: X),(std/core/types/div :: X),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/ndet :: X),(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>> ();
+// monadic lift
+private fun .mlift4694-run_experiments : (data_50 : (std/core/list :: V -> V)<(std/core/types/double, std/core/types/bool)>, data_points : (std/core/list :: V -> V)<(std/core/types/int, (std/core/list :: V -> V)<(std/core/types/double, std/core/types/bool)>)>, i1 : std/core/types/int, wild_1 : (std/core/list :: V -> V)<(effects-and-types/histogram :: V -> V)<(std/core/types/double, std/core/types/double)>>) -> <(std/core/console :: X),(std/core/types/div :: X),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/ndet :: X),(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>> ();
+// monadic lift
+private fun .mlift4695-run_experiments : (data_points : (std/core/list :: V -> V)<(std/core/types/int, (std/core/list :: V -> V)<(std/core/types/double, std/core/types/bool)>)>, number_of_repeats : (std/core/types/optional :: V -> V)<std/core/types/int>, data_50 : (std/core/list :: V -> V)<(std/core/types/double, std/core/types/bool)>) -> <(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>,(std/core/console :: X),(std/core/types/div :: X),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/ndet :: X),(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>> ();
+// monadic lift
+private fun .mlift4696-run_experiments : (i0 : std/core/types/int, (std/core/list :: V -> V)<(std/core/types/double, std/core/types/bool)>) -> <(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>,(std/core/console :: X),(std/core/types/div :: X),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/ndet :: X),(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>> (std/core/types/int, (std/core/list :: V -> V)<(std/core/types/double, std/core/types/bool)>);
+// monadic lift
+private fun .mlift4697-run_experiments : (number_of_repeats : (std/core/types/optional :: V -> V)<std/core/types/int>, data_points : (std/core/list :: V -> V)<(std/core/types/int, (std/core/list :: V -> V)<(std/core/types/double, std/core/types/bool)>)>) -> <(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>,(std/core/console :: X),(std/core/types/div :: X),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/ndet :: X),(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>> ();
+// monadic lift
+private fun .mlift4698-run_experiments : (number_of_repeats : (std/core/types/optional :: V -> V)<std/core/types/int>, (std/core/list :: V -> V)<std/core/types/int>) -> <(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>,(std/core/console :: X),(std/core/types/div :: X),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/ndet :: X),(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>> ();
+// Original code has 10 as the max_number_of_data_points, but this reaches max_memory (heap size of 4 GB on my computer) nad cca 10GB of core data
+public fun run_experiments : (number_of_repeats : (std/core/types/optional :: V -> V)<std/core/types/int>, max_number_of_data_points : (std/core/types/optional :: V -> V)<std/core/types/int>) -> <(std/core/pure :: E),(std/core/console :: X),(std/core/types/ndet :: X),(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>> ();
+// monadic lift
+private fun .mlift4699-main : (wild_0 : (std/core/list :: V -> V)<()>) -> <(std/core/pure :: E),(std/core/console :: X),(std/core/fsys :: X),(std/core/types/ndet :: X),(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>> ();
+public fun main : () -> <(std/core/pure :: E),(std/core/console :: X),(std/core/fsys :: X),(std/core/types/ndet :: X),(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>> ();
+public fun .hmain : () -> <(std/core/console :: X),(std/core/types/div :: X),(std/core/fsys :: X),(std/core/types/ndet :: X)> ();
+ 
+//------------------------------
+//#kki: external declarations
+ 
+ 
+//------------------------------
+//#kki: inline definitions
+ 
+//.inline-section
+fun main // inline size: 8
+  = fn<<(std/core/console :: X),(std/core/types/div :: X),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/fsys :: X),(std/core/types/ndet :: X),(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>>>(){
+    val _ : ()
+      = std/core/printsln("Running Climate Model...");
+    val x.4891 : (std/core/list :: V -> V)<()>
+      = climate-experiments/run_climate_model(2000, 131, 2, 100000, 80000, (std/core/types/Optional<std/core/types/int>(8)));
+    match ((std/core/hnd/yielding())) {
+      ((std/core/types/True() : std/core/types/bool ) as .pat: std/core/types/bool)
+         -> std/core/hnd/yield-extend<(std/core/list :: V -> V)<()>,(),<(std/core/pure :: E),(std/core/console :: X),(std/core/fsys :: X),(std/core/types/ndet :: X),(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>>>(climate-experiments/.mlift4699-main);
+      ((.skip std/core/types/False() : std/core/types/bool ) as .pat0: std/core/types/bool)
+         -> val _1 : ()
+                  = std/core/printsln("Completed Climate Model!");
+        std/core/printsln("Finished running...");
+    };
+  };

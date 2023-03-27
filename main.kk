@@ -1,42 +1,43 @@
 public module main
 
+import std/num/random
 import std/num/double
 import std/num/ddouble
 import std/time/timer
-import output-and-plot
-import exponents
 import effects-and-types
-import sequential
-import trace
-import pmmh
-import handlers
+import output-and-plot
+import smc
 import model-resources
-import climate-change
-import data/preprocessing
-import exn-get
-import sampling
+import handlers
+import tmcmc
 
-// The following is a short demonstration of how to use Importance Sampling,
-// Sequential Monte Carlo, as well as Trace Markov Chain Monte Carlo.
 
-fun main() {
-  println("Running Importance Sampling...")
-  print-elapsed{write(importance_sampling(sequential_gaussian(3.0)), "./gaussian/importance_sampling.csv")}
-  println("Completed Importance Sampling!")
+public fun print-elapsed2( action : () -> <ndet,console|e> a, msg : string = "elapsed" ) : <ndet,console|e> a {
+  val x = action()
+  //println( msg + " " + t.show(3) )
+  x
+}
 
-  // Note that if you change any filename - change output/plot_examples.py too if you want to show the histograms.
-  println("Running Sequential Monte Carlo...")
-  print-elapsed {
-    write(smc(2000, 10, 1, sequential_gaussian(3.0), True), "./gaussian/smc_posterior.csv")
-  }
-  println("Completed Sequential Monte Carlo!")
-
+fun main(){
+  /*
   println("Running Trace MCMC...")
-  print-elapsed {
-    random_sampler {
-      val trace_and_values = tmcmc(sequential_gaussian(3.0), 2000, Exp(0.0), 0).fst
-      write(trace_and_values, "./gaussian/trace_posterior.csv")
+  pseudo-random(2020) {
+    print-elapsed {
+      random_sampler {
+        val trace_and_values = tmcmc(sequential_gaussian(3.0), 1500, Exp(0.0), 0).fst
+        write(trace_and_values, "./output-gaussian/trace_posterior.csv")
+      }
     }
   }
   println("Completed Trace MCMC!")
+  */
+  println("Running Sequential Monte Carlo...")
+
+  pseudo-random(2020) {
+    print-elapsed {
+      write(smc(3000, 10, 1, sequential_gaussian(3.0), True), "./output-gaussian/smc_posterior_filip.csv")
+    }
+  }
+
+  println("Completed Sequential Monte Carlo!")
 }

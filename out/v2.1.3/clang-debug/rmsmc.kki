@@ -1,0 +1,74 @@
+module interface rmsmc
+ 
+//------------------------------
+//#kki: import declarations
+ 
+private import std/core/types = std/core/types = "";
+private import std/core/hnd = std/core/hnd = "";
+private import std/core = std/core = "";
+private import std/num/random = std/num/random = "";
+private import effects-and-types = effects-and-types = "";
+private import handlers = handlers = "";
+private import sampling-rmsmc = sampling-rmsmc = "";
+ 
+//------------------------------
+//#kki: external imports
+ 
+ 
+//------------------------------
+//#kki: fixity declarations
+ 
+ 
+//------------------------------
+//#kki: local imported aliases
+ 
+//////////////////// In Development:
+local alias effects-and-types/histogram_rmsmc<a> :: V -> V = (std/core/list :: V -> V)<((effects-and-types/trace_values == 1 (std/core/list :: V -> V)<std/core/types/double>), effects-and-types/exp, a)> = 2;
+local alias effects-and-types/trace_values = (std/core/list :: V -> V)<std/core/types/double> = 1;
+// An alias for pure effects: a pure function always returns the same result
+// when called with the same arguments but may not terminate or raise an exception.
+local alias std/core/pure :: E = <(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/div :: X)> = 1;
+ 
+//------------------------------
+//#kki: type declarations
+ 
+ 
+//------------------------------
+//#kki: declarations
+ 
+// monadic lift
+private fun .mlift665-rmsmc_loop : forall<a,(e :: E)> ((effects-and-types/trace_values, effects-and-types/exp, (a : std/core/types/int) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/yield :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/div :: E)|(e :: E)> a)) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/div :: E)|(e :: E)> (effects-and-types/trace_values, effects-and-types/exp, (a : std/core/types/int) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/yield :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/div :: E)|(e :: E)> a);
+// monadic lift
+private fun .mlift666-rmsmc_loop : forall<a,(e :: E)> (composition_1 : std/core/types/int, i : std/core/types/int, mh_step_num : std/core/types/int, normalize : std/core/types/bool, smc_step_num : std/core/types/int, step_size : std/core/types/int, irrelevant : (std/core/list :: V -> V)<(effects-and-types/trace_values, effects-and-types/exp, (a : std/core/types/int) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/yield :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/div :: E)|(e :: E)> a)>) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/div :: E)|(e :: E)> (effects-and-types/histogram_rmsmc :: V -> V)<a>;
+public fun rmsmc_loop : forall<a,(e :: E)> (populated_hist : (effects-and-types/histogram_rmsmc :: V -> V)<(std/core/types/int) -> <(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/yield :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/div :: E)|(e :: E)> a>, composition_1 : std/core/types/int, i : std/core/types/int, smc_step_num : std/core/types/int, mh_step_num : std/core/types/int, step_size : std/core/types/int, normalize : std/core/types/bool) -> <(std/core/pure :: E),(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>|(e :: E)> (effects-and-types/histogram_rmsmc :: V -> V)<a>;
+// monadic lift
+private fun .mlift667-rmsmc : forall<a,(e :: E)> (mh_step_num : std/core/types/int, normalize : std/core/types/bool, smc_step_num : std/core/types/int, step_size : std/core/types/int, pop : (effects-and-types/histogram_rmsmc :: V -> V)<(a : std/core/types/int) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/yield :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/div :: E),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>|(e :: E)> a>) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/div :: E),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>|(e :: E)> (effects-and-types/histogram_rmsmc :: V -> V)<a>;
+public fun rmsmc : forall<a,(e :: E)> (particle_num : std/core/types/int, smc_step_num : std/core/types/int, mh_step_num : std/core/types/int, step_size : std/core/types/int, model : () -> <(std/core/pure :: E),(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/yield :: HX)>|(e :: E)> a, normalize : std/core/types/bool) -> <(std/core/pure :: E),(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>|(e :: E)> (effects-and-types/histogram_rmsmc :: V -> V)<a>;
+ 
+//------------------------------
+//#kki: external declarations
+ 
+ 
+//------------------------------
+//#kki: inline definitions
+ 
+//.inline-section
+fun rmsmc // inline size: 9
+  = forall<a,(e :: E)> fn<<(std/core/types/div :: X),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>|(e :: E)>>(particle_num: std/core/types/int, smc_step_num: std/core/types/int, mh_step_num: std/core/types/int, step_size: std/core/types/int, model: () -> <(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/yield :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/div :: E),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>|(e :: E)> a, normalize: std/core/types/bool){
+    handlers/random_sampler<(effects-and-types/histogram_rmsmc :: V -> V)<a>,<(std/core/types/div :: X),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>|(e :: E)>>((fn<<(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>,(std/core/types/div :: X),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>|(e :: E)>>(){
+      val x.675 : ((effects-and-types/histogram_rmsmc :: V -> V)<(a : std/core/types/int) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/yield :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/div :: E),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>|(e :: E)> a>)
+            = (sampling-rmsmc/populate<(a : std/core/types/int) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/yield :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/div :: E),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>|(e :: E)> a,<(std/core/types/div :: E),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>|(e :: E)>>(particle_num, (fn<<(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/div :: E),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>|(e :: E)>>(){
+                (handlers/advance<a,<(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/div :: E),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>|(e :: E)>>((fn<<(std/core/types/handled :: HX -> X)<(effects-and-types/yield :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/div :: E),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>|(e :: E)>>(){
+                  (handlers/yield_on_score<a,<(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/div :: E),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>|(e :: E)>>(model));
+                })));
+              })));
+      (match ((std/core/hnd/yielding())) {
+        ((std/core/types/True() : std/core/types/bool ) as .pat: std/core/types/bool)
+           -> std/core/hnd/yield-extend<(effects-and-types/histogram_rmsmc :: V -> V)<(a : std/core/types/int) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/yield :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/div :: E),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>|(e :: E)> a>,(effects-and-types/histogram_rmsmc :: V -> V)<a>,<(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/div :: E),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>|(e :: E)>>((fn<<(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/div :: E),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>|(e :: E)>>(pop: (effects-and-types/histogram_rmsmc :: V -> V)<(a : std/core/types/int) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/yield :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/div :: E),(std/core/types/handled :: HX -> X)<(std/core/exn :: HX)>,(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>|(e :: E)> a>){
+            (rmsmc/.mlift667-rmsmc<a,(e :: E)>(mh_step_num, normalize, smc_step_num, step_size, pop));
+          }));
+        ((.skip std/core/types/False() : std/core/types/bool ) as .pat0: std/core/types/bool)
+           -> rmsmc/.mlift667-rmsmc<a,(e :: E)>(mh_step_num, normalize, smc_step_num, step_size, x.675);
+      });
+    }));
+  };

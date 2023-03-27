@@ -7,10 +7,10 @@ import exn-get
 import effects-and-types
 
 fun pre_process_data() : _e (list<list<row_vector>>, list<list<row_vector>>) {
-  val uncertainties1 = map(split(read-text(path("./data/measurement-uncertainties1.txt")), "\n"), parse-double)
-  val uncertainties2 = map(split(read-text(path("./data/measurement-uncertainties2.txt")), "\n"), parse-double)
-  val temperatures1  = map(split(read-text(path("./data/temperature-readings1.txt")), "\n"), parse-double)
-  val temperatures2  = map(split(read-text(path("./data/temperature-readings2.txt")), "\n"), parse-double)
+  val uncertainties1 = map(split(read-text-file(path("./data/measurement-uncertainties1.txt")), "\n"), parse-double)
+  val uncertainties2 = map(split(read-text-file(path("./data/measurement-uncertainties2.txt")), "\n"), parse-double)
+  val temperatures1  = map(split(read-text-file(path("./data/temperature-readings1.txt")), "\n"), parse-double)
+  val temperatures2  = map(split(read-text-file(path("./data/temperature-readings2.txt")), "\n"), parse-double)
 
   val maybe_uncertainties = concat([uncertainties1, uncertainties2])
   val maybe_temperatures  = concat([temperatures1, temperatures2])
@@ -35,9 +35,9 @@ fun remove_maybes(list : list<maybe<double>>, return_list : list<double>) : exn 
     Nil -> return_list
     Cons(x,y) -> {
       match(x) {
-        Nothing -> error("Preprocessing error: There are nothings! Please check the input file!")
+        Nothing -> throw("Preprocessing error: There are nothings! Please check the input file!")
         Just(a) -> {
-          val new_list = remove_maybes(y, return_list + [a])
+          val new_list = remove_maybes(y, return_list ++ [a])
           new_list
         }
       }
@@ -51,11 +51,11 @@ fun list_of_lists(list : list<double>, length : int) : div list<list<double>> {
   if (length == 0) {
     return [list]
   } else {
-  match(list) {
+    match(list) {
       Nil -> Nil
       Cons(_,_) -> {
         val list_split = split(list, length)
-        return [list_split.fst] + list_of_lists(list_split.snd, length)
+        return [list_split.fst] ++ list_of_lists(list_split.snd, length)
       }
     }
   }
@@ -64,7 +64,7 @@ fun list_of_lists(list : list<double>, length : int) : div list<list<double>> {
 fun length_months( months : list<list<double>> ) : list<int> {
   match(months) {
     Nil -> Nil
-    Cons(x,y) -> [length(x)] + length_months(y)
+    Cons(x,y) -> [length(x)] ++ length_months(y)
   }
 }
 
@@ -72,7 +72,7 @@ fun all_elements_equal( list : list<int> ) : exn bool {
   assert("List must be non_empty!", non_empty(list))
   val first_length = exn-get(list, 0)
   var bool_val := True
-  for(0, list.length - 1) fun(i) {
+  for(0, list.length - 1) fn(i) {
     if (exn-get(list, i) != first_length) {
       bool_val := False
     }
@@ -84,8 +84,8 @@ fun all_elements_equal( list : list<int> ) : exn bool {
 fun months( months : list<list<double>> ) : exn list<list<double>> {
   assert("Month lengths must be equal!", all_elements_equal(length_months(months)))
   var list_of_months : list<list<double>> := [Nil]
-  for(0, 11) fun(i) {
-    list_of_months := list_of_months + [by_month(months, i)]
+  for(0, 11) fn(i) {
+    list_of_months := list_of_months ++ [by_month(months, i)]
   }
   list_of_months := tail(list_of_months)
   list_of_months
@@ -96,7 +96,7 @@ fun by_month( months : list<list<double>>, index : int ) : exn list<double> {
 }
 
 fun get_thunk( index : int ) {
-  val x = fun( list : list<double> ) {
+  val x = fn( list : list<double> ) {
     list[index]
   }
   x
@@ -107,7 +107,8 @@ fun convert_to_groups( months : list<list<double>>, group_size : int ) : div lis
 }
 
 fun list_of_lists_thunk( length : int ) {
-  return fun(list) {
+  return fn(list) {
     list_of_lists(list, length)
   }
 }
+

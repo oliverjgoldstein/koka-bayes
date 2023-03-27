@@ -1,0 +1,181 @@
+module interface effects-and-types
+ 
+//------------------------------
+//#kki: import declarations
+ 
+private import std/core/types = std/core/types = "";
+private import std/core/hnd = std/core/hnd = "";
+private import std/core = std/core = "";
+private import std/num/random = std/num/random = "";
+ 
+//------------------------------
+//#kki: fixity declarations
+ 
+ 
+//------------------------------
+//#kki: local imported aliases
+ 
+ 
+//------------------------------
+//#kki: type declarations
+ 
+// handlers for the `:sample` effect
+public recursive type .hnd-sample <(e :: E),a> :: (E, V) -> V {
+  public con .Hnd-sample(fun-sample: (std/core/hnd/clause0 :: (V, (E, V) -> V, E, V) -> V)<std/core/types/double,(.hnd-sample :: (E, V) -> V),(e :: E),a>) : forall<(e :: E),a> (fun-sample : (std/core/hnd/clause0 :: (V, (E, V) -> V, E, V) -> V)<std/core/types/double,(.hnd-sample :: (E, V) -> V),(e :: E),a>) -> (.hnd-sample :: (E, V) -> V)<(e :: E),a>;
+};
+public value{8,0} type exp {
+  public con Exp(i: std/core/types/double) : (i : std/core/types/double) -> exp;
+};
+// handlers for the `:score` effect
+public recursive type .hnd-score <(e :: E),a> :: (E, V) -> V {
+  public con .Hnd-score(fun-score: (std/core/hnd/clause1 :: (V, V, (E, V) -> V, E, V) -> V)<exp,(),(.hnd-score :: (E, V) -> V),(e :: E),a>) : forall<(e :: E),a> (fun-score : (std/core/hnd/clause1 :: (V, V, (E, V) -> V, E, V) -> V)<exp,(),(.hnd-score :: (E, V) -> V),(e :: E),a>) -> (.hnd-score :: (E, V) -> V)<(e :: E),a>;
+};
+// handlers for the `:yield` effect
+public recursive type .hnd-yield <(e :: E),a> :: (E, V) -> V {
+  public con .Hnd-yield(control-yield: (std/core/hnd/clause0 :: (V, (E, V) -> V, E, V) -> V)<(),(.hnd-yield :: (E, V) -> V),(e :: E),a>) : forall<(e :: E),a> (control-yield : (std/core/hnd/clause0 :: (V, (E, V) -> V, E, V) -> V)<(),(.hnd-yield :: (E, V) -> V),(e :: E),a>) -> (.hnd-yield :: (E, V) -> V)<(e :: E),a>;
+};
+public alias data_1d = (std/core/list :: V -> V)<std/core/types/double> = 1;
+public alias histogram<a> :: V -> V = (std/core/list :: V -> V)<(exp, a)> = 1;
+// `:sample` effect
+public type sample :: HX {
+  private con Sample<(e :: E),a>((.hnd-sample :: (E, V) -> V)<(e :: E),a>) : forall<(e :: E),a> ((.hnd-sample :: (E, V) -> V)<(e :: E),a>) -> (sample :: HX);
+};
+// `:score` effect
+public type score :: HX {
+  private con Score<(e :: E),a>((.hnd-score :: (E, V) -> V)<(e :: E),a>) : forall<(e :: E),a> ((.hnd-score :: (E, V) -> V)<(e :: E),a>) -> (score :: HX);
+};
+public alias model<a,(e :: E)> :: (V, E) -> V = () -> <(std/core/types/handled :: HX -> X)<(sample :: HX)>,(std/core/types/handled :: HX -> X)<(score :: HX)>|(e :: E)> a = 1;
+public alias nmodel<a> :: V -> V = () -> <(std/core/types/handled :: HX -> X)<(sample :: HX)>,(std/core/types/handled :: HX -> X)<(score :: HX)>,(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>> a = 1;
+public alias regression = ((nmodel :: V -> V)<(std/core/types/double) -> std/core/types/double> == 1 () -> <(std/core/types/handled :: HX -> X)<(sample :: HX)>,(std/core/types/handled :: HX -> X)<(score :: HX)>,(std/core/types/handled :: HX -> X)<(std/num/random/random :: HX)>> ((std/core/types/double) -> std/core/types/double)) = 2;
+public alias row_vector = (std/core/list :: V -> V)<std/core/types/double> = 1;
+public alias trace_values = (std/core/list :: V -> V)<std/core/types/double> = 1;
+public alias two_d_data = (std/core/list :: V -> V)<(std/core/types/double, std/core/types/double)> = 1;
+// `:yield` effect
+public type yield :: HX {
+  private con Yield<(e :: E),a>((.hnd-yield :: (E, V) -> V)<(e :: E),a>) : forall<(e :: E),a> ((.hnd-yield :: (E, V) -> V)<(e :: E),a>) -> (yield :: HX);
+};
+ 
+//------------------------------
+//#kki: declarations
+ 
+// Automatically generated. Retrieves the `i` constructor field of the `:exp` type.
+public fun i : (exp : exp) -> std/core/types/double;
+public fun .copy : (exp, i : (std/core/types/optional :: V -> V)<std/core/types/double>) -> exp;
+// runtime tag for the `:sample` effect
+public val .tag-sample : (std/core/hnd/htag :: ((E, V) -> V) -> V)<(.hnd-sample :: (E, V) -> V)>;
+// handler for the `:sample` effect
+public fun .handle-sample : forall<a,(e :: E),b> (cfc : std/core/types/int32, hnd : (.hnd-sample :: (E, V) -> V)<(e :: E),b>, ret : (res : a) -> (e :: E) b, action : () -> <(std/core/types/handled :: HX -> X)<(sample :: HX)>|(e :: E)> a) -> (e :: E) b;
+// runtime tag for the `:score` effect
+public val .tag-score : (std/core/hnd/htag :: ((E, V) -> V) -> V)<(.hnd-score :: (E, V) -> V)>;
+// handler for the `:score` effect
+public fun .handle-score : forall<a,(e :: E),b> (cfc : std/core/types/int32, hnd : (.hnd-score :: (E, V) -> V)<(e :: E),b>, ret : (res : a) -> (e :: E) b, action : () -> <(std/core/types/handled :: HX -> X)<(score :: HX)>|(e :: E)> a) -> (e :: E) b;
+// runtime tag for the `:yield` effect
+public val .tag-yield : (std/core/hnd/htag :: ((E, V) -> V) -> V)<(.hnd-yield :: (E, V) -> V)>;
+// handler for the `:yield` effect
+public fun .handle-yield : forall<a,(e :: E),b> (cfc : std/core/types/int32, hnd : (.hnd-yield :: (E, V) -> V)<(e :: E),b>, ret : (res : a) -> (e :: E) b, action : () -> <(std/core/types/handled :: HX -> X)<(yield :: HX)>|(e :: E)> a) -> (e :: E) b;
+// select `sample` operation out of the `:sample` effect handler
+public fun .select-sample : forall<(e :: E),a> (hnd : (.hnd-sample :: (E, V) -> V)<(e :: E),a>) -> (std/core/hnd/clause0 :: (V, (E, V) -> V, E, V) -> V)<std/core/types/double,(.hnd-sample :: (E, V) -> V),(e :: E),a>;
+// select `score` operation out of the `:score` effect handler
+public fun .select-score : forall<(e :: E),a> (hnd : (.hnd-score :: (E, V) -> V)<(e :: E),a>) -> (std/core/hnd/clause1 :: (V, V, (E, V) -> V, E, V) -> V)<exp,(),(.hnd-score :: (E, V) -> V),(e :: E),a>;
+// select `yield` operation out of the `:yield` effect handler
+public fun .select-yield : forall<(e :: E),a> (hnd : (.hnd-yield :: (E, V) -> V)<(e :: E),a>) -> (std/core/hnd/clause0 :: (V, (E, V) -> V, E, V) -> V)<(),(.hnd-yield :: (E, V) -> V),(e :: E),a>;
+// call `sample` operation of the `:sample` effect
+public fun sample : () -> <(std/core/types/handled :: HX -> X)<(sample :: HX)>> std/core/types/double;
+// call `score` operation of the `:score` effect
+public fun score : (s : exp) -> <(std/core/types/handled :: HX -> X)<(score :: HX)>> ();
+// call `yield` operation of the `:yield` effect
+public fun yield : () -> <(std/core/types/handled :: HX -> X)<(yield :: HX)>> ();
+ 
+//------------------------------
+//#kki: external declarations
+ 
+ 
+//------------------------------
+//#kki: inline definitions
+ 
+//.inline-section
+inline fun i // inline size: 0
+  = fn(exp: exp){
+    match (exp) {
+      ((.skip effects-and-types/Exp((.x: std/core/types/double) : std/core/types/double) : exp ) as .pat: exp)
+         -> .x;
+    };
+  };
+fun .copy // inline size: 2
+  = fn(.this: exp, i: (std/core/types/optional :: V -> V)<std/core/types/double>){
+    effects-and-types/Exp((match (i) {
+      ((std/core/types/Optional((.i.176: std/core/types/double) : std/core/types/double) : (std/core/types/optional :: V -> V)<std/core/types/double> ) as .pat: ((std/core/types/optional :: V -> V)<std/core/types/double>))
+         -> .i.176;
+      ((.skip std/core/types/None() : (std/core/types/optional :: V -> V)<std/core/types/double> ) as .pat0: ((std/core/types/optional :: V -> V)<std/core/types/double>))
+         -> (match (.this) {
+          ((.skip effects-and-types/Exp((.x: std/core/types/double) : std/core/types/double) : exp ) as .pat1: exp)
+             -> .x;
+        });
+    }));
+  };
+inline fun .select-sample // inline size: 0
+  = forall<(e :: E),a> fn(hnd: (.hnd-sample :: (E, V) -> V)<(e :: E),a>){
+    (match (hnd) {
+      ((.skip effects-and-types/.Hnd-sample((fun-sample: (std/core/hnd/clause0 :: (V, (E, V) -> V, E, V) -> V)<std/core/types/double,(.hnd-sample :: (E, V) -> V),(e :: E),a>) : (std/core/hnd/clause0 :: (V, (E, V) -> V, E, V) -> V)<std/core/types/double,(.hnd-sample :: (E, V) -> V),(e :: E),a>) : (.hnd-sample :: (E, V) -> V)<(e :: E),a> ) as .pat: ((.hnd-sample :: (E, V) -> V)<(e :: E),a>))
+         -> fun-sample;
+    });
+  };
+inline fun .select-score // inline size: 0
+  = forall<(e :: E),a> fn(hnd: (.hnd-score :: (E, V) -> V)<(e :: E),a>){
+    (match (hnd) {
+      ((.skip effects-and-types/.Hnd-score((fun-score: (std/core/hnd/clause1 :: (V, V, (E, V) -> V, E, V) -> V)<exp,(),(.hnd-score :: (E, V) -> V),(e :: E),a>) : (std/core/hnd/clause1 :: (V, V, (E, V) -> V, E, V) -> V)<exp,(),(.hnd-score :: (E, V) -> V),(e :: E),a>) : (.hnd-score :: (E, V) -> V)<(e :: E),a> ) as .pat: ((.hnd-score :: (E, V) -> V)<(e :: E),a>))
+         -> fun-score;
+    });
+  };
+inline fun .select-yield // inline size: 0
+  = forall<(e :: E),a> fn(hnd: (.hnd-yield :: (E, V) -> V)<(e :: E),a>){
+    (match (hnd) {
+      ((.skip effects-and-types/.Hnd-yield((control-yield: (std/core/hnd/clause0 :: (V, (E, V) -> V, E, V) -> V)<(),(.hnd-yield :: (E, V) -> V),(e :: E),a>) : (std/core/hnd/clause0 :: (V, (E, V) -> V, E, V) -> V)<(),(.hnd-yield :: (E, V) -> V),(e :: E),a>) : (.hnd-yield :: (E, V) -> V)<(e :: E),a> ) as .pat: ((.hnd-yield :: (E, V) -> V)<(e :: E),a>))
+         -> control-yield;
+    });
+  };
+fun sample // inline size: 3
+  = fn<<(std/core/types/handled :: HX -> X)<(sample :: HX)>>>(){
+    val ev.389 : (std/core/hnd/ev :: ((E, V) -> V) -> V)<(.hnd-sample :: (E, V) -> V)>
+          = std/core/hnd/.evv-at<(.hnd-sample :: (E, V) -> V)>((std/core/size_t(0)));
+    match (ev.389) {
+      ((.skip std/core/hnd/Ev<(e :: E),a>((.pat0: (std/core/hnd/htag :: ((E, V) -> V) -> V)<(.hnd-sample :: (E, V) -> V)>) : (std/core/hnd/htag :: ((E, V) -> V) -> V)<(.hnd-sample :: (E, V) -> V)>, (m: (std/core/hnd/marker :: (E, V) -> V)<(e :: E),a>) : (std/core/hnd/marker :: (E, V) -> V)<(e :: E),a>, (h: (.hnd-sample :: (E, V) -> V)<(e :: E),a>) : (.hnd-sample :: (E, V) -> V)<(e :: E),a>, (.pat1: std/core/hnd/cfc) : std/core/hnd/cfc, (.pat2: (std/core/hnd/evv :: E -> V)<(e :: E)>) : (std/core/hnd/evv :: E -> V)<(e :: E)>) : (std/core/hnd/ev :: ((E, V) -> V) -> V)<(.hnd-sample :: (E, V) -> V)> ) as .pat: ((std/core/hnd/ev :: ((E, V) -> V) -> V)<(.hnd-sample :: (E, V) -> V)>))
+         -> (match ((match (h) {
+          ((.skip effects-and-types/.Hnd-sample((fun-sample: (std/core/hnd/clause0 :: (V, (E, V) -> V, E, V) -> V)<std/core/types/double,(.hnd-sample :: (E, V) -> V),(e :: E),a>) : (std/core/hnd/clause0 :: (V, (E, V) -> V, E, V) -> V)<std/core/types/double,(.hnd-sample :: (E, V) -> V),(e :: E),a>) : (.hnd-sample :: (E, V) -> V)<(e :: E),a> ) as .pat3: ((.hnd-sample :: (E, V) -> V)<(e :: E),a>))
+             -> fun-sample;
+        })) {
+          ((.skip std/core/hnd/Clause0((f: ((std/core/hnd/marker :: (E, V) -> V)<(e :: E),a>, (std/core/hnd/ev :: ((E, V) -> V) -> V)<(.hnd-sample :: (E, V) -> V)>) -> (e :: E) std/core/types/double) : ((std/core/hnd/marker :: (E, V) -> V)<(e :: E),a>, (std/core/hnd/ev :: ((E, V) -> V) -> V)<(.hnd-sample :: (E, V) -> V)>) -> (e :: E) std/core/types/double) : (std/core/hnd/clause0 :: (V, (E, V) -> V, E, V) -> V)<std/core/types/double,(.hnd-sample :: (E, V) -> V),(e :: E),a> ) as .pat30: ((std/core/hnd/clause0 :: (V, (E, V) -> V, E, V) -> V)<std/core/types/double,(.hnd-sample :: (E, V) -> V),(e :: E),a>))
+             -> f(m, ev.389);
+        });
+    };
+  };
+fun score // inline size: 3
+  = fn<<(std/core/types/handled :: HX -> X)<(score :: HX)>>>(s: exp){
+    val ev.391 : (std/core/hnd/ev :: ((E, V) -> V) -> V)<(.hnd-score :: (E, V) -> V)>
+          = std/core/hnd/.evv-at<(.hnd-score :: (E, V) -> V)>((std/core/size_t(0)));
+    match (ev.391) {
+      ((.skip std/core/hnd/Ev<(e :: E),a>((.pat0: (std/core/hnd/htag :: ((E, V) -> V) -> V)<(.hnd-score :: (E, V) -> V)>) : (std/core/hnd/htag :: ((E, V) -> V) -> V)<(.hnd-score :: (E, V) -> V)>, (m: (std/core/hnd/marker :: (E, V) -> V)<(e :: E),a>) : (std/core/hnd/marker :: (E, V) -> V)<(e :: E),a>, (h: (.hnd-score :: (E, V) -> V)<(e :: E),a>) : (.hnd-score :: (E, V) -> V)<(e :: E),a>, (.pat1: std/core/hnd/cfc) : std/core/hnd/cfc, (.pat2: (std/core/hnd/evv :: E -> V)<(e :: E)>) : (std/core/hnd/evv :: E -> V)<(e :: E)>) : (std/core/hnd/ev :: ((E, V) -> V) -> V)<(.hnd-score :: (E, V) -> V)> ) as .pat: ((std/core/hnd/ev :: ((E, V) -> V) -> V)<(.hnd-score :: (E, V) -> V)>))
+         -> (match ((match (h) {
+          ((.skip effects-and-types/.Hnd-score((fun-score: (std/core/hnd/clause1 :: (V, V, (E, V) -> V, E, V) -> V)<exp,(),(.hnd-score :: (E, V) -> V),(e :: E),a>) : (std/core/hnd/clause1 :: (V, V, (E, V) -> V, E, V) -> V)<exp,(),(.hnd-score :: (E, V) -> V),(e :: E),a>) : (.hnd-score :: (E, V) -> V)<(e :: E),a> ) as .pat3: ((.hnd-score :: (E, V) -> V)<(e :: E),a>))
+             -> fun-score;
+        })) {
+          ((.skip std/core/hnd/Clause1((f: ((std/core/hnd/marker :: (E, V) -> V)<(e :: E),a>, (std/core/hnd/ev :: ((E, V) -> V) -> V)<(.hnd-score :: (E, V) -> V)>, exp) -> (e :: E) ()) : ((std/core/hnd/marker :: (E, V) -> V)<(e :: E),a>, (std/core/hnd/ev :: ((E, V) -> V) -> V)<(.hnd-score :: (E, V) -> V)>, exp) -> (e :: E) ()) : (std/core/hnd/clause1 :: (V, V, (E, V) -> V, E, V) -> V)<exp,(),(.hnd-score :: (E, V) -> V),(e :: E),a> ) as .pat30: ((std/core/hnd/clause1 :: (V, V, (E, V) -> V, E, V) -> V)<exp,(),(.hnd-score :: (E, V) -> V),(e :: E),a>))
+             -> f(m, ev.391, s);
+        });
+    };
+  };
+fun yield // inline size: 3
+  = fn<<(std/core/types/handled :: HX -> X)<(yield :: HX)>>>(){
+    val ev.394 : (std/core/hnd/ev :: ((E, V) -> V) -> V)<(.hnd-yield :: (E, V) -> V)>
+          = std/core/hnd/.evv-at<(.hnd-yield :: (E, V) -> V)>((std/core/size_t(0)));
+    match (ev.394) {
+      ((.skip std/core/hnd/Ev<(e :: E),a>((.pat0: (std/core/hnd/htag :: ((E, V) -> V) -> V)<(.hnd-yield :: (E, V) -> V)>) : (std/core/hnd/htag :: ((E, V) -> V) -> V)<(.hnd-yield :: (E, V) -> V)>, (m: (std/core/hnd/marker :: (E, V) -> V)<(e :: E),a>) : (std/core/hnd/marker :: (E, V) -> V)<(e :: E),a>, (h: (.hnd-yield :: (E, V) -> V)<(e :: E),a>) : (.hnd-yield :: (E, V) -> V)<(e :: E),a>, (.pat1: std/core/hnd/cfc) : std/core/hnd/cfc, (.pat2: (std/core/hnd/evv :: E -> V)<(e :: E)>) : (std/core/hnd/evv :: E -> V)<(e :: E)>) : (std/core/hnd/ev :: ((E, V) -> V) -> V)<(.hnd-yield :: (E, V) -> V)> ) as .pat: ((std/core/hnd/ev :: ((E, V) -> V) -> V)<(.hnd-yield :: (E, V) -> V)>))
+         -> (match ((match (h) {
+          ((.skip effects-and-types/.Hnd-yield((control-yield: (std/core/hnd/clause0 :: (V, (E, V) -> V, E, V) -> V)<(),(.hnd-yield :: (E, V) -> V),(e :: E),a>) : (std/core/hnd/clause0 :: (V, (E, V) -> V, E, V) -> V)<(),(.hnd-yield :: (E, V) -> V),(e :: E),a>) : (.hnd-yield :: (E, V) -> V)<(e :: E),a> ) as .pat3: ((.hnd-yield :: (E, V) -> V)<(e :: E),a>))
+             -> control-yield;
+        })) {
+          ((.skip std/core/hnd/Clause0((f: ((std/core/hnd/marker :: (E, V) -> V)<(e :: E),a>, (std/core/hnd/ev :: ((E, V) -> V) -> V)<(.hnd-yield :: (E, V) -> V)>) -> (e :: E) ()) : ((std/core/hnd/marker :: (E, V) -> V)<(e :: E),a>, (std/core/hnd/ev :: ((E, V) -> V) -> V)<(.hnd-yield :: (E, V) -> V)>) -> (e :: E) ()) : (std/core/hnd/clause0 :: (V, (E, V) -> V, E, V) -> V)<(),(.hnd-yield :: (E, V) -> V),(e :: E),a> ) as .pat30: ((std/core/hnd/clause0 :: (V, (E, V) -> V, E, V) -> V)<(),(.hnd-yield :: (E, V) -> V),(e :: E),a>))
+             -> f(m, ev.394);
+        });
+    };
+  };

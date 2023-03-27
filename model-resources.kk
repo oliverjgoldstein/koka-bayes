@@ -6,32 +6,33 @@ import effects-and-types
 import handlers
 import exponents
 import exn-get
+import std/num/random
 
 fun gaussian_model() : nmodel<double> {
-  return fun() {
+  return fn() {
     normal(0.0, 10.0)
   }
 }
 
 fun sequential_gaussian(data_point : double) : nmodel<double> {
-  val g = fun() {
+  val g = fn() {
     var x          := 0.0
     val vars       = 1.0
     val score-var  = 0.2
-    for(0, 5) fun(i) {
+    for(0, 5) fn(i) {
       x := normal(x, vars)
       score(normal_pdf(x, score-var, data_point))
     }
-    x
+    mask<random>{x}
   }
   g
 }
 
 
 fun fit(model : regression, dataset : two_d_data) : regression {
-    val g = fun() {
+    val g = fn() {
       val f : double -> double = model()
-      val map_fun = fun(xy) {
+      val map_fun = fn(xy) {
         match(xy) {
           (x,y) -> score(normal_pdf(f(x), 0.25, y))
         }
@@ -43,8 +44,8 @@ fun fit(model : regression, dataset : two_d_data) : regression {
     g
 }
 
-fun generate_synthetic_lr_data(num : int) : ndet list<(double, bool)> {
-  list(1, num) fun(i) {
+fun generate_synthetic_lr_data(num : int) : random list<(double, bool)> {
+  list(1, num) fn(i) {
     random_sampler{
       (sample() * 10.0, bernoulli(0.5))
     }
@@ -52,7 +53,7 @@ fun generate_synthetic_lr_data(num : int) : ndet list<(double, bool)> {
 }
 
 fun logistic_regression(dat : list<(double,bool)>) : model<(double,double), _e> {
-  val g = fun() {
+  val g = fn() {
     val m = normal(0.0, 1.0)
     val b = normal(0.0, 1.0)
     val sigma = grand(0.0,1.0)
@@ -64,6 +65,12 @@ fun logistic_regression(dat : list<(double,bool)>) : model<(double,double), _e> 
     fun sigmoid(x) {
       1.0 / (1.0 + dbl-e^(y(x)))
     }
+    //
+    // var i := 0
+    // while { i < 2000 } {
+    //   score(Exp(log(10.0)))
+    //   i := i + 1
+    // }
 
     fun obs(x_label) {
       match(x_label) {
@@ -98,7 +105,7 @@ fun gamma(x) {
 
     val a = ref(0.99999999999980993)
     val t = hh + g + 0.5
-    for(1, p.length) fun(i) {
+    for(1, p.length) fn(i) {
       val new_p = match(p[i]) {
         Nothing -> 0.0
         Just(aa) -> aa
@@ -137,9 +144,9 @@ private fun grandx(d : double, c : double, v : double ) : <sample,div> double {
 
 
 fun fit_1d_gaussian(model : nmodel<double>, dataset : data_1d) : nmodel<double> {
-  val g = fun() {
+  fun g() {
       val f : double = model()
-      val map_fun = fun(x) {
+      val map_fun = fn(x) {
         score(normal_pdf(f, 1.0, x))
       }
 
@@ -151,7 +158,7 @@ fun fit_1d_gaussian(model : nmodel<double>, dataset : data_1d) : nmodel<double> 
 
 
 fun params()  {
-  val g = fun() {
+  fun g() {
     val s = grand(1.0,1.0)
     s
   }
@@ -159,10 +166,10 @@ fun params()  {
 }
 
 fun random_walk( zs : list<double> ) : ((s : double) -> (nmodel<list<double>>)) {
-  val g = fun(s : double) {
-    val f = fun() {
+  fun g(s : double) {
+    fun f() {
       fun obs(x,y) {
-        score(normal_pdf(x, 1.0, y))
+        mask<random>{score(normal_pdf(x, 1.0, y))}
       }
 
       fun expand(xss : list<double>, yss : list<double>) {
@@ -174,15 +181,14 @@ fun random_walk( zs : list<double> ) : ((s : double) -> (nmodel<list<double>>)) 
               Cons(x, xs) -> {
                 val x' = normal(x,s)
                 obs(x', y)
-                expand([x', x] + xs, ys)
+                expand([x', x] ++ xs, ys)
               }
             }
           }
         }
       }
 
-      val xs = expand([0.0], zs)
-      return xs.reverse
+      expand([0.0], zs).reverse
     }
     f
   }

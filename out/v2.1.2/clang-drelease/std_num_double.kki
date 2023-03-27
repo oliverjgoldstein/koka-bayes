@@ -1,0 +1,628 @@
+/* 64-bit IEEE double floating point numbers.
+
+*/
+module interface std/num/double
+ 
+//------------------------------
+//#kki: import declarations
+ 
+private import std/core/types = std/core/types = "";
+private import std/core/hnd = std/core/hnd = "";
+private import std/core = std/core = "";
+private import std/text/parse = std/text/parse = "";
+private import std/num/int32 = std/num/int32 = "";
+ 
+//------------------------------
+//#kki: fixity declarations
+ 
+ 
+//------------------------------
+//#kki: local imported aliases
+ 
+ 
+//------------------------------
+//#kki: type declarations
+ 
+ 
+//------------------------------
+//#kki: declarations
+ 
+// The maximum of the absolute values.
+public fun abs-max : (x : std/core/types/double, y : std/core/types/double) -> std/core/types/double;
+// The maximum of a list of absolute values.
+public fun abs-max.1 : (xs : (std/core/list :: V -> V)<std/core/types/double>) -> std/core/types/double;
+// The area hyperbolic cosine of `d`
+public fun acosh : (d : std/core/types/double) -> std/core/types/double;
+// The area hyperbolic sine of `d`
+public fun asinh : (d : std/core/types/double) -> std/core/types/double;
+// The area hyperbolic tangent of `d`
+public fun atanh : (d : std/core/types/double) -> std/core/types/double;
+// The [_e_](https://en.wikipedia.org/wiki/E_(mathematical_constant)) constant.
+public val dbl-e : std/core/types/double;
+// Machine epsilon: the difference between 1.0 and the next representable `:double` value.
+public val dbl-epsilon : std/core/types/double;
+// [Euler's constant](https://en.wikipedia.org/wiki/Euler%E2%80%93Mascheroni_constant)
+public val dbl-euler : std/core/types/double;
+// The natural logarithm of 10
+public val dbl-log10 : std/core/types/double;
+// The base-10 logarithm of _e_.
+public val dbl-log10e : std/core/types/double;
+// The natural logarithm of 2
+public val dbl-log2 : std/core/types/double;
+// The base-2 logarithm of _e_.
+public val dbl-log2e : std/core/types/double;
+// Maximum double value
+public val dbl-max : std/core/types/double;
+// maximal precision in decimal digits of a `:double`.
+public val dbl-max-prec : std/core/types/int;
+// Smallest positive normalized double value
+public val dbl-min : std/core/types/double;
+// &pi;
+public val pi : std/core/types/double;
+// &pi;/2
+public val dbl-pi2 : std/core/types/double;
+// 3&pi;/4
+public val dbl-pi34 : std/core/types/double;
+// &pi;/4
+public val dbl-pi4 : std/core/types/double;
+// `1.0 / sqrt(2.0)`  (= `sqrt(0.5)`)
+public val dbl-sqrt12 : std/core/types/double;
+// The square-root of 2
+public val dbl-sqrt2 : std/core/types/double;
+// Smallest positive subnormal value (i.e. [``DBL_TRUE_MIN``](http://en.cppreference.com/w/cpp/types/climits))
+public val dbl-true-min : std/core/types/double;
+// 2&pi;
+public val dbl-twopi : std/core/types/double;
+// Low-level: return the `(lo,hi)` bits of a 64-bit double.
+public fun double-to-bits : (d : std/core/types/double) -> (std/core/types/int32, std/core/types/int32);
+// Low-level: create a `:double` from the given `lo` and `hi` 32-bits.
+public fun double-from-bits : (lo : std/core/types/int32, hi : std/core/types/int32) -> std/core/types/double;
+private fun make-neginf : () -> std/core/types/double;
+private val one-m1022 : std/core/types/double;
+private val one-p1023 : std/core/types/double;
+private fun make-posinf : () -> std/core/types/double;
+// Return the 10 to the power of `p`.
+public fun exp10 : (p : std/core/types/double) -> std/core/types/double;
+// Return the 'floored' fraction of `d`, always greater or equal to zero.\
+// `d.floor + d.ffraction === d`\
+// `(-2.4).ffraction === 0.6`
+public fun ffraction : (d : std/core/types/double) -> std/core/types/double;
+// fused multiply-add. Computes `(x*y)+z` as if to infinite precision
+// with only the final result rounded back to a `:double`.
+public fun fmadd : (x : std/core/types/double, y : std/core/types/double, z : std/core/types/double) -> std/core/types/double;
+// Return the integral part of a `:double` `d` .
+// If `d >= 0.0` , return the largest integer equal or less to `d` ,
+// If `d < 0.0` , return the smallest integer equal or larger to `d` .
+public fun truncate : (d : std/core/types/double) -> std/core/types/double;
+// Is this a negative zero value?
+public fun is-negzero : (d : std/core/types/double) -> std/core/types/bool;
+// The square of a double
+public fun sqr : (x : std/core/types/double) -> std/core/types/double;
+// Return the sum of a list of doubles.
+// Uses [Kahan-Babu&scaron;kan-Neumaier summation](https://en.wikipedia.org/wiki/Kahan_summation_algorithm#Further_enhancements)
+// to minimize rounding errors. This
+// is more precise as Kahan summation and about as fast.\
+// `[1.0e3,1.0e97,1.0e3,-1.0e97].sum == 2000.0`\
+// A. Neumaier, _Rundungsfehleranalyse einiger Verfahren zur Summation endlicher Summen_.
+// Math. Mechanik, 54:39--51, 1974.
+public fun sum : (xs : (std/core/list :: V -> V)<std/core/types/double>) -> std/core/types/double;
+// Is this value equal to negative or positive infinity ?
+public fun is-inf : (std/core/types/double) -> std/core/types/bool;
+private fun make-nan : () -> std/core/types/double;
+// Return `nan` on failure
+private fun prim-parse-double : (s : std/core/types/string) -> std/core/types/double;
+// Return `x` with the sign of `y`.
+public fun with-sign-of : (x : std/core/types/double, y : std/core/types/double) -> std/core/types/double;
+// &pi;
+public val dbl-pi : std/core/types/double;
+// decode a normalized double (i.e. not subnormal)
+private fun decode-normalized : (d : std/core/types/double, e-adjust : (std/core/types/optional :: V -> V)<std/core/types/int>) -> (std/core/types/int, std/core/types/int);
+// Is this a [subnormal](https://en.wikipedia.org/wiki/Denormal_number) value?
+// (i.e. `0 < d.abs < dbl-min`)
+public fun is-subnormal : (d : std/core/types/double) -> std/core/types/bool;
+// Decode a double `d` into a tuple `(m,e)` of a mantissa `m` and exponent `e`
+// such that `m`&middot;2^`e`^ =  `d` exactly. The mantissa `m` is
+// always either 0 or in the range [2^52^, 2^53^). See also `frexp`.
+public fun decode : (d : std/core/types/double) -> (std/core/types/int, std/core/types/int);
+private val rad2deg : std/core/types/double;
+// Convert radians to degrees.
+public fun deg : (rad : std/core/types/double) -> std/core/types/double;
+private val deg2rad : std/core/types/double;
+// Return the 2 to the power of `p`.
+public fun exp2 : (p : std/core/types/double) -> std/core/types/double;
+// Calculate 2&middot;^`e`^ for an integer `e`.
+// Uses efficient bit conversion for exponents between  -1022 and 1023 and
+// otherwise falls back to the regular `exp2` function converting `e` to a double.
+public fun exp2.1 : (e : std/core/types/int) -> std/core/types/double;
+// = dbl-min
+private fun mul-exp2 : (x : std/core/types/double, e : std/core/types/int) -> std/core/types/double;
+// Negative infinity
+public val neginf : std/core/types/double;
+// Positive infinity
+public val posinf : std/core/types/double;
+// 'Load exponent': returns `x`&middot;2^`e`^ for a `is-finite` `x` and
+// otherwise `x` itself. See also `encode` which loads an integer mantissa.
+public fun ldexp : (x : std/core/types/double, e : std/core/types/int) -> std/core/types/double;
+// Create a double `d` given a mantissa `man` and exponent `exp`
+// such that `man`&middot;2^`exp`^ =  `d` exactly (if it is representable
+// by a `:double`). See also `ldexp`.
+public fun encode : (man : std/core/types/int, exp : std/core/types/int) -> std/core/types/double;
+private fun exp2m1 : (x : std/core/types/double) -> std/core/types/double;
+// Return the fractional part of a `:double` `d`.\
+// `d.truncate + d.fraction === d`\
+// `(-2.4).fraction === -0.4`
+public fun fraction : (d : std/core/types/double) -> std/core/types/double;
+// 'Fraction/exponent': return the normalized fraction `f` and exponent `exp`
+// for a number `x` such that `x == f`&middot;2^`exp`^.
+// The absolute value of the fraction `f` is always in the range [0.5, 1.0), or
+// one of `0.0`, `-0.0`, `neginf`, `posinf`, or `nan`.
+// See also `decode` which  decodes to an integer mantissa.
+public fun frexp : (x : std/core/types/double) -> (std/core/types/double, std/core/types/int);
+// The hypotenuse of `x` and `y`: `sqrt(x*x + y*y)`.
+// Prevents overflow for large numbers.
+public fun hypot : (x : std/core/types/double, y : std/core/types/double) -> std/core/types/double;
+// The square root of the sum of the squares of three doubles.
+// Prevents overflow for large numbers.
+public fun hypot.1 : (x : std/core/types/double, y : std/core/types/double, z : std/core/types/double) -> std/core/types/double;
+// The square root of the sum of squares of a list of doubles.
+// Prevents overflow for large numbers and uses Kahan-Babu&scaron;kan-Neumaier summation
+// for precision.
+public fun hypot.2 : (xs : (std/core/list :: V -> V)<std/core/types/double>) -> std/core/types/double;
+// Return the logarithm in base 10 of a `:double` `d`.
+public fun log10 : (d : std/core/types/double) -> std/core/types/double;
+// Return the logarithm in base 2 of a `:double` `d`.
+public fun log2 : (d : std/core/types/double) -> std/core/types/double;
+private fun log2p1 : (x : std/core/types/double) -> std/core/types/double;
+// Returns `log(exp(x) + exp(y))`.
+// Avoids overlow/underflow errors.
+public fun logaddexp : (x : std/core/types/double, y : std/core/types/double) -> std/core/types/double;
+// Returns `log2( exp2(x) + exp2(y) )`.
+// Avoids overlow/underflow errors.
+public fun logaddexp2 : (x : std/core/types/double, y : std/core/types/double) -> std/core/types/double;
+// Represents a value that is _not a number_ (NaN)
+public val nan : std/core/types/double;
+// Return if two doubles are nearly equal with respect to some `epsilon` (=`8*dbl-epsilon`).
+// The epsilon is the nearest difference for numbers around 1.0. The routine automatically
+// scales the epsilon for larger and smaller numbers, and for subnormal numbers.
+public fun nearly-eq : (x : std/core/types/double, y : std/core/types/double, epsilon : (std/core/types/optional :: V -> V)<std/core/types/double>) -> std/core/types/bool;
+// monadic lift
+private fun .mlift5656-pdecdouble : (wild_0 : std/core/types/char) -> <(std/core/types/handled :: HX -> X)<(std/text/parse/parse :: HX)>> std/core/types/int;
+// monadic lift
+private fun .mlift5657-pdecdouble : (cur : std/core/sslice, exp : std/core/types/int) -> <(std/core/types/handled :: HX -> X)<(std/text/parse/parse :: HX)>> std/core/types/double;
+// monadic lift
+private fun .mlift5658-pdecdouble : (wild_ : std/core/types/char) -> <(std/core/types/handled :: HX -> X)<(std/text/parse/parse :: HX)>> std/core/types/string;
+// monadic lift
+private fun .mlift5659-pdecdouble : (cur : std/core/sslice, std/core/types/string) -> <(std/core/types/handled :: HX -> X)<(std/text/parse/parse :: HX)>> std/core/types/double;
+// monadic lift
+private fun .mlift5660-pdecdouble : (cur : std/core/sslice, man : std/core/types/string) -> <(std/core/types/handled :: HX -> X)<(std/text/parse/parse :: HX)>> std/core/types/double;
+// monadic lift
+private fun .mlift5661-pdecdouble : (cur : std/core/sslice) -> <(std/core/types/handled :: HX -> X)<(std/text/parse/parse :: HX)>> std/core/types/double;
+private fun pdecdouble : () -> <(std/core/types/handled :: HX -> X)<(std/text/parse/parse :: HX)>> std/core/types/double;
+// monadic lift
+private fun .mlift5662-phexdouble : (wild_2 : std/core/types/char) -> <(std/core/types/handled :: HX -> X)<(std/text/parse/parse :: HX)>> std/core/types/int;
+// monadic lift
+private fun .mlift5663-phexdouble : (frac : std/core/types/string, man : std/core/types/string, exp : std/core/types/int) -> <(std/core/types/handled :: HX -> X)<(std/text/parse/parse :: HX)>> std/core/types/double;
+// monadic lift
+private fun .mlift5664-phexdouble : (wild_1 : std/core/types/char) -> <(std/core/types/handled :: HX -> X)<(std/text/parse/parse :: HX)>> std/core/types/string;
+// monadic lift
+private fun .mlift5665-phexdouble : (man : std/core/types/string, std/core/types/string) -> <(std/core/types/handled :: HX -> X)<(std/text/parse/parse :: HX)>> std/core/types/double;
+// monadic lift
+private fun .mlift5666-phexdouble : (man : std/core/types/string) -> <(std/core/types/handled :: HX -> X)<(std/text/parse/parse :: HX)>> std/core/types/double;
+// monadic lift
+private fun .mlift5667-phexdouble : (wild_0 : std/core/types/char) -> <(std/core/types/handled :: HX -> X)<(std/text/parse/parse :: HX)>> std/core/types/double;
+// monadic lift
+private fun .mlift5668-phexdouble : (wild_ : std/core/types/char) -> <(std/core/types/handled :: HX -> X)<(std/text/parse/parse :: HX)>> std/core/types/double;
+private fun phexdouble : () -> <(std/core/types/handled :: HX -> X)<(std/text/parse/parse :: HX)>> std/core/types/double;
+// monadic lift
+private fun .mlift5669-pspecial : (wild_ : std/core/types/string) -> <(std/core/types/handled :: HX -> X)<(std/text/parse/parse :: HX)>> std/core/types/double;
+// monadic lift
+private fun .mlift5670-pspecial : (wild_0 : std/core/types/string) -> <(std/core/types/handled :: HX -> X)<(std/text/parse/parse :: HX)>> std/core/types/double;
+// monadic lift
+private fun .mlift5671-pspecial : (wild_1 : std/core/types/string) -> <(std/core/types/handled :: HX -> X)<(std/text/parse/parse :: HX)>> std/core/types/double;
+private fun pspecial : () -> <(std/core/types/handled :: HX -> X)<(std/text/parse/parse :: HX)>> std/core/types/double;
+// monadic lift
+private fun .mlift5672-pdouble : (neg : std/core/types/bool, d : std/core/types/double) -> <(std/core/types/handled :: HX -> X)<(std/text/parse/parse :: HX)>> std/core/types/double;
+// monadic lift
+private fun .mlift5673-pdouble : (neg : std/core/types/bool) -> <(std/core/types/handled :: HX -> X)<(std/text/parse/parse :: HX)>> std/core/types/double;
+public fun pdouble : () -> <(std/core/types/handled :: HX -> X)<(std/text/parse/parse :: HX)>> std/core/types/double;
+// Parse a double number. Can be "NaN", "Inf(inity)" (case-insensitive),
+// a fix-point number (`1.2`) or in scientific notation (`-2.3e-5`).
+// Also allows floats in [hexadecimal notation](https://books.google.com/books?id=FgMsCwAAQBAJ&pg=PA41) (`0xA.Fp-10`) that can
+// be represented precisely (and are the preferred _round trip_ format).
+public fun parse-double : (s : std/core/types/string) -> (std/core/types/maybe :: V -> V)<std/core/types/double>;
+// Convert degrees to radians.
+public fun rad : (deg : std/core/types/double) -> std/core/types/double;
+// Round a double to a specified precision. Rounds to the  even number in case of a tie.\
+// `123.456.round-to-prec(2) == 123.46`\
+// `123.456.round-to-prec(-1) == 120.0`\
+public fun round-to-prec : (d : std/core/types/double, prec : std/core/types/int) -> std/core/types/double;
+/* Show a double in [hexadecimal notation](https://books.google.com/books?id=FgMsCwAAQBAJ&pg=PA41).
+An advantage of this format is that it precisely represents the `:double` and can
+reliably (and efficiently) be parsed back, i.e. `d.show-hex.parse-double == Just(d)`.
+The significant is the _hexadecimal_ fraction while the
+exponent after the `p` is the _decimal_ power of 2.
+ For example, ``0xA.Fp-10`` = (10 + 15/16)&middot;2^-10^  (not 2^-16^!) = 0.01068115234375.
+ Equivalently, ``0xA.Fp-10 == 0x5.78p-9 == 0x2.BCp-8 == 0x1.5Ep-7``.
+```
+> dbl-min.show-hex
+"0x1.0p-1022"
+> 0.1.show-hex
+"0x1.999999999999Ap-4"
+> dbl-max.show-hex
+"0x1.FFFFFFFFFFFFFp+1023"
+> -0.0.show-hex
+"-0x0.0p+0"
+> nan.show-hex
+"NaN"
+> 0.01068115234375.show-hex
+"0x1.5Ep-7"
+```
+.
+*/
+public fun show-hex : (d : std/core/types/double, width : (std/core/types/optional :: V -> V)<std/core/types/int>, use-capitals : (std/core/types/optional :: V -> V)<std/core/types/bool>, pre : (std/core/types/optional :: V -> V)<std/core/types/string>) -> std/core/types/string;
+// Return if two doubles are nearly equal with respect to an `epsilon` of `8*dbl-epsilon`.
+// See also `nearly-eq` which takes an explicit `epsilon`.
+public fun (~=) : (x : std/core/types/double, y : std/core/types/double) -> std/core/types/bool;
+ 
+//------------------------------
+//#kki: external declarations
+ 
+// Is this value equal to NaN ?
+public extern is-nan : (std/core/types/double) -> std/core/types/bool {
+  c inline "isnan(#1)";
+  cs inline "double.IsNaN(#1)";
+  js inline "isNaN(#1)";
+};
+// Is this value equal to positive infinity ?
+public extern is-posinf : (std/core/types/double) -> std/core/types/bool {
+  c inline "(isinf(#1) && !signbit(#1))";
+  cs inline "double.IsPositiveInfinity(#1)";
+  js inline "((#1) === Infinity)";
+};
+// Is this value equal to negative infinity ?
+public extern is-neginf : (std/core/types/double) -> std/core/types/bool {
+  c inline "(isinf(#1) && signbit(#1))";
+  cs inline "double.IsNegativeInfinity(#1)";
+  js inline "((#1) === -Infinity)";
+};
+// Is this a finite number (i.e. not `nan` or infinity)
+public extern is-finite : (d : std/core/types/double) -> std/core/types/bool {
+  c inline "isfinite(#1)";
+  cs inline "(!double.IsNaN(#1) && !double.IsInfinity(#1))";
+  js inline "isFinite(#1)";
+};
+// Round a double to its nearest integral value.
+// If the value is halfway between two integers, the value is rounded to the even one.
+public extern round : (d : std/core/types/double) -> std/core/types/double {
+  c inline "round(#1)";
+  cs inline "Math.Round(#1)";
+  js inline "$std_core._double_round(#1)";
+};
+// Return the largest integer equal or less than `d`
+public extern floor : (d : std/core/types/double) -> std/core/types/double {
+  c inline "floor(#1)";
+  cs inline "Math.Floor(#1)";
+  js inline "Math.floor(#1)";
+};
+// Return the smallest integer equal or larger than `d`
+public extern ceiling : (d : std/core/types/double) -> std/core/types/double {
+  c inline "ceil(#1)";
+  cs inline "Math.Ceiling(#1)";
+  js inline "Math.ceil(#1)";
+};
+// Return the square root of a value `d`
+// Returns `nan` if `d == nan`  or if `d`  is negative.
+// Returns `inf` if `d == inf` .
+public extern sqrt : (d : std/core/types/double) -> std/core/types/double {
+  c inline "sqrt(#1)";
+  cs inline "Math.Sqrt(#1)";
+  js inline "Math.sqrt(#1)";
+};
+// Return the `d` raised to the power of `p`.
+public extern pow : (d : std/core/types/double, p : std/core/types/double) -> std/core/types/double {
+  c inline "pow(#1,#2)";
+  cs inline "Math.Pow(#1,#2)";
+  js inline "Math.pow(#1,#2)";
+};
+// Return the natural logarithm (in base _e_)  of a `:double` `d`
+public extern log : (d : std/core/types/double) -> std/core/types/double {
+  c inline "log(#1)";
+  cs inline "Math.Log(#1)";
+  js inline "Math.log(#1)";
+};
+// Return _e_ to the power of `p`.
+public extern exp : (p : std/core/types/double) -> std/core/types/double {
+  c inline "exp(#1)";
+  cs inline "Math.Exp(#1)";
+  js inline "Math.exp(#1)";
+};
+// Return the sine of an angle in radians `d`.
+public extern sin : (d : std/core/types/double) -> std/core/types/double {
+  c inline "sin(#1)";
+  cs inline "Math.Sin(#1)";
+  js inline "Math.sin(#1)";
+};
+// Return the cosine of an angle in radians `d`.
+public extern cos : (d : std/core/types/double) -> std/core/types/double {
+  c inline "cos(#1)";
+  cs inline "Math.Cos(#1)";
+  js inline "Math.cos(#1)";
+};
+// Return the tangent of an angle in radians `d`.
+public extern tan : (d : std/core/types/double) -> std/core/types/double {
+  c inline "tan(#1)";
+  cs inline "Math.Tan(#1)";
+  js inline "Math.tan(#1)";
+};
+// Return the arc-tangent of `d`
+public extern atan : (d : std/core/types/double) -> std/core/types/double {
+  c inline "atan(#1)";
+  cs inline "Math.Atan(#1)";
+  js inline "Math.atan(#1)";
+};
+// Return the arc-tangent of a point (`x`,`y`).
+public extern atan2 : (x : std/core/types/double, y : std/core/types/double) -> std/core/types/double {
+  c inline "atan2(#1,#2)";
+  cs inline "Math.Atan2(#1,#2)";
+  js inline "Math.atan2(#1,#2)";
+};
+// Return the arc-cosine of `d`
+public extern acos : (d : std/core/types/double) -> std/core/types/double {
+  c inline "acos(#1)";
+  cs inline "Math.Acos(#1)";
+  js inline "Math.acos(#1)";
+};
+// Return the arc-sine of `d`
+public extern asin : (d : std/core/types/double) -> std/core/types/double {
+  c inline "asin(#1)";
+  cs inline "Math.Asin(#1)";
+  js inline "Math.asin(#1)";
+};
+// The hyperbolic tangent of `d`
+public extern tanh : (d : std/core/types/double) -> std/core/types/double {
+  c inline "tanh(#1)";
+  cs inline "Math.Tanh(#1)";
+  js inline "Math.tanh(#1)";
+};
+// The hyperbolic cosine of `d`
+public extern cosh : (d : std/core/types/double) -> std/core/types/double {
+  c inline "cosh(#1)";
+  cs inline "Math.Cosh(#1)";
+  js inline "Math.cosh(#1)";
+};
+// The hyperbolic sine of `d`
+public extern sinh : (d : std/core/types/double) -> std/core/types/double {
+  c inline "sinh(#1)";
+  cs inline "Math.Sinh(#1)";
+  js inline "Math.sinh(#1)";
+};
+// Return `log(1.0 + x)`.
+// Avoids potential imprecision for small `x` where adding `1.0` explicitly
+// may lead to rounding errors.
+public extern log1p : (d : std/core/types/double) -> std/core/types/double {
+  c inline "log1p(#1)";
+  js inline "Math.log1p(#1)";
+};
+// Return `exp(x - 1.0)`.
+// Avoids rounding errors for values of `x` very close to `1.0`.
+public extern expm1 : (d : std/core/types/double) -> std/core/types/double {
+  c inline "log1p(#1)";
+  js inline "Math.log1p(#1)";
+};
+ 
+//------------------------------
+//#kki: inline definitions
+ 
+//.inline-section
+fun abs-max // inline size: 4
+  = fn(x: std/core/types/double, y: std/core/types/double){
+    val x0.5674 : std/core/types/double
+      = std/core/abs.1(x);
+    val y0.5675 : std/core/types/double
+      = std/core/abs.1(y);
+    match ((std/core/(>=.2)(x0.5674, y0.5675))) {
+      ((std/core/types/True() : std/core/types/bool ) as .pat: std/core/types/bool)
+         -> x0.5674;
+      ((.skip std/core/types/False() : std/core/types/bool ) as .pat0: std/core/types/bool)
+         -> y0.5675;
+    };
+  };
+fun abs-max.1 // inline size: 4
+  = fn(xs: (std/core/list :: V -> V)<std/core/types/double>){
+    std/core/foldl<std/core/types/double,std/core/types/double,(std/core/types/(<>) :: E)>(xs, 0.0, (fn(m: std/core/types/double, x: std/core/types/double){
+        val x0.5676 : std/core/types/double
+              = (std/core/abs.1(x));
+        (match ((std/core/(>=.2)(x0.5676, m))) {
+          ((std/core/types/True() : std/core/types/bool ) as .pat: std/core/types/bool)
+             -> x0.5676;
+          ((.skip std/core/types/False() : std/core/types/bool ) as .pat0: std/core/types/bool)
+             -> m;
+        });
+      }));
+  };
+inline val dbl-e // inline size: 0
+  = 2.718281828459045;
+inline val dbl-epsilon // inline size: 0
+  = 2.220446049250313e-16;
+inline val dbl-euler // inline size: 0
+  = 0.5772156649015329;
+inline val dbl-log10 // inline size: 0
+  = 2.302585092994046;
+inline val dbl-log10e // inline size: 0
+  = 0.4342944819032518;
+inline val dbl-log2 // inline size: 0
+  = 0.6931471805599453;
+inline val dbl-log2e // inline size: 0
+  = 1.4426950408889634;
+inline val dbl-max // inline size: 0
+  = 1.7976931348623157e308;
+inline val dbl-max-prec // inline size: 0
+  = 15;
+inline val dbl-min // inline size: 0
+  = 2.2250738585072014e-308;
+inline val pi // inline size: 0
+  = 3.141592653589793;
+inline val dbl-pi2 // inline size: 0
+  = 1.5707963267948966;
+inline val dbl-pi34 // inline size: 0
+  = 2.356194490192345;
+inline val dbl-pi4 // inline size: 0
+  = 0.7853981633974483;
+inline val dbl-sqrt12 // inline size: 0
+  = 0.7071067811865476;
+inline val dbl-sqrt2 // inline size: 0
+  = 1.4142135623730951;
+inline val dbl-true-min // inline size: 0
+  = 5.0e-324;
+inline val dbl-twopi // inline size: 0
+  = 6.283185307179586;
+inline val one-m1022 // inline size: 0
+  = 2.2250738585072014e-308;
+inline val one-p1023 // inline size: 0
+  = 8.98846567431158e307;
+fun exp10 // inline size: 1
+  = fn(p: std/core/types/double){
+    std/num/double/pow(10.0, p);
+  };
+fun ffraction // inline size: 2
+  = fn(d: std/core/types/double){
+    std/core/(-.3)(d, (std/num/double/floor(d)));
+  };
+fun truncate // inline size: 4
+  = fn(d: std/core/types/double){
+    match ((std/core/(>=.2)(d, 0.0))) {
+      ((std/core/types/True() : std/core/types/bool ) as .pat: std/core/types/bool)
+         -> std/num/double/floor(d);
+      ((.skip std/core/types/False() : std/core/types/bool ) as .pat0: std/core/types/bool)
+         -> std/num/double/ceiling(d);
+    };
+  };
+fun is-negzero // inline size: 4
+  = fn(d: std/core/types/double){
+    match ((std/core/(==.2)(d, 0.0))) {
+      ((std/core/types/True() : std/core/types/bool ) as .pat: std/core/types/bool)
+         -> std/num/double/is-neginf((std/core/(/.1)(1.0, d)));
+      (.pat0: std/core/types/bool)
+         -> std/core/types/False;
+    };
+  };
+fun sqr // inline size: 1
+  = fn(x: std/core/types/double){
+    std/core/(*.1)(x, x);
+  };
+fun with-sign-of // inline size: 5
+  = fn(x: std/core/types/double, y: std/core/types/double){
+    match ((std/core/(<.4)(y, 0.0))) {
+      ((std/core/types/True() : std/core/types/bool ) as .pat: std/core/types/bool)
+         -> std/core/(~.1)((std/core/abs.1(x)));
+      ((.skip std/core/types/False() : std/core/types/bool ) as .pat0: std/core/types/bool)
+         -> std/core/abs.1(x);
+    };
+  };
+inline val dbl-pi // inline size: 0
+  = 3.141592653589793;
+fun is-subnormal // inline size: 4
+  = fn(d: std/core/types/double){
+    match ((std/core/(!=.2)(d, 0.0))) {
+      ((std/core/types/True() : std/core/types/bool ) as .pat: std/core/types/bool)
+         -> std/core/(<.4)((std/core/abs.1(d)), 2.2250738585072014e-308);
+      (.pat0: std/core/types/bool)
+         -> std/core/types/False;
+    };
+  };
+fun decode // inline size: 10
+  = fn(d: std/core/types/double){
+    match ((std/core/(==.2)(d, 0.0))) {
+      ((std/core/types/True() : std/core/types/bool ) as .pat: std/core/types/bool)
+         -> std/core/types/(,)<std/core/types/int,std/core/types/int>(0, 0);
+      ((.skip std/core/types/False() : std/core/types/bool ) as .pat0: std/core/types/bool)
+         -> (match ((std/num/double/is-subnormal(d))) {
+          ((std/core/types/True() : std/core/types/bool ) as .pat1: std/core/types/bool)
+             -> std/num/double/decode-normalized((std/core/(*.1)(d, 1.8014398509481984e16)), (std/core/types/Optional<std/core/types/int>(-54)));
+          ((.skip std/core/types/False() : std/core/types/bool ) as .pat2: std/core/types/bool)
+             -> std/num/double/decode-normalized(d, (std/core/types/Optional<std/core/types/int>(0)));
+        });
+    };
+  };
+inline val rad2deg // inline size: 0
+  = std/core/(/.1)(180.0, 3.141592653589793);
+fun deg // inline size: 2
+  = fn(rad: std/core/types/double){
+    std/core/(*.1)(rad, (std/core/(/.1)(180.0, 3.141592653589793)));
+  };
+inline val deg2rad // inline size: 0
+  = std/core/(/.1)(3.141592653589793, 180.0);
+fun exp2 // inline size: 1
+  = fn(p: std/core/types/double){
+    std/num/double/pow(2.0, p);
+  };
+fun mul-exp2 // inline size: 2
+  = fn(x: std/core/types/double, e: std/core/types/int){
+    std/core/(*.1)(x, (std/num/double/exp2.1(e)));
+  };
+inline val neginf // inline size: 0
+  = std/num/double/make-neginf();
+inline val posinf // inline size: 0
+  = std/num/double/make-posinf();
+fun encode // inline size: 2
+  = fn(man: std/core/types/int, exp: std/core/types/int){
+    std/num/double/ldexp((std/core/double(man)), exp);
+  };
+fun exp2m1 // inline size: 2
+  = fn(x: std/core/types/double){
+    std/num/double/expm1((std/core/(*.1)(0.6931471805599453, x)));
+  };
+fun fraction // inline size: 2
+  = fn(d: std/core/types/double){
+    std/core/(-.3)(d, (std/num/double/truncate(d)));
+  };
+fun hypot.2 // inline size: 9
+  = fn(xs: (std/core/list :: V -> V)<std/core/types/double>){
+    val hi : std/core/types/double
+          = std/num/double/abs-max.1(xs);
+    match ((std/core/(==.2)(hi, 0.0))) {
+      ((std/core/types/True() : std/core/types/bool ) as .pat: std/core/types/bool)
+         -> 0.0;
+      ((.skip std/core/types/False() : std/core/types/bool ) as .pat0: std/core/types/bool)
+         -> std/core/(*.1)(hi, (std/num/double/sqrt((std/num/double/sum((std/core/map.5<std/core/types/double,std/core/types/double,(std/core/types/(<>) :: E)>(xs, (fn(x: std/core/types/double){
+              val x0.5699 : std/core/types/double
+                    = (std/core/(/.1)(x, hi));
+              (std/core/(*.1)(x0.5699, x0.5699));
+            }))))))));
+    };
+  };
+fun log10 // inline size: 2
+  = fn(d: std/core/types/double){
+    std/core/(/.1)((std/num/double/log(d)), 2.302585092994046);
+  };
+fun log2 // inline size: 2
+  = fn(d: std/core/types/double){
+    std/core/(/.1)((std/num/double/log(d)), 0.6931471805599453);
+  };
+fun log2p1 // inline size: 2
+  = fn(x: std/core/types/double){
+    std/core/(*.1)(1.4426950408889634, (std/num/double/log1p(x)));
+  };
+inline val nan // inline size: 0
+  = std/num/double/make-nan();
+fun rad // inline size: 2
+  = fn(deg: std/core/types/double){
+    std/core/(*.1)(deg, (std/core/(/.1)(3.141592653589793, 180.0)));
+  };
+fun round-to-prec // inline size: 8
+  = fn(d: std/core/types/double, prec: std/core/types/int){
+    match ((std/core/(<=.1)(prec, 0))) {
+      ((std/core/types/True() : std/core/types/bool ) as .pat: std/core/types/bool)
+         -> std/num/double/round(d);
+      ((.skip std/core/types/False() : std/core/types/bool ) as .pat0: std/core/types/bool)
+         -> val p0 : std/core/types/double
+                  = val p.5805 : std/core/types/double
+                          = std/core/double(prec);
+                  std/num/double/pow(10.0, p.5805);
+        std/core/(/.1)((std/num/double/round((std/core/(*.1)(d, p0)))), p0);
+    };
+  };
+fun (~=) // inline size: 1
+  = fn(x: std/core/types/double, y: std/core/types/double){
+    std/num/double/nearly-eq(x, y, (std/core/types/None<std/core/types/double>));
+  };

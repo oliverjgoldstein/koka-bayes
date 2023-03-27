@@ -1,0 +1,46 @@
+module interface sampling-rmsmc
+ 
+//------------------------------
+//#kki: import declarations
+ 
+private import std/core/types = std/core/types = "";
+private import std/core/hnd = std/core/hnd = "";
+private import std/core = std/core = "";
+private import std/num/double = std/num/double = "";
+private import effects-and-types = effects-and-types = "";
+private import exponents = exponents = "";
+private import handlers = handlers = "";
+ 
+//------------------------------
+//#kki: external imports
+ 
+ 
+//------------------------------
+//#kki: fixity declarations
+ 
+ 
+//------------------------------
+//#kki: local imported aliases
+ 
+//////////////////// In Development:
+local alias effects-and-types/histogram_rmsmc<a> :: V -> V = (std/core/list :: V -> V)<((effects-and-types/trace_values == 1 (std/core/list :: V -> V)<std/core/types/double>), effects-and-types/exp, a)> = 2;
+local alias effects-and-types/trace_values = (std/core/list :: V -> V)<std/core/types/double> = 1;
+ 
+//------------------------------
+//#kki: type declarations
+ 
+ 
+//------------------------------
+//#kki: declarations
+ 
+// monadic lift
+private fun .mlift125-populate : forall<a,(e :: E)> (model : () -> <(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>|(e :: E)> a, wild_ : ()) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>|(e :: E)> a;
+public fun populate : forall<a,(e :: E)> (k : std/core/types/int, model : () -> <(std/core/types/handled :: HX -> X)<(effects-and-types/score :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>,(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>|(e :: E)> a) -> <(std/core/types/handled :: HX -> X)<(effects-and-types/sample :: HX)>|(e :: E)> (effects-and-types/histogram_rmsmc :: V -> V)<a>;
+ 
+//------------------------------
+//#kki: external declarations
+ 
+ 
+//------------------------------
+//#kki: inline definitions
+ 

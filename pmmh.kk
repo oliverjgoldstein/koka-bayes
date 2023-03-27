@@ -8,13 +8,13 @@ import handlers
 import sampling
 import output-and-plot
 import model-resources
-import trace
-import sequential
+import tmcmc
+import smc
 
 // PMMH is under development and does not currently work as expected.
 
 fun new_model(param_model : model<b,<pure,ndet|_e>>, main_model : b -> model<a,_e1>, particle_num : int, step_num : int) : model<b, <pure,ndet|_e>> {
-  val g = fun() {
+  fun g(){
     val params = param_model()
     val smc_hist = smc(particle_num, step_num, 1, main_model(params), False)
     score(sum_weights(smc_hist))

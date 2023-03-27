@@ -1,0 +1,106 @@
+module interface exponents
+ 
+//------------------------------
+//#kki: import declarations
+ 
+private import std/core/types = std/core/types = "";
+private import std/core = std/core = "";
+private import std/num/double = std/num/double = "";
+private import std/num/ddouble = std/num/ddouble = "";
+private import effects-and-types = effects-and-types = "";
+ 
+//------------------------------
+//#kki: fixity declarations
+ 
+ 
+//------------------------------
+//#kki: local imported aliases
+ 
+ 
+//------------------------------
+//#kki: type declarations
+ 
+ 
+//------------------------------
+//#kki: declarations
+ 
+public fun div_exp : (x : effects-and-types/exp, y : effects-and-types/exp) -> effects-and-types/exp;
+public fun e : (x : std/core/types/double) -> effects-and-types/exp;
+public fun exp_to_double : (x : effects-and-types/exp) -> std/core/types/double;
+public fun ln : (x : effects-and-types/exp) -> std/core/types/double;
+public fun mult_exp : (x : effects-and-types/exp, y : effects-and-types/exp) -> effects-and-types/exp;
+public fun plus_exp : (x : effects-and-types/exp, y : effects-and-types/exp) -> effects-and-types/exp;
+public fun show : (x : effects-and-types/exp) -> std/core/types/string;
+ 
+//------------------------------
+//#kki: external declarations
+ 
+ 
+//------------------------------
+//#kki: inline definitions
+ 
+//.inline-section
+fun div_exp // inline size: 2
+  = fn(x: effects-and-types/exp, y: effects-and-types/exp){
+    match (x) {
+      ((.skip effects-and-types/Exp((j: std/core/types/double) : std/core/types/double) : effects-and-types/exp ) as .pat: effects-and-types/exp)
+         -> (match (y) {
+          ((.skip effects-and-types/Exp((t: std/core/types/double) : std/core/types/double) : effects-and-types/exp ) as .pat0: effects-and-types/exp)
+             -> effects-and-types/Exp((std/core/(-.3)(j, t)));
+        });
+    };
+  };
+fun e // inline size: 1
+  = fn(x: std/core/types/double){
+    effects-and-types/Exp(x);
+  };
+fun exp_to_double // inline size: 1
+  = fn(x: effects-and-types/exp){
+    match (x) {
+      ((.skip effects-and-types/Exp((j: std/core/types/double) : std/core/types/double) : effects-and-types/exp ) as .pat: effects-and-types/exp)
+         -> std/core/(^)(2.718281828459045, j);
+    };
+  };
+inline fun ln // inline size: 0
+  = fn(x: effects-and-types/exp){
+    match (x) {
+      ((.skip effects-and-types/Exp((g: std/core/types/double) : std/core/types/double) : effects-and-types/exp ) as .pat: effects-and-types/exp)
+         -> g;
+    };
+  };
+fun mult_exp // inline size: 2
+  = fn(x: effects-and-types/exp, y: effects-and-types/exp){
+    match (x) {
+      ((.skip effects-and-types/Exp((j: std/core/types/double) : std/core/types/double) : effects-and-types/exp ) as .pat: effects-and-types/exp)
+         -> (match (y) {
+          ((.skip effects-and-types/Exp((t: std/core/types/double) : std/core/types/double) : effects-and-types/exp ) as .pat0: effects-and-types/exp)
+             -> effects-and-types/Exp((std/core/(+.3)(j, t)));
+        });
+    };
+  };
+fun plus_exp // inline size: 10
+  = fn(x: effects-and-types/exp, y: effects-and-types/exp){
+    val ln_plus : (a : std/core/types/double, b : std/core/types/double) -> std/core/types/double
+          = fn(a: std/core/types/double, b: std/core/types/double){
+            std/core/(+.3)(a, (std/num/double/log1p((std/core/(^)(2.718281828459045, (std/core/(-.3)(b, a)))))));
+          };
+    match (x) {
+      ((.skip effects-and-types/Exp((xe: std/core/types/double) : std/core/types/double) : effects-and-types/exp ) as .pat: effects-and-types/exp)
+         -> (match (y) {
+          ((.skip effects-and-types/Exp((ye: std/core/types/double) : std/core/types/double) : effects-and-types/exp ) as .pat0: effects-and-types/exp)
+             -> (match ((std/core/(<.4)(xe, ye))) {
+              ((std/core/types/True() : std/core/types/bool ) as .pat1: std/core/types/bool)
+                 -> effects-and-types/Exp((ln_plus(ye, xe)));
+              ((.skip std/core/types/False() : std/core/types/bool ) as .pat2: std/core/types/bool)
+                 -> effects-and-types/Exp((ln_plus(xe, ye)));
+            });
+        });
+    };
+  };
+fun show // inline size: 8
+  = fn(x: effects-and-types/exp){
+    match (x) {
+      ((.skip effects-and-types/Exp((h: std/core/types/double) : std/core/types/double) : effects-and-types/exp ) as .pat: effects-and-types/exp)
+         -> std/core/(++.1)("Exp ", (std/core/(++.1)((std/core/show.1(h, (std/core/types/None<std/core/types/int>))), (std/core/(++.1)(" with probability: ", (std/num/ddouble/show-fixed((std/num/ddouble/pow((std/num/ddouble/Ddouble(2.718281828459045, 1.4456468917292502e-16)), (std/num/ddouble/ddouble(h)))), (std/core/types/None<std/core/types/int>))))))));
+    };
+  };
