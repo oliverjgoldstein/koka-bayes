@@ -1,2 +1,2 @@
 *.py linguist-detectable=false
-*.rb linguist-language=Koka
+*.py linguist-language=Koka
