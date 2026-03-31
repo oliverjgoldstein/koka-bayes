@@ -1,4 +1,17 @@
-out/
+# Koka build output
 .koka/
+out/
+
+# Generated diagnostics
 sir-diagnostics-*.svg
 sir-diagnostics-*.csv
+
+# Editor state
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# macOS metadata
+.DS_Store
