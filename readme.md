@@ -1,83 +1,48 @@
 # koka-bayes
 
-`koka-bayes` is now a Koka v3 probabilistic programming library for multimodal, handler-based probabilistic models, rather than the 2019 thesis-era `sample`/`score` prototype that originally lived in this repository.
+> Probabilistic programming in Koka 3.
+> One model definition. Multiple inference modes.
 
-The 2024 arXiv release of the earlier MSc thesis, “Modular probabilistic programming with algebraic effects (MSc Thesis 2019)” (`arXiv:2412.19826`), is treated here as a Bristol reference for extra algorithmic detail and historical implementation context. The authoritative description of the active implementation is the current `src/` tree plus the repository documentation.
+`koka-bayes` is a Koka v3 library for multimodal, handler-based probabilistic models. Observable sites can either sample or observe depending on the environment supplied at runtime. The model stays the same. The environment changes.
 
-One concrete thesis-derived refinement in the current code is the Metropolis-Hastings replay strategy: proposals now reuse the trace prefix up to the proposal address and regenerate the suffix afterwards, following the old replay/perturb-trace intuition without changing the public model API.
+The active implementation lives under `src/`. The older 2019 thesis-era `sample`/`score` prototype is preserved under `legacy/2019/` as historical reference material, not as the current API.
 
-The implementation is verified with Koka `3.2.2` and uses the `jsnode` backend for the documented commands below.
+## At A Glance
 
-## What Changed From 2019
-
-The old repository centered on explicit `sample` and `score` effects plus thesis-era algorithms such as SMC, TMCMC, RMSMC, and PMMH. The new implementation replaces that design with:
-
-- multimodal models whose observable sites can either sample or observe
+- Koka `3.x` modeling library for simulation and inference
 - typed observable variables and typed model environments
-- a handler pipeline that specializes models by environment
-- first-class model composition for HMM-style reuse
-- a sequential model layer for population algorithms
-- current execution modes: `simulate`, `lw`, `lwis`, `mh`, `smc`, `pmmh`, `rmsmc`, and `smc2`
+- ordered consumption of repeated observations
+- reusable HMM-style and sequential model composition
+- current algorithms: `simulate`, `lw`, `lwis`, `mh`, `smc`, `pmmh`, `rmsmc`, `smc2`
+- verified with Koka `3.2.2` on the `jsnode` backend
 
-The thesis-era code has been archived under `legacy/2019/` and is no longer the current API surface.
-
-## Core Ideas
-
-- Observable variables are explicit typed values such as `obs-float64("sir/beta")`.
-- Model environments map observable variables to ordered lists of observations.
-- Repeated occurrences consume observations in runtime order; missing values fall back to sampling and extra values are ignored.
-- Model definitions stay unchanged across simulation and inference. Only the environment changes.
-- Specialization is factored into handlers:
-  - `handle-read` reads ordered observations from the environment
-  - `handle-dist` interprets an observable distribution site as either sample or observe
-  - `handle-core` composes both passes
-
-## Architecture
-
-- `src/core/obsvalue.kk`: runtime observable values plus codecs
-- `src/core/obsvar.kk`: typed observable variable identifiers
-- `src/core/env.kk`: typed model environments with ordered consumption
-- `src/core/dist.kk`: primitive distributions and log-density logic
-- `src/core/model.kk`: multimodal model API and probabilistic operations
-- `src/core/trace.kk`: sample and observation traces, output environments
-- `src/core/sequential.kk`: sequential model layer for step-wise latent-state models
-- `src/handlers/read.kk`: environment reader handler
-- `src/handlers/dist.kk`: deferred sample/observe interpretation
-- `src/handlers/core.kk`: specialization pipeline
-- `src/alg/mcmc.kk`: generic Metropolis-Hastings wrappers
-- `src/alg/simulate.kk`: simulation
-- `src/alg/lw.kk`: likelihood weighting
-- `src/alg/lwis.kk`: likelihood weighting with resampling
-- `src/alg/mh.kk`: trace-based Metropolis Hastings
-- `src/alg/smc.kk`: sequential Monte Carlo over reusable sequential models
-- `src/alg/pmmh.kk`: particle marginal Metropolis-Hastings
-- `src/alg/rmsmc.kk`: resample-move sequential Monte Carlo
-- `src/alg/smc2.kk`: nested SMC over parameter particles with inner filters
-- `src/examples/linear_regression.kk`: simulation, LW, and LWIS
-- `src/examples/hmm.kk`: simple, modular, higher-order, SMC, and RMSMC HMM demos
-- `src/examples/sir.kk`: modular SIR model with simulation, MH, SMC, PMMH, SMC2, and bootstrap demos
-- `src/diagnostics/sir_report.kk`: synthetic SIR recovery benchmark with SVG and CSV output
-- `src/run/*.kk`: runnable entrypoints
-- `test/smoke.kk`: smoke and invariant checks
-
-## Build And Run
+## Quick Start
 
 Requirements:
 
-- a recent Node.js runtime for the `jsnode` backend
-  - `make setup` validates that the installed `node` can execute Koka's generated JavaScript
+- a recent `node` runtime for the `jsnode` backend
 - Koka `3.x`
-  - `make setup` checks for `koka` and installs the current official Koka 3 release if it is missing
-  - if you want a user-local install, run `make KOKA_INSTALL_PREFIX=$HOME/.local setup`
-  - on macOS, if Koka was previously installed with Homebrew, run `brew uninstall koka` before using the official installer
 
-Convenience targets:
+`make setup` checks the runtime toolchain, installs the current official Koka 3 release if `koka` is missing, and validates that the installed `node` can execute Koka's generated JavaScript.
 
 ```sh
 make setup
 make compile
 make smoke
 make run
+```
+
+If you want a user-local Koka install instead of the installer default:
+
+```sh
+make KOKA_INSTALL_PREFIX=$HOME/.local setup
+```
+
+On macOS, if Koka was previously installed with Homebrew, run `brew uninstall koka` before using the official installer.
+
+## Run Something
+
+```sh
 make linear-regression
 make hmm
 make sir-simulate
@@ -86,88 +51,55 @@ make sir-bootstrap
 make sir-report
 ```
 
-Equivalent direct Koka commands:
-
-```sh
-koka --target=jsnode --library --include=src -c src/main.kk
-koka --target=jsnode -e --include=src --include=test test/smoke.kk
-koka --target=jsnode -e --include=src src/main.kk
-koka --target=jsnode -e --include=src src/run/linear_regression.kk
-koka --target=jsnode -e --include=src src/run/hmm.kk
-koka --target=jsnode -e --include=src src/run/sir_simulate.kk
-koka --target=jsnode -e --include=src src/run/sir_infer.kk
-koka --target=jsnode -e --include=src src/run/sir_bootstrap.kk
-koka --target=jsnode -e --include=src src/run/sir_report.kk
-```
-
-## Example Walkthroughs
-
-### Linear Regression
-
-`src/examples/linear_regression.kk` defines the current linear regression example with priors `Normal(0,3)`, `Normal(0,2)`, `Uniform(1,3)` over slope, intercept, and `sigma`. The same `linear-regression-model(xs)` is used for:
-
-- pure simulation with `simulate(empty(), ...)`
-- likelihood weighting by supplying `y-var` observations through an environment
-- likelihood weighting with resampling through `lwis(...)`
-
-### Hidden Markov Model
-
-`src/examples/hmm.kk` contains:
-
-- a simple HMM
-- a `node` combinator
-- reusable transition and observation prior models
-- reusable transition and observation submodels
-- a higher-order `higher-order-hmm` builder that first samples submodel parameters and then runs the chain
-
-The observed-mode and higher-order demos show that repeated occurrences of `emission-var` consume supplied values in order while the same HMM definition can also fix higher-level parameters through the environment.
-
-The same sequential HMM specification also drives:
-
-- `smc-demo()` for particle filtering
-- `rmsmc-demo()` for resample-move particle filtering
-
-### SIR Model
-
-`src/examples/sir.kk` implements the modular SIR hidden Markov model with gamma priors for `beta` and `gamma`, a beta prior for the reporting rate, and a higher-order HMM composition over transition and observation submodels. The demo surface includes:
-
-- `simulate-demo()` for forward simulation
-- `inference-demo()` for Metropolis Hastings
-- `smc-demo()` for sequential Monte Carlo
-- `pmmh-demo()` for particle marginal Metropolis-Hastings
-- `smc2-demo()` for nested parameter-particle inference
-- `bootstrap-demo()` for synthetic-data bootstrap inference
-
-`make sir-report` runs a fixed synthetic-data recovery benchmark for `SMC`, `RMSMC`, `PMMH`, and `SMC2` and writes:
+`make sir-report` writes:
 
 - `sir-diagnostics-dashboard.svg`
 - `sir-diagnostics-summary.csv`
 - `sir-diagnostics-samples.csv`
 
-The SVG dashboard shows posterior histograms with the synthetic truth overlaid and marks each algorithm `PASS` or `FAIL` against the configured recovery tolerances.
+## The Core Idea
 
-## Coverage
+One model body can serve both simulation and inference:
 
-This repository implements the main programming model and execution story across:
+```koka
+val xs = [-2.0, -1.0, 0.0, 1.0, 2.0]
+val model0 = linear-regression-model(xs)
 
-- modular multimodal examples
-- effect-based multimodal embedding
-- specialization by model environment
-- simulation, likelihood weighting, likelihood weighting with resampling, Metropolis Hastings, sequential Monte Carlo, particle marginal Metropolis-Hastings, resample-move SMC, and SMC2
+val sim = simulate(empty(), model0)
+val observed = set(y-var, sim.value.ys, empty())
+val weighted = lw(200, observed, model0)
+```
 
-See [ARCHITECTURE_MAPPING.md](./ARCHITECTURE_MAPPING.md) for the module-by-module correspondence and [ALGORITHM_COVERAGE.md](./ALGORITHM_COVERAGE.md) for the audited algorithm set.
+When the environment is empty, observable sites sample. When the environment provides values, those same sites observe. Repeated occurrences consume observations in runtime order.
 
-## Known Deviations
+## Examples
 
-- Koka does not provide overloaded `#x`-style labels, so observable variables use explicit typed constructors.
-- Model environments use runtime codecs rather than Haskell type-level records.
-- The runtime specialization layer uses Koka effect values (`sample-hook`, `observe-hook`) to bridge from the specialization handlers into the concrete algorithms.
-- The current MH implementation uses deterministic linear site addresses and a lightweight single-site replay proposal with suffix regeneration.
-- `SMC2` currently recomputes inner prefix filters when extending parameter particles instead of maintaining a mutable nested filter state.
-- The verified build target in this repository is `jsnode`; the C backend was not used for the documented workflow in this environment.
+- [Linear regression](./src/examples/linear_regression.kk): one model body used for simulation, likelihood weighting, and likelihood weighting with resampling
+- [Hidden Markov model](./src/examples/hmm.kk): simple, modular, and higher-order HMM construction plus `smc` and `rmsmc`
+- [SIR model](./src/examples/sir.kk): modular epidemiology model with simulation, `mh`, `smc`, `pmmh`, `rmsmc`, `smc2`, and bootstrap workflows
 
-These choices preserve the current modeling semantics and document the Koka-specific tradeoffs explicitly in [DESIGN_NOTES.md](./DESIGN_NOTES.md).
+## Project Map
 
-## Legacy
+- `src/core/`: observable values, observable variables, environments, distributions, model API, traces, sequential layer
+- `src/handlers/`: environment reading and sample-vs-observe specialization
+- `src/alg/`: simulation, weighted inference, MCMC, and particle methods
+- `src/examples/`: compact reference models
+- `src/run/`: runnable entrypoints
+- `src/diagnostics/`: report generation
+- `test/`: smoke and invariant checks
+- `legacy/2019/`: archived thesis-era implementation
 
-All thesis-era code, datasets, and climate artifacts were moved to `legacy/2019/`. The archive is documented in [LEGACY_NOTES.md](./LEGACY_NOTES.md).
+For a full module-by-module mapping, see [ARCHITECTURE_MAPPING.md](./ARCHITECTURE_MAPPING.md).
+
+## Read More
+
+- [Usage guide](./docs/USAGE_GUIDE.md): commands, execution APIs, and environment patterns
+- [Architecture mapping](./ARCHITECTURE_MAPPING.md): where each architectural concept lives in the codebase
+- [Algorithm coverage](./ALGORITHM_COVERAGE.md): audited algorithm surface and status
+- [Design notes](./DESIGN_NOTES.md): Koka-specific tradeoffs, current deviations, and implementation choices
+- [Legacy notes](./LEGACY_NOTES.md): what was archived from the 2019 codebase
+- [Migration plan](./MIGRATION_PLAN.md): transition notes from the earlier repository shape
+
+## Background
+
+The 2024 arXiv release of the earlier MSc thesis, "Modular probabilistic programming with algebraic effects (MSc Thesis 2019)" (`arXiv:2412.19826`), is useful historical context for the ideas behind the project. The authoritative description of the current implementation is the code in `src/` together with the repository documents linked above.
