@@ -1,7 +1,6 @@
 # koka-bayes
 
 > Probabilistic programming in Koka 3.
-> One model definition. Multiple inference modes.
 
 `koka-bayes` is a Koka v3 library for multimodal, handler-based probabilistic models. Observable sites can either sample or observe depending on the environment supplied at runtime. The model stays the same. The environment changes.
 
