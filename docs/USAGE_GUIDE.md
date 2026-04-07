@@ -3,10 +3,13 @@
 ## Quick Start
 
 ```sh
+make setup
 make compile
 make smoke
 make run
 ```
+
+`make setup` ensures `koka` is available, installing the current official Koka 3 release when it is missing, and validates that the installed `node` can run the generated `jsnode` output. To install into a user-local prefix instead of the installer default, run `make KOKA_INSTALL_PREFIX=$HOME/.local setup`.
 
 Run individual demos:
 

@@ -6,7 +6,7 @@ The 2024 arXiv release of the earlier MSc thesis, “Modular probabilistic progr
 
 One concrete thesis-derived refinement in the current code is the Metropolis-Hastings replay strategy: proposals now reuse the trace prefix up to the proposal address and regenerate the suffix afterwards, following the old replay/perturb-trace intuition without changing the public model API.
 
-The implementation targets Koka `3.2.2` and uses the `jsnode` backend for the documented commands below.
+The implementation is verified with Koka `3.2.2` and uses the `jsnode` backend for the documented commands below.
 
 ## What Changed From 2019
 
@@ -64,12 +64,17 @@ The thesis-era code has been archived under `legacy/2019/` and is no longer the 
 
 Requirements:
 
-- `koka` `3.2.x`
-- Node.js for the `jsnode` backend
+- a recent Node.js runtime for the `jsnode` backend
+  - `make setup` validates that the installed `node` can execute Koka's generated JavaScript
+- Koka `3.x`
+  - `make setup` checks for `koka` and installs the current official Koka 3 release if it is missing
+  - if you want a user-local install, run `make KOKA_INSTALL_PREFIX=$HOME/.local setup`
+  - on macOS, if Koka was previously installed with Homebrew, run `brew uninstall koka` before using the official installer
 
 Convenience targets:
 
 ```sh
+make setup
 make compile
 make smoke
 make run
