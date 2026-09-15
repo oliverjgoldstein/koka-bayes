@@ -1,8 +1,10 @@
 # Koka build output
 .koka/
 out/
+.tools/
 
 # Generated diagnostics
+results/
 sir-diagnostics-*.svg
 sir-diagnostics-*.csv
 

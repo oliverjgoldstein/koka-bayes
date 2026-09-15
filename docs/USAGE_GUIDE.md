@@ -1,87 +1,215 @@
-# Usage Guide
+# Write and run one model file
 
-## Quick Start
+Start with [model.kk](../model.kk). It contains everything you edit: the model,
+observations, inference method, and result printing. Library code lives in `lib/`.
+
+## Model
+
+Import the public API once:
+
+```koka
+import bayes
+```
+
+A model is a function that requests random values and returns the quantity you
+want to infer. The starter returns the coin's probability of heads.
+
+```koka
+val flip = obs-bool("flip")
+
+fun coin-model(count : int) : model<e,float64>
+  fn(){
+    val p = beta'(2.0, 3.0)
+    for(count) fn(_){ val _ = bernoulli(flip, p); () }
+    p
+  }
+```
+
+`beta'` samples an unobserved value. `bernoulli(flip, p)` names a site that can
+read observed data. The same model can also generate missing observations.
+
+## Data assumptions
+
+The data belongs beside the model:
+
+```koka
+val flips = [True, True, True, False]
+val observations = singleton(flip, flips)
+```
+
+Repeated occurrences of `flip` read this list in order. The starter calls it once
+per supplied flip, so every supplied value is used. Its assumptions are a fixed
+coin probability and independent flips given that probability.
+
+In general, a site samples when its observation list runs out; extra data is
+ignored when execution never reaches another site. Match the model's observation
+sites to the data you intend to condition on.
+
+## Inference
+
+Inside `main`, select the method with one line:
+
+```koka
+val posterior = likelihood-weighting(2000, observations, coin-model(flips.length), seed=2027)
+```
+
+For this small coin model, change that line to use Metropolis–Hastings:
+
+```koka
+val posterior = metropolis-hastings(3000, 500, observations, coin-model(flips.length), seed=2027)
+```
+
+The MH example takes 3,000 transitions and discards the first 500. The seed makes
+a run reproducible. The appropriate method and budget depend on your model;
+these settings are checked on small, simple examples.
+
+With GNU Make installed, run setup once and then run your model:
 
 ```sh
 make setup
-make compile
-make smoke
-make run
+make inference
 ```
 
-`make setup` ensures `koka` is available, installing the current official Koka 3 release when it is missing, and validates that the installed `node` can run the generated `jsnode` output. To install into a user-local prefix instead of the installer default, run `make KOKA_INSTALL_PREFIX=$HOME/.local setup`.
-
-Run individual demos:
+`make inference` runs `model.kk`. To run another file:
 
 ```sh
-make linear-regression
-make hmm
-make sir-simulate
-make sir-infer
-make sir-bootstrap
-make sir-report
+make inference MODEL=examples/gaussian.kk
 ```
 
-## Core Execution APIs
+The Make commands are the same on Linux, macOS, and Windows. The
+[installation guide](INSTALLATION.md) includes commands without Make:
+`./bayes` on Linux/macOS or `.\bayes.cmd` on Windows runs the starter directly.
+Each example contains its model and inference code together. You can copy the
+Gaussian starter into `model.kk`. Run the larger examples in place; their module
+names match their paths.
 
-- `simulate(env, model)` returns `simulate-result` with:
-  - `value`
-  - `trace`
-  - `output-env`
-- `lw(iterations, env, model)` returns `list<weighted-sample<a>>`
-- `lwis(iterations, env, model)` returns `list<a>` by resampling the `lw` output empirically
-- `mh(iterations, burnin, env, model)` returns `mh-result` with:
-  - `samples`
-  - `accepted`
-  - `posterior-env`
-- `smc(particles, steps, env, sequential-model)` returns `smc-result` with:
-  - `particles`
-  - `log-evidence`
-  - `posterior-env`
-- `pmmh(particles, steps, config, env, sequential-model)` returns `pmmh-result`
-- `pmmh-with(...)` additionally accepts a parameter prior-score function and a custom parameter proposal kernel
-- `rmsmc(particles, steps, mh-steps, env, sequential-model)` returns `smc-result`
-- `smc2(outer, inner, steps, rejuvenation-steps, env, sequential-model)` returns `smc2-result`
-- `smc2-with(...)` additionally accepts a parameter prior-score function and a custom rejuvenation kernel
+| Example | What it shows |
+| --- | --- |
+| [gaussian.kk](../examples/gaussian.kk) | One unknown Gaussian mean |
+| [hmm.kk](../examples/hmm.kk) | A sequential hidden-state model |
+| [linear_regression.kk](../examples/linear_regression.kk) | Simulation and inference with the same model |
+| [sir.kk](../examples/sir.kk) | A larger epidemic model |
 
-## Model Environment Pattern
+The coin and Gaussian are the easiest starting points. The larger examples are
+composition demonstrations; the [benchmark suite](BENCHMARKS.md) uses simpler
+problems matched to each inference method.
 
-Use the same model body for simulation and inference:
+## Results
+
+Print a posterior mean:
 
 ```koka
-val xs = [-2.0, -1.0, 0.0, 1.0, 2.0]
-val model0 = linear-regression-model(xs)
-val sim = simulate(empty(), model0)
-val observed = set(y-var, sim.value.ys, empty())
-val weighted = lw(200, observed, model0)
+println("Estimated probability of heads: " ++ posterior-mean(posterior).show)
 ```
 
-The environment controls when an observable site becomes an observation instead of a sample.
+`posterior-mean` uses the importance weights for likelihood weighting and
+averages the retained samples for Metropolis–Hastings. The starter's exact answer,
+`5/9`, applies only to its `Beta(2,3)` prior and three-heads/one-tail data.
+Your edited model runs without a hard-coded coin-answer assertion.
 
-## Ordered Observation Consumption
+## Project checks and layout
 
-Repeated occurrences of the same observable variable consume supplied values in runtime order. This is demonstrated in `src/examples/hmm.kk` and verified in `test/smoke.kk`.
+```sh
+make check
+```
 
-## Higher-Order Model Reuse
+This compiles the active Koka modules, runs the tests, and runs the starter and
+small examples. `make tests` (or `make test`) runs just the tests. Choose an
+individual inference algorithm when that is all you need to check:
 
-`src/examples/hmm.kk` exposes a generic `higher-order-hmm` builder and a `higher-order-sequential` builder that first run parameter priors and then reuse transition and observation submodels. `src/examples/sir.kk` builds the SIR model through that same sequential higher-order pattern.
+| Command | Checks |
+| --- | --- |
+| `make test-lw` | Likelihood weighting |
+| `make test-lwis` | Likelihood weighting with importance resampling |
+| `make test-mh` | Metropolis–Hastings |
+| `make test-smc` | Sequential Monte Carlo |
+| `make test-rmsmc` | Resample-move SMC |
+| `make test-pmmh` | Particle marginal Metropolis–Hastings |
+| `make test-smc2` | SMC² |
+| `make test-inference` | All 30 analytic inference runs |
 
-## Sequential Models
+The inference checks use small problems with exact answers and three fixed
+seeds. They have their own models under `tests/`, so editing your starter does
+not change their mathematical targets. [Benchmark details](BENCHMARKS.md)
+explain the models and tolerances. Run `make help` for the command summary.
 
-Particle algorithms operate on `src/core/sequential.kk`:
+```text
+model.kk       Your model, data, inference, and results
+Makefile       Setup, inference, and test commands
+examples/      Other complete model files
+lib/           Public API and inference implementation
+tests/         Independent library checks
+scripts/       Installation and command runner
+docs/          Optional explanations and development notes
+archive/       Unsupported historical code
+```
 
-- `as-model(steps, spec)` turns a sequential model back into a regular multimodal model
-- `focus-step` projects an environment onto one sequential step
-- `take-prefix` projects an environment onto a sequential prefix while preserving singleton global bindings
+## Optional: lower-level APIs
 
-## Diagnostics And Graphs
+Most models start with `import bayes`. The implementation modules remain
+available for custom algorithms and sequential models:
 
-`make sir-report` runs a synthetic SIR recovery benchmark across `SMC`, `RMSMC`, `PMMH`, and `SMC2`.
+| API | Result |
+| --- | --- |
+| `simulate(env, model)` | Model value, trace, and output environment |
+| `lw(iterations, env, model)` | Weighted samples |
+| `lwis(iterations, env, model)` | Resampled values |
+| `mh(iterations, burnin, env, model)` | Samples, acceptance count, and posterior environment |
+| `smc(particles, steps, env, sequential-model)` | Particles, log evidence, and posterior environment |
+| `rmsmc(particles, steps, mh-steps, env, sequential-model)` | SMC with rejuvenation |
+| `pmmh(particles, steps, config, env, sequential-model)` | Parameter samples using a particle likelihood estimate |
+| `smc2(outer, inner, steps, rejuvenation-steps, env, sequential-model)` | Parameter particles with retained inner filters |
 
-It writes:
+The lower-level APIs retain their algorithm-specific outputs. Use their modules
+under `lib/alg/` when you need more than the starter's public helpers.
 
-- `sir-diagnostics-dashboard.svg`
-- `sir-diagnostics-summary.csv`
-- `sir-diagnostics-samples.csv`
+### Sequential models and custom kernels
 
-The SVG dashboard is generated directly from Koka and overlays the synthetic truth against the recovered posterior histograms. Each panel is marked `PASS` or `FAIL` using the benchmark tolerances in `src/diagnostics/sir_report.kk`.
+[Sequential models](../lib/core/sequential.kk) define a prior, initial state, and
+step function. `as-model(steps, spec)` turns one into a regular model.
+`focus-step` projects observations onto one step; `take-prefix` projects onto a
+prefix while preserving singleton global bindings.
+
+`alg/smc` exposes retained filters: `start-smc-given`, `advance-smc`, `extend-smc`,
+and `finish-smc`. Each advance consumes the next step from the original
+environment. SMC² retains these populations on rejected rejuvenation proposals.
+
+Supported sequential environments use distinct names for prior, initial, and
+step sites. Observed prior/initial sites occur once and use singleton lists.
+Each repeated step observable occurs once per step and has a per-step observation
+list. Reusing a singleton across several steps is unsupported: filtering would
+repeat it while prefix replay would consume it once.
+
+An all-zero-weight population produces an empty result and log evidence `-inf`.
+This can indicate impossible data or finite-particle depletion; it is not a
+posterior. Invalid distribution parameters are rejected.
+
+Custom `pmmh-with` and `smc2-with` kernels must include the reverse-minus-forward
+proposal log density and every parameter-level target factor in their score.
+`smc2-with` also requires the returned parameters to expose the prior's sampled
+latent coordinates: initialization uses the sampled trace density as its proposal
+density. Transformed or marginalized parameters, or hidden prior randomness,
+need matching density handling beyond this API. Default `pmmh` and `smc2` cancel
+sampled prior factors and automatically retain observed prior factors.
+
+Replay MH requires every random choice affecting likelihood or control flow to
+use the traced model distribution operations. Untraced randomness or changing
+external state can invalidate replay.
+
+### SIR diagnostics
+
+Run `make inference MODEL=examples/sir_report.kk` for synthetic SIR recovery diagnostics.
+It writes `results/sir-diagnostics-dashboard.svg`,
+`results/sir-diagnostics-summary.csv`, and `results/sir-diagnostics-samples.csv`.
+The report creates `results/` if needed and uses the synthetic truth and tolerances
+in [the report implementation](../examples/sir_report.kk). It is separate
+from the elementary analytic correctness suite.
+
+The latest seeded run generated all three files, but its SMC² report-rate
+estimate missed the diagnostic tolerance (absolute error 0.125; limit 0.12).
+The report preserves this failure. Use the simple analytic benchmarks to check
+the supported elementary inference cases.
+
+[Architecture](development/ARCHITECTURE_MAPPING.md) ·
+[Handler design](development/DESIGN_NOTES.md) ·
+[Correctness assessment](ASSESSMENT.md)

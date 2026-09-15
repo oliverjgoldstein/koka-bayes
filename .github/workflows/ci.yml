@@ -1,0 +1,115 @@
+name: Clean cross-platform install and checks
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  install-and-check:
+    name: ${{ matrix.os }} / ${{ matrix.arch }}
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: Linux, arch: x64, runner: ubuntu-24.04 }
+          - { os: Linux, arch: arm64, runner: ubuntu-24.04-arm }
+          - { os: macOS, arch: x64, runner: macos-15-intel }
+          - { os: macOS, arch: arm64, runner: macos-15 }
+          - { os: Windows, arch: x64, runner: windows-2025 }
+          - { os: Windows, arch: arm64, runner: windows-11-arm }
+    defaults:
+      run:
+        working-directory: workspace with spaces
+    steps:
+      - name: Check out a clean workspace with spaces in its path
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: workspace with spaces
+          persist-credentials: false
+
+      - name: Install checksum-pinned GNU Make for native Windows commands
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          # Archive and checksum from Microsoft's ezwinports.make 4.4.1 manifest:
+          # https://github.com/microsoft/winget-pkgs/blob/master/manifests/e/ezwinports/make/4.4.1/ezwinports.make.installer.yaml
+          $archive = Join-Path $env:RUNNER_TEMP 'make-4.4.1.zip'
+          $directory = Join-Path $env:RUNNER_TEMP 'make-4.4.1'
+          Invoke-WebRequest -UseBasicParsing -Uri 'https://downloads.sourceforge.net/project/ezwinports/make-4.4.1-without-guile-w32-bin.zip' -OutFile $archive
+          $expected = 'FB66A02B530F7466F6222CE53C0B602C5288E601547A034E4156A512DD895EE7'
+          if ((Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash -ne $expected) { throw 'GNU Make archive checksum mismatch.' }
+          Expand-Archive -LiteralPath $archive -DestinationPath $directory
+          & "$directory\bin\make.exe" --version
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          "$directory\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
+      - name: Bootstrap from archives and check (Linux and macOS)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          test ! -e .tools
+          test ! -e .koka
+          make setup
+          .tools/node/bin/node --input-type=module -e "import{statSync,writeFileSync}from'node:fs';const paths=['.tools/node/bin/node','.tools/koka/bin/koka'];writeFileSync('.tools/ci-install-snapshot.json',JSON.stringify(paths.map(p=>{const s=statSync(p);return[p,s.size,s.mtimeMs,s.ctimeMs,s.ino]})));"
+
+      - name: Bootstrap from archives and check (Windows PowerShell)
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          if ((Test-Path .tools) -or (Test-Path .koka)) { throw 'Expected a clean checkout.' }
+          & make setup
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & .tools/node/node.exe --input-type=module -e "import{statSync,writeFileSync}from'node:fs';const paths=['.tools/node/node.exe','.tools/koka/bin/koka.exe'];writeFileSync('.tools/ci-install-snapshot.json',JSON.stringify(paths.map(p=>{const s=statSync(p);return[p,s.size,s.mtimeMs,s.ctimeMs,s.ino]})));"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Repeat setup without replacing installed tools (Linux and macOS)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          sh scripts/setup.sh --tools-only
+          .tools/node/bin/node --input-type=module -e "import{statSync,readFileSync}from'node:fs';import{deepStrictEqual}from'node:assert';const before=JSON.parse(readFileSync('.tools/ci-install-snapshot.json','utf8'));deepStrictEqual(before.map(([p])=>{const s=statSync(p);return[p,s.size,s.mtimeMs,s.ctimeMs,s.ino]}),before);console.log('setup idempotence passed');"
+          ./bayes doctor
+          make inference
+          make inference MODEL=examples/gaussian.kk
+          make test-lw test-lwis test-mh test-smc test-rmsmc test-pmmh test-smc2
+
+      - name: Repeat setup without replacing installed tools (Windows PowerShell)
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          & powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/setup.ps1 -ToolsOnly
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & .tools/node/node.exe --input-type=module -e "import{statSync,readFileSync}from'node:fs';import{deepStrictEqual}from'node:assert';const before=JSON.parse(readFileSync('.tools/ci-install-snapshot.json','utf8'));deepStrictEqual(before.map(([p])=>{const s=statSync(p);return[p,s.size,s.mtimeMs,s.ctimeMs,s.ino]}),before);console.log('setup idempotence passed');"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & .\bayes.cmd doctor
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & make inference
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & make inference MODEL=examples/gaussian.kk
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & make test-lw test-lwis test-mh test-smc test-rmsmc test-pmmh test-smc2
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      # JS execution requires neither a system Node installation nor a C compiler.
+      # Check performs compilation, verifies every test completion marker, and
+      # runs model.kk and the Gaussian example.
+      - name: Portable checks with managed tools on PATH (Linux and macOS)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          PATH="$PWD/.tools/node/bin:$PWD/.tools/koka/bin" .tools/node/bin/node scripts/project.mjs check
+
+      - name: Portable checks with managed tools on PATH (Windows PowerShell)
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          $root = (Get-Location).Path
+          $env:PATH = "$root\.tools\node;$root\.tools\koka\bin;$env:SystemRoot\System32"
+          & .tools/node/node.exe scripts/project.mjs check
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

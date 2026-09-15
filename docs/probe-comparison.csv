@@ -1,0 +1,13 @@
+version,probe,algorithm,seed,mean,expected_mean,evidence,expected_evidence
+baseline,unobserved_bernoulli,MH,211,0.94499999999999995,0.8,NA,NA
+baseline,persistent_latent,SMC2,211,0.7675999999999753,0.68,0.33755999968331685,0.5
+baseline,unobserved_bernoulli,MH,419,0.94390909090909092,0.8,NA,NA
+baseline,persistent_latent,SMC2,419,0.7588999999999767,0.68,0.34340299964378795,0.5
+baseline,unobserved_bernoulli,MH,839,0.95099999999999996,0.8,NA,NA
+baseline,persistent_latent,SMC2,839,0.77119999999997491,0.68,0.32645799969512279,0.5
+corrected,unobserved_bernoulli,MH,211,0.79536363636363638,0.8,NA,NA
+corrected,persistent_latent,SMC2,211,0.65149999999998742,0.68,0.49900000000000017,0.5
+corrected,unobserved_bernoulli,MH,419,0.79054545454545455,0.8,NA,NA
+corrected,persistent_latent,SMC2,419,0.69289999999998353,0.68,0.50850000000000006,0.5
+corrected,unobserved_bernoulli,MH,839,0.80172727272727273,0.8,NA,NA
+corrected,persistent_latent,SMC2,839,0.6931999999999835,0.68,0.49650000000000022,0.5
