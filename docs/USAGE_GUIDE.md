@@ -89,6 +89,7 @@ names match their paths.
 | [hmm.kk](../examples/hmm.kk) | A sequential hidden-state model |
 | [linear_regression.kk](../examples/linear_regression.kk) | Simulation and inference with the same model |
 | [sir.kk](../examples/sir.kk) | A larger epidemic model |
+| [autodiff.kk](../examples/autodiff.kk) | Differentiation and Gaussian mode optimization |
 
 The coin and Gaussian are the easiest starting points. The larger examples are
 composition demonstrations; the [benchmark suite](BENCHMARKS.md) uses simpler
@@ -106,6 +107,9 @@ println("Estimated probability of heads: " ++ posterior-mean(posterior).show)
 averages the retained samples for Metropolis–Hastings. The starter's exact answer,
 `5/9`, applies only to its `Beta(2,3)` prior and three-heads/one-tail data.
 Your edited model runs without a hard-coded coin-answer assertion.
+
+For a deterministic differentiable objective, see the [AD guide](AUTODIFF.md).
+Finding a posterior mode does not produce posterior samples.
 
 ## Project checks and layout
 
@@ -127,6 +131,7 @@ individual inference algorithm when that is all you need to check:
 | `make test-pmmh` | Particle marginal Metropolis–Hastings |
 | `make test-smc2` | SMC² |
 | `make test-inference` | All 30 analytic inference runs |
+| `make test-autodiff` | Forward and reverse differentiation |
 
 The inference checks use small problems with exact answers and three fixed
 seeds. They have their own models under `tests/`, so editing your starter does

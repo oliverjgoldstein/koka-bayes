@@ -79,6 +79,7 @@ const suites = {
   'inference-regressions': ['tests/inference_regressions.kk', 'inference regression checks passed'],
   'smc-regressions': ['tests/smc_incremental.kk', 'incremental SMC regression checks passed'],
   benchmark: ['tests/correctness.kk', 'inference correctness checks passed (30 runs; 3 fixed seeds per model/algorithm)'],
+  'autodiff-test': ['tests/autodiff.kk', 'autodiff checks passed: analytic values/gradients, sharing, Gaussian density, finite differences, isolation'],
   'model-api': ['tests/model_api.kk', 'Model API tests passed.'],
 };
 
@@ -111,7 +112,7 @@ export function main(args = process.argv.slice(2)) {
     console.log('bayes                          Run model.kk');
     console.log('bayes run examples/gaussian.kk  Run another model file');
     console.log('bayes check                    Compile, test, and run the starter models');
-    console.log('More checks: test, benchmark, compile, doctor');
+    console.log('More checks: test, benchmark, autodiff, compile, doctor');
     return 0;
   }
 
@@ -187,7 +188,7 @@ export function main(args = process.argv.slice(2)) {
   function test() {
     execute('runner-tests', process.execPath, ['--test', '--test-concurrency=1', 'tests/runner.test.mjs', 'tests/workflow.test.mjs']);
     for (const name of Object.keys(suites)) suite(name);
-    console.log('All tests passed (30 inference benchmark runs plus regression checks).');
+    console.log('All tests passed (30 inference benchmark runs plus regression and AD checks).');
   }
   function runFile(file, { base = projectRoot, marker = null, entry = 'main' } = {}) {
     const resolved = resolveModelFile(projectRoot, file, base);
@@ -205,10 +206,12 @@ export function main(args = process.argv.slice(2)) {
   else if (Object.hasOwn(algorithmSuites, command)) algorithmSuite(command);
   else if (Object.hasOwn(suites, command)) suite(command);
   else if (command === 'run') runFile(request.file, { base: request.explicitFile ? process.cwd() : projectRoot });
+  else if (command === 'autodiff') runFile('examples/autodiff.kk');
   else if (command === 'check') {
     compile(); test();
     runFile('model.kk');
     runFile('examples/gaussian.kk');
+    runFile('examples/autodiff.kk', { marker: 'This example optimizes a log density; it does not draw posterior samples.' });
     console.log('End-to-end check passed.');
   } else {
     // Existing shortcuts still select an entry function in the model file.

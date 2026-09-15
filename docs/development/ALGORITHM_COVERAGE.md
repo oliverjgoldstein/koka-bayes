@@ -24,11 +24,11 @@ These are exercised by:
 - `make inference MODEL=examples/linear_regression.kk`
 - `make inference MODEL=examples/hmm.kk`
 - `make inference MODEL=examples/sir.kk`
-- `make tests`: regression and analytic inference checks
+- `make tests`: regression, analytic inference, and differentiation checks
 - `make test-inference`: four elementary models assigned to suitable algorithms, 30 runs across three seeds
 - `make test-lw`, `test-lwis`, `test-mh`, `test-smc`, `test-rmsmc`, `test-pmmh`, `test-smc2`: individual algorithm checks
 
-The [benchmark protocol](../BENCHMARKS.md) defines exact targets, tolerances, and measured results. The [assessment](../ASSESSMENT.md) records the correctness defects found and repaired.
+The [benchmark protocol](../BENCHMARKS.md) defines exact targets, tolerances, and measured results. The [assessment](../ASSESSMENT.md) records the correctness defects found and repaired. Scalar AD has its own [scope and tests](../AUTODIFF.md).
 
 The smoke suite checks:
 

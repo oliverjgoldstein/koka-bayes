@@ -48,4 +48,4 @@ The method targets are `test-lw`, `test-lwis`, `test-mh`, `test-smc`,
 `test-rmsmc`, `test-pmmh`, and `test-smc2`. Run `make help` for all commands.
 
 [Writing your model](docs/USAGE_GUIDE.md) · [Installation](docs/INSTALLATION.md) ·
-[Inference checks](docs/BENCHMARKS.md)
+[Inference checks](docs/BENCHMARKS.md) · [Differentiation](docs/AUTODIFF.md)

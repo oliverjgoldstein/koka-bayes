@@ -59,7 +59,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/setup.ps1
 ```
 
 Both setup scripts finish by running `scripts/project.mjs check` with the local
-Node executable. This compiles the source, runs the inference
+Node executable. This compiles the source, runs the inference and differentiation
 checks, and runs `model.kk` and the small examples. A failed check makes
 setup fail. Paths containing spaces are supported.
 
@@ -129,9 +129,10 @@ project check, and the full check with only managed tools on PATH. The 30 infere
 benchmark rows reproduce exactly on Node 24.21.0. Default setup also passed in a
 fresh copy with spaces in its path, no Git metadata, and an empty build cache,
 using copies of the verified managed tools. This was repeated after the
-single-file restructuring: all 27 library/model files compiled, all five Koka
-suites passed, and the starter and Gaussian examples ran successfully. The
-workflow checks include a renamed model file, a change of observations and inference method, and reported model failures.
+single-file restructuring: all 31 library/model files compiled, all six Koka
+suites and eight Node checks passed, and the starter, Gaussian, and AD examples
+ran successfully. The workflow checks include a renamed model file, a change
+of observations and inference method, and reported model failures.
 The Make commands were then verified with GNU Make 3.81 on macOS:
 `make setup`, `make inference`, an alternative `MODEL` path, and all seven
 algorithm targets. The full test run now includes nine Node checks. Make

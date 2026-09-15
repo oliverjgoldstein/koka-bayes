@@ -36,8 +36,8 @@ The complete [CSV results](benchmark-results.csv) record every current benchmark
 run; the [protocol](BENCHMARKS.md) gives budgets, tolerances, and maximum errors.
 All **30/30** cases pass on the pinned tools. The fixed test models live under
 `tests/`, independently of the editable starter `model.kk`. `./bayes check`
-compiles the active modules, runs the runner, inference, and
-regression tests, and runs the starter and small examples. On Windows use `.\bayes.cmd check`.
+compiles the active modules, runs the runner, inference, regression, and
+differentiation tests, and runs the starter and small examples. On Windows use `.\bayes.cmd check`.
 
 The test wrapper requires each suite's exact completion marker as well as a zero
 command exit status. This matters because Koka's Node exception handler can print
@@ -135,6 +135,19 @@ trajectories, evidence, and output observations.
 
 These changes deliberately alter edge-case behavior. An empty result can indicate
 impossible observations or particle depletion; it is not a posterior sample.
+
+## Differentiable programming
+
+The new `smooth<a>` effect supports evaluation, forward AD, and reverse AD over
+scalar arithmetic. The reverse handler resumes the rest of the program, then
+accumulates derivative contributions while returning through the handlers. The
+implementation uses Koka's continuation handlers and has no global AD state.
+
+Analytic tests cover the paper's polynomial, shared expressions, every supported
+primitive, Gaussian densities, and Gaussian posterior gradients. The Gaussian
+MAP example recovers the known optimum within `9.4e-10`. Full API details and
+limits are in the [AD guide](AUTODIFF.md). MAP estimates a mode; it does not sample
+posterior uncertainty.
 
 ## What remains before claiming broad leadership
 

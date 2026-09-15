@@ -112,7 +112,7 @@ The intended design was to thread all runtime state through local handlers, but 
 - effect values to connect the specialization pipeline to the active algorithm
 - references allocated separately for each execution's runtime trace state
 
-The hooks still encapsulate mutation with `unsafe-total`, but executions no longer share module-level trace counters or weights. Nested LW and simulation are covered by regression tests.
+The hooks still encapsulate mutation with `unsafe-total`, but executions no longer share module-level trace counters or weights. Nested LW and simulation are covered by regression tests. The AD layer uses scoped local state through `run` without this unsafe encoding.
 
 The current MH proposal kernel also incorporates a thesis-derived replay refinement from the archived Bristol implementation: once a proposal address is selected, the run reuses only the trace prefix before that address and regenerates the suffix. This avoids stale downstream reuse when later distributions depend on the proposed value.
 

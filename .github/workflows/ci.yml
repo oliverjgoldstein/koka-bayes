@@ -98,7 +98,7 @@ jobs:
 
       # JS execution requires neither a system Node installation nor a C compiler.
       # Check performs compilation, verifies every test completion marker, and
-      # runs model.kk and the Gaussian example.
+      # runs model.kk and the Gaussian and differentiation examples.
       - name: Portable checks with managed tools on PATH (Linux and macOS)
         if: runner.os != 'Windows'
         shell: bash

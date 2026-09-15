@@ -221,4 +221,5 @@ These tests can reveal elementary inference mistakes. They do not establish
 correctness for arbitrary programs, high-dimensional mixing, tail accuracy,
 multimodal exploration, long-sequence particle degeneracy, performance rankings,
 parallel safety or differentiable-inference estimators. Hard support, impossible
-observations and dynamic traces have separate regression tests.
+observations and dynamic traces have separate regression tests. Differentiation
+checks are also separate from posterior inference checks.
