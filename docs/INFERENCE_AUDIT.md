@@ -78,6 +78,11 @@ separate and unchanged in scope.
 
 ## Bugs reproduced and repaired
 
+- **Categorical rounding could select zero mass.** At the largest representable
+  random draw, seven equally weighted categories followed by a zero-weight
+  category returned the zero-weight index. A deterministic random handler
+  reproduces this. The rounding fallback now remembers the last positive-weight
+  category instead of choosing the final category unconditionally.
 - **Tiny positive Poisson rates returned -1.** At rate `1e-20`, `exp(-rate)`
   rounds to one. The old loop stopped before its first draw and returned
   `count - 1`. The sampler now executes the required first draw before testing
@@ -88,7 +93,7 @@ separate and unchanged in scope.
   and a stable logistic ratio avoid that underflow. Regressions check support,
   mean and second moment of `Beta(0.001, 0.002)` over three seeds.
 
-Both bugs are in shared sampling code and therefore affect every inference
+These bugs are in shared sampling code and therefore affect every inference
 method using those distributions, even when its inference equations are right.
 
 ## Contracts and remaining limits

@@ -171,13 +171,16 @@ fun sample-discrete(weights : list<float64>) : <random> int
   val threshold = random-float64()
   choose-weighted(threshold, weights, 0)
 
-fun choose-weighted(threshold : float64, weights : list<float64>, index : int) : int
+fun choose-weighted(threshold : float64, weights : list<float64>, index : int, last-positive : int = 0) : int
   match weights
-    Nil -> max(0, index - 1)
+    // Rounding can leave a nonnegative residual after the positive weights.
+    // Fall back to positive support, never a trailing zero-weight category.
+    Nil -> last-positive
     Cons(weight, rest) ->
       if threshold < weight
         then index
-        else choose-weighted(threshold - weight, rest, index + 1)
+        else choose-weighted(threshold - weight, rest, index + 1,
+                             if weight > 0.0 then index else last-positive)
 
 fun sample-binomial(count : int, probability : float64) : <div,random> int
   if count <= 0
