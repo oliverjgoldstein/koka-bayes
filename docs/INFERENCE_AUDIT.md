@@ -96,6 +96,14 @@ separate and unchanged in scope.
 These bugs are in shared sampling code and therefore affect every inference
 method using those distributions, even when its inference equations are right.
 
+The supplied **SIR custom proposal** also clamped current parameters to `1e-6`
+before a log/logit random walk, although its density correction assumed no
+clamping. It now preserves every valid current coordinate, validates transform
+domains, uses an unclipped Box-Muller draw and a stable logistic transform.
+A deterministic zero-increment test covers a small positive parameter and
+rates near both boundaries; the old kernel fails it. This repairs the example's
+proposal contract, independently of PMMH/SMC²'s generic acceptance equations.
+
 ## Contracts and remaining limits
 
 - Replay must be deterministic conditional on traced choices. Untraced random
@@ -113,8 +121,12 @@ method using those distributions, even when its inference equations are right.
   rejected; finite scores are required for usable MCMC output.
 - Extreme floating-point ranges beyond the tested cases, arbitrary effect
   composition, long-run mixing and large-scale calibration remain unverified.
-  The separately recorded SIR diagnostic tolerance miss is not erased by these
-  elementary checks; see the [usage guide](USAGE_GUIDE.md#sir-diagnostics).
+  The SIR rerun after the proposal repair still misses report-rate recovery
+  thresholds for PMMH and SMC² (errors about 0.148 and 0.151; limit 0.12).
+  These compare with generating truth, not exact posterior means, and do not
+  distinguish Monte Carlo error from posterior uncertainty or prior influence.
+  [Recorded results](sir-audit-results.csv) preserve the failures; see the
+  [usage guide](USAGE_GUIDE.md#sir-diagnostics).
 
 Run `make test-inference-audit` (or `./bayes inference-audit`). The audit is also
 included in `make tests`, `make check`, and clean-install CI.

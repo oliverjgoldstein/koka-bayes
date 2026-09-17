@@ -20,6 +20,8 @@ import core/obsvar
 import core/sequential
 import core/trace
 import core/weights
+import examples/hmm
+import examples/sir
 
 fun ensure(message : string, condition : bool) : exn ()
   if condition then () else throw(message)
@@ -128,6 +130,21 @@ fun test-small-distribution-parameters() : <div,exn,random> ()
     ensure("small-shape Beta second moment agrees with the analytic answer", near(second, (1.001 / 1.003) / 3.0, 0.04))
   }
 
+fun test-sir-proposal-boundaries() : <div,exn> ()
+  [3.0e-7, 1.0 - 3.0e-7].foreach fn(rate){
+    val current = Hmm-params(Trans-params(3.0e-8, 0.009), Obs-params(rate))
+    val (proposed, _, correction) = {
+      // U=0 maps to a Box-Muller input of 1 and a zero radius.
+      with fun random-int32() 0.int32
+      sir-parameter-kernel(current)
+    }
+    ensure("a zero proposal increment must preserve small positive parameters",
+      near(proposed.trans-params.beta / current.trans-params.beta, 1.0))
+    ensure("a zero proposal increment must preserve rates near either boundary",
+      near(proposed.obs-params.report-rate / rate, 1.0))
+    ensure("an identity transformed proposal has zero density correction", near(correction, 0.0))
+  }
+
 fun prior-observation-model() : sequential-model<e,bool,int,bool,bool>
   Sequential-model(
     fn(){
@@ -166,5 +183,6 @@ pub fun main() : <console,div,exn,random> ()
   test-mh-prior-cancellation()
   test-large-poisson()
   test-small-distribution-parameters()
+  test-sir-proposal-boundaries()
   test-prior-observations()
   println("inference regression checks passed")

@@ -80,7 +80,7 @@ const suites = {
   'inference-audit': ['tests/inference_audit.kk', 'inference audit passed: exact joint marginals, asymmetric kernels, rejection, particle evidence'],
   'smc-regressions': ['tests/smc_incremental.kk', 'incremental SMC regression checks passed'],
   benchmark: ['tests/correctness.kk', 'inference correctness checks passed (30 runs; 3 fixed seeds per model/algorithm)'],
-  'autodiff-test': ['tests/autodiff.kk', 'autodiff checks passed: analytic values/gradients, sharing, Gaussian density, finite differences, isolation'],
+  'autodiff-test': ['tests/autodiff_checks.kk', 'autodiff checks passed: analytic values/gradients, sharing, Gaussian density, finite differences, isolation'],
   'model-api': ['tests/model_api.kk', 'Model API tests passed.'],
 };
 
@@ -111,7 +111,7 @@ export function main(args = process.argv.slice(2)) {
     console.log('Edit model.kk: model, data, inference, and results live together.');
     console.log('Start: make setup, then make inference. Test one method: make test-mh.');
     console.log('bayes                          Run model.kk');
-    console.log('bayes run examples/gaussian.kk  Run another model file');
+    console.log('bayes run examples/temperature.kk  Run the thermometer example');
     console.log('bayes check                    Compile, test, and run the starter models');
     console.log('More checks: test, benchmark, autodiff, compile, doctor');
     return 0;
@@ -216,6 +216,7 @@ export function main(args = process.argv.slice(2)) {
     compile(); test();
     runFile('model.kk');
     runFile('examples/gaussian.kk');
+    runFile('examples/temperature.kk', { marker: 'Room temperature from noisy thermometer readings' });
     runFile('examples/autodiff.kk', { marker: 'This example optimizes a log density; it does not draw posterior samples.' });
     console.log('End-to-end check passed.');
   } else {

@@ -1,9 +1,10 @@
-module autodiff
+module autodiff_checks
 
 import std/num/float64
 import autodiff/smooth
 import autodiff/forward
 import autodiff/reverse
+import examples/autodiff
 
 fun ensure-close(label : string, actual : float64, expected : float64) : <div,exn> ()
   if abs(actual - expected) <= 1.0e-10 * max(1.0, abs(expected))
@@ -129,6 +130,20 @@ fun test-normal-joint() : <div,exn> ()
   if abs(theta - 1.0) < 1.0e-8 then ()
     else throw("gradient ascent missed the exact Gaussian posterior mode")
 
+fun test-composed-temperature() : <div,exn> ()
+  // Independent derivative of the prior plus all three readings: 67 - 13*T/4.
+  ensure-gradient("composed temperature gradient at 20",
+    value-and-grad(temperature-log-joint, [20.0]).partials, [2.0])
+  ensure-gradient("composed temperature gradient at 22",
+    value-and-grad(temperature-log-joint, [22.0]).partials, [~4.5])
+  ensure-gradient("exact temperature mode gradient",
+    value-and-grad(temperature-log-joint, [268.0 / 13.0]).partials, [0.0])
+  val directional = forward(fn(){ temperature-log-joint([Dual(20.0, 3.0)]) })
+  ensure-close("composed temperature forward derivative", directional.tangent, 6.0)
+  // Prior normalization contributes log(2); squared residual terms sum to 3.
+  ensure-close("composed temperature log joint", directional.primal,
+    ~2.0 * ln(2.0 * pi) - ln(2.0) - 3.0)
+
 fun test-constants-identity-and-isolation() : <div,exn> ()
   val constant-result = value-and-grad(ignore-inputs, [2.0, 3.0])
   ensure-close("constant value", constant-result.value, 7.0)
@@ -159,6 +174,7 @@ pub fun main() : <console,div,exn> ()
   test-division-scales()
   test-normal-density()
   test-normal-joint()
+  test-composed-temperature()
   test-constants-identity-and-isolation()
   test-central-differences()
   println("autodiff checks passed: analytic values/gradients, sharing, Gaussian density, finite differences, isolation")

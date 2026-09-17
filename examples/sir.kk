@@ -227,14 +227,20 @@ fun take-float64s(limit : int, values : list<float64>) : list<float64>
         Cons(value, rest) -> Cons(value, take-float64s(limit - 1, rest))
 
 fun propose-positive(value : float64, scale : float64) : <div,random> (float64, float64)
-  val current = max(1.0e-6, value)
+  if not(is-finite(value)) || value <= 0.0
+    then impossible("positive random-walk proposals require a finite positive current value")
+  // Clamping the current coordinate changes the proposal density and breaks
+  // the reverse/forward correction below.
+  val current = value
   val current-log = ln(current)
   val proposal-log = current-log + (scale * standard-normal())
   val proposal = exp(proposal-log)
   (proposal, ln(proposal) - ln(current))
 
 fun propose-rate(value : float64, scale : float64) : <div,random> (float64, float64)
-  val current = clamp-rate(value)
+  if not(is-finite(value)) || value <= 0.0 || value >= 1.0
+    then impossible("logit random-walk proposals require a current rate strictly between zero and one")
+  val current = value
   val current-logit = ln(current / (1.0 - current))
   val proposal-logit = current-logit + (scale * standard-normal())
   val proposal = logistic(proposal-logit)
@@ -243,17 +249,18 @@ fun propose-rate(value : float64, scale : float64) : <div,random> (float64, floa
   (proposal, proposal-jacobian - current-jacobian)
 
 fun standard-normal() : random float64
-  val u1 = max(1.0e-12, random-float64())
+  val u1 = 1.0 - random-float64()
   val u2 = random-float64()
   sqrt(~2.0 * ln(u1)) * cos(2.0 * pi * u2)
 
 fun logistic(x : float64) : float64
-  1.0 / (1.0 + exp(~x))
-
-fun clamp-rate(x : float64) : float64
-  if x <= 1.0e-6 then 1.0e-6
-  elif x >= 1.0 - 1.0e-6 then 1.0 - 1.0e-6
-  else x
+  if x >= 0.0
+    then
+      val tail = exp(~x)
+      1.0 - tail / (1.0 + tail)
+    else
+      val head = exp(x)
+      head / (1.0 + head)
 
 pub fun run-sir-simulate() : <console,div,random> ()
   examples/sir/simulate-demo()

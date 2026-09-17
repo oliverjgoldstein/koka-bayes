@@ -1,0 +1,5 @@
+algorithm,beta_truth,beta_mean,beta_error,report_truth,report_mean,report_error,success,note
+SMC,0.700,0.667,0.033,0.300,0.310,0.010,true,"particles=96, logZ=-29.063"
+RMSMC,0.700,0.625,0.075,0.300,0.182,0.118,true,"particles=64, logZ=-31.199"
+PMMH,0.700,0.775,0.075,0.300,0.152,0.148,false,"samples=60, accepted=28"
+SMC2,0.700,0.817,0.117,0.300,0.149,0.151,false,"outer=32, logZ=-30.530"

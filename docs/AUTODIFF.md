@@ -36,6 +36,19 @@ Supported operations are constants, addition, subtraction, multiplication,
 division, negation, exponential, logarithm, sine, and cosine. `ad-square` and
 `ad-normal-log-density` compose those operations.
 
+At the effect boundary there are only three operations:
+
+```koka
+pub effect smooth<a>
+  fun constant(value : float64) : a
+  ctl apply-unary(op : unary-op, x : a) : a
+  ctl apply-binary(op : binary-op, x : a, y : a) : a
+```
+
+Each mathematical operation supplies its ordinary value and local derivative
+rule. Forward mode propagates tangents; reverse mode accumulates adjoints.
+Handlers, `resume`, and scoped mutable cells provide the language mechanisms.
+
 ```koka
 import autodiff/smooth
 import autodiff/reverse
@@ -80,6 +93,8 @@ The deterministic tests compare values and gradients with analytic answers for:
 - A normalized normal log density, including observation, mean, and scale
   derivatives.
 - A conjugate normal model's log joint and exact posterior mode.
+- The temperature objective composed through a fold: log density, directional
+  derivative, and gradients at two temperatures and the exact mode.
 - Constants, unused inputs, identity, empty inputs, and separate AD calls.
 
 They also compare one derivative with a central finite difference. Analytic
@@ -90,12 +105,50 @@ The [polynomial example](../examples/differentiation.kk) evaluates `1 + x^3 - y^
 using all three handlers. It prints value `-7`, forward derivative `12` in the
 `x` direction, and reverse gradient `[12,-8]`.
 
-The [single-file example](../examples/autodiff.kk) contains the objective,
-optimization settings, and result printing. It uses a `N(0,1)` prior and one observation of 2 with noise
-variance 1. The posterior is exactly `N(1,0.5)`. Thirty-two gradient-ascent steps
-using the reverse handler, starting at -3 with rate 0.25, recover the mode 1 to
-within `1e-8`. This validates a connection between AD and a probabilistic
-objective. MAP is optimization, not posterior sampling.
+The [temperature example](../examples/autodiff.kk) differentiates a room's
+temperature log joint. It shares its readings and assumptions with the
+[ordinary inference example](../examples/temperature.kk): a prior mean of 20°C,
+prior standard deviation 2°C, and readings 19, 21, 22°C with independent noise
+standard deviation 1°C. The exact posterior has mean and mode `268/13` (about
+20.615°C), and variance `4/13`. Sixteen gradient-ascent steps from 16°C, with
+rate 0.25, recover the mode within `1e-8`. See the [worked model](TEMPERATURE.md)
+for the derivation. MAP is optimization, not posterior sampling.
+
+## Compositionality
+
+Functions expressed with `smooth<a>` can call one another, capture values in
+closures, and traverse structural data. Their derivatives compose by the chain
+rule. In the temperature example, a separate function scores each reading and
+`foldl` adds those scores to the prior. Reusing the temperature in every term
+adds all its derivative contributions. Normal log density itself is composed
+from arithmetic and logarithm operations; it needs no special handler clause.
+
+The same polymorphic objective can run under evaluation, forward, or reverse
+handlers. This supports higher-order code organization, but the public gradient
+API takes scalar inputs and a scalar output, not function-valued inputs. It
+does not provide arbitrary composition of AD with other effects or nested AD.
+The tests check these implemented behaviors; they are not a formal correctness
+theorem for a whole language.
+
+## Research basis
+
+The implementation adapts the arithmetic-effect and handler architecture in
+Jesse Sigal's [Automatic Differentiation via Effects and Handlers: An
+Implementation in Frank](https://arxiv.org/abs/2101.08095). Reverse propagation
+uses the same central idea: resume the remaining computation, then accumulate
+derivatives as its continuation returns. This library implements a restricted
+Koka version of that approach.
+
+Matthijs Vákár and Tom Smeding's [CHAD](https://arxiv.org/abs/2103.15776) gives
+a compositional, type-respecting source transformation and correctness argument.
+Their [Efficient CHAD](https://arxiv.org/abs/2307.05738) develops efficiency
+results, including a formalized complexity proof. Those transformations and
+guarantees are not implemented by this handler library.
+
+Ohad Kammar contributes to the surrounding research on effects and
+[differentiable probabilistic programming semantics](https://denotational.co.uk/).
+Sigal's paper acknowledges discussions with him. This is not one joint
+algorithm authored by all four researchers, nor a dependency on their software.
 
 ## Scope and limits
 

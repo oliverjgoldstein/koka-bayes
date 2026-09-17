@@ -73,7 +73,7 @@ make inference
 `make inference` runs `model.kk`. To run another file:
 
 ```sh
-make inference MODEL=examples/gaussian.kk
+make inference MODEL=examples/temperature.kk
 ```
 
 The Make commands are the same on Linux, macOS, and Windows. The
@@ -85,13 +85,15 @@ names match their paths.
 
 | Example | What it shows |
 | --- | --- |
+| [temperature.kk](../examples/temperature.kk) | A room temperature from three noisy readings, with an exact answer |
 | [gaussian.kk](../examples/gaussian.kk) | One unknown Gaussian mean |
 | [hmm.kk](../examples/hmm.kk) | A sequential hidden-state model |
 | [linear_regression.kk](../examples/linear_regression.kk) | Simulation and inference with the same model |
 | [sir.kk](../examples/sir.kk) | A larger epidemic model |
-| [autodiff.kk](../examples/autodiff.kk) | Differentiation and Gaussian mode optimization |
+| [autodiff.kk](../examples/autodiff.kk) | Differentiation and room-temperature mode optimization |
 
-The coin and Gaussian are the easiest starting points. The larger examples are
+The [temperature walkthrough](TEMPERATURE.md) is the main continuous worked
+example. The coin is a smaller discrete starting point. The larger examples are
 composition demonstrations; the [benchmark suite](BENCHMARKS.md) uses simpler
 problems matched to each inference method.
 
@@ -211,10 +213,14 @@ The report creates `results/` if needed and uses the synthetic truth and toleran
 in [the report implementation](../examples/sir_report.kk). It is separate
 from the elementary analytic correctness suite.
 
-The latest seeded run generated all three files, but its SMC² report-rate
-estimate missed the diagnostic tolerance (absolute error 0.125; limit 0.12).
-The report preserves this failure. Use the simple analytic benchmarks to check
-the supported elementary inference cases.
+The 17 September audit rerun, after repairing the transformed proposal,
+passed the SMC and RMSMC recovery thresholds. PMMH and SMC² missed the
+report-rate threshold (absolute errors about 0.148 and 0.151; limit 0.12).
+[Recorded results](sir-audit-results.csv) preserve those failures. This diagnostic
+compares estimates with generating parameters, not an exact posterior oracle;
+it does not by itself establish an inference-equation bug or adequate mixing.
+Use the analytic benchmarks and [inference audit](INFERENCE_AUDIT.md) for the
+supported elementary correctness cases.
 
 [Architecture](development/ARCHITECTURE_MAPPING.md) ·
 [Handler design](development/DESIGN_NOTES.md) ·
