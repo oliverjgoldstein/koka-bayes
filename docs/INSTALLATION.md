@@ -94,7 +94,8 @@ by this bootstrap.
 [Koka's 3.2.3 release](https://github.com/koka-lang/koka/releases/tag/v3.2.3)
 provides native Linux and macOS archives for both architectures. Its Windows
 compiler is x64; Windows ARM64 runs that compiler through emulation while Node
-runs natively. An Apple Silicon Mac uses native binaries even if setup starts
+runs natively. The runner uses one GHC runtime capability for the emulated
+compiler to avoid its parallel-runtime crash on Windows ARM64. An Apple Silicon Mac uses native binaries even if setup starts
 from a Rosetta shell. The compiler may warn that no native C compiler was found;
 this project uses its JavaScript backend.
 
@@ -121,28 +122,27 @@ Updating a tool requires updating its version file and matching checksum entries
 together, then rerunning setup and the platform checks. An unknown version is
 never installed without a matching locked checksum.
 
-## Verification limits
+## Verification
 
-Verified here on macOS ARM64: archive downloads and checksums, installation into
-an empty `.tools`, repeat-install idempotence, checksum-failure recovery, the full
-project check, and the full check with only managed tools on PATH. The 30 inference
-benchmark rows reproduce exactly on Node 24.21.0. Default setup also passed in a
-fresh copy with spaces in its path, no Git metadata, and an empty build cache,
-using copies of the verified managed tools. This was repeated after the
-single-file restructuring: all 27 library/model files compiled, all five Koka
-suites passed, and the starter and Gaussian examples ran successfully. The
-workflow checks include a renamed model file, a change of observations and inference method, and reported model failures.
-The Make commands were then verified with GNU Make 3.81 on macOS:
-`make setup`, `make inference`, an alternative `MODEL` path, and all seven
-algorithm targets. The full test run now includes nine Node checks. Make
-propagates model failures, accepts paths containing spaces, and serializes
-compiler invocations even when given `-j`.
-Linux/Windows binaries were
-inspected for runtime dependencies; their installation scripts have not been
-executed on those operating systems in this session.
+On 17 September 2026, clean installation, repeat-install idempotence, all
+algorithm targets, and the complete check with only managed tools on PATH
+passed on all six GitHub Actions platforms: Linux, macOS and Windows, each on
+x64 and ARM64. Both branches were verified:
+[master](https://github.com/oliverjgoldstein/koka-bayes/actions/runs/35221024509)
+and [handler autodiff](https://github.com/oliverjgoldstein/koka-bayes/actions/runs/35221024682).
+These runs cover the CI repairs before the additional inference audit.
 
-The repository's CI matrix is configured to run clean setup and repeat setup on Linux, Windows,
-and macOS, including a checkout path containing spaces. A workflow definition
-does not establish that its remote jobs have passed; consult the actual CI run
-for platform results. Local testing on one operating system cannot establish
-that a different operating system or architecture works.
+The Windows workflow downloads GNU Make using curl with a direct mirror and
+fallback, verifying the original locked checksum before extraction. Native
+Windows ARM64 Node executes the generated JavaScript; only the x64 compiler
+uses emulation and a single GHC runtime capability.
+
+Local macOS ARM64 checks additionally verified a clean archive installation in
+a path with spaces, every algorithm target, and the full test suite. The runner
+checks model execution from outside the project, changed data/inference methods,
+and propagation of compile errors and runtime exceptions. The Makefile
+serializes compiler invocations even with `-j`.
+
+Passing these jobs establishes the tested toolchain/platform combinations, not
+arbitrary model correctness. See the [inference audit](INFERENCE_AUDIT.md) for
+mathematical targets, regression coverage and remaining limitations.

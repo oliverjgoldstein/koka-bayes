@@ -19,7 +19,7 @@ export KOKA_BAYES_MODEL = $(MODEL)
 # Compiler invocations share a build cache. Even `make -j` runs these sequentially.
 .NOTPARALLEL:
 .PHONY: help setup inference test tests check test-inference \
-        test-lw test-lwis test-mh test-smc test-rmsmc test-pmmh test-smc2
+        test-inference-audit test-lw test-lwis test-mh test-smc test-rmsmc test-pmmh test-smc2
 
 help:
 	@echo make setup       - Install the tools and check the project
@@ -28,6 +28,7 @@ help:
 	@echo make test        - Run all tests
 	@echo make check       - Compile, test, and run the starter examples
 	@echo make test-inference - Run all 30 simple inference benchmark cases
+	@echo make test-inference-audit - Check joint posteriors, custom kernels, and particle evidence
 	@echo Algorithm targets: test-lw test-lwis test-mh test-smc test-rmsmc test-pmmh test-smc2
 	@echo Example: make test-mh
 
@@ -45,6 +46,9 @@ check:
 
 test-inference:
 	@$(BAYES) benchmark
+
+test-inference-audit:
+	@$(BAYES) inference-audit
 
 test-lw test-lwis test-mh test-smc test-rmsmc test-pmmh test-smc2:
 	@$(BAYES) $@
