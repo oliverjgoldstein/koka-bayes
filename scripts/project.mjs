@@ -77,6 +77,7 @@ function modelSource(file) {
 const suites = {
   smoke: ['tests/smoke.kk', 'smoke checks passed'],
   'inference-regressions': ['tests/inference_regressions.kk', 'inference regression checks passed'],
+  'inference-audit': ['tests/inference_audit.kk', 'inference audit passed: exact joint marginals, asymmetric kernels, rejection, particle evidence'],
   'smc-regressions': ['tests/smc_incremental.kk', 'incremental SMC regression checks passed'],
   benchmark: ['tests/correctness.kk', 'inference correctness checks passed (30 runs; 3 fixed seeds per model/algorithm)'],
   'autodiff-test': ['tests/autodiff.kk', 'autodiff checks passed: analytic values/gradients, sharing, Gaussian density, finite differences, isolation'],
@@ -192,7 +193,7 @@ export function main(args = process.argv.slice(2)) {
   function test() {
     execute('runner-tests', process.execPath, ['--test', '--test-concurrency=1', 'tests/runner.test.mjs', 'tests/workflow.test.mjs']);
     for (const name of Object.keys(suites)) suite(name);
-    console.log('All tests passed (30 inference benchmark runs plus regression and AD checks).');
+    console.log('All tests passed (30 inference benchmark runs, 27 joint-posterior comparisons, plus regression and AD checks).');
   }
   function runFile(file, { base = projectRoot, marker = null, entry = 'main' } = {}) {
     const resolved = resolveModelFile(projectRoot, file, base);

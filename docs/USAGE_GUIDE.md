@@ -130,6 +130,7 @@ individual inference algorithm when that is all you need to check:
 | `make test-rmsmc` | Resample-move SMC |
 | `make test-pmmh` | Particle marginal Metropolis–Hastings |
 | `make test-smc2` | SMC² |
+| `make test-inference-audit` | Joint posteriors, asymmetric kernels and particle evidence |
 | `make test-inference` | All 30 analytic inference runs |
 | `make test-autodiff` | Forward and reverse differentiation |
 

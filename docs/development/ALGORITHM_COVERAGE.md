@@ -25,6 +25,7 @@ These are exercised by:
 - `make inference MODEL=examples/hmm.kk`
 - `make inference MODEL=examples/sir.kk`
 - `make tests`: regression, analytic inference, and differentiation checks
+- `make test-inference-audit`: exact joint posteriors, asymmetric kernels, rejection and particle evidence
 - `make test-inference`: four elementary models assigned to suitable algorithms, 30 runs across three seeds
 - `make test-lw`, `test-lwis`, `test-mh`, `test-smc`, `test-rmsmc`, `test-pmmh`, `test-smc2`: individual algorithm checks
 

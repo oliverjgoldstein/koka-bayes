@@ -63,9 +63,15 @@ fun sample-valid(primitive : primitive-dist) : <div,random> observable
     PGamma(shape, scale) ->
       ObsFloat64(sample-gamma(shape, scale))
     PBeta(alpha, beta) ->
-      val x = sample-gamma(alpha, 1.0)
-      val y = sample-gamma(beta, 1.0)
-      ObsFloat64(x / (x + y))
+      // Small shapes can underflow both Gamma draws to zero. Form their
+      // ratio in log space, without materializing those tiny values.
+      val x = sample-log-gamma(alpha)
+      val y = sample-log-gamma(beta)
+      if x >= y
+        then ObsFloat64(1.0 / (1.0 + exp(y - x)))
+        else
+          val ratio = exp(x - y)
+          ObsFloat64(ratio / (1.0 + ratio))
 
 pub fun log-prob(d : dist, value : observable) : <div> float64
   val finite-value = match value
@@ -189,7 +195,9 @@ fun sample-poisson(rate : float64) : <div,random> int
       then sample-poisson(32.0) + sample-poisson(rate - 32.0)
     else
       val limit = exp(~rate)
-      sample-poisson-loop(limit, 1.0, 0)
+      // Knuth's loop must draw at least once, even when exp(-rate) rounds
+      // to one. Testing the initial product first would return -1.
+      sample-poisson-loop(limit, random-float64(), 1)
 
 fun sample-poisson-loop(limit : float64, product : float64, count : int) : <div,random> int
   if product <= limit
@@ -205,6 +213,15 @@ fun sample-gamma(alpha : float64, theta : float64) : <div,random> float64
       val d = alpha - (1.0 / 3.0)
       val c = 1.0 / sqrt(9.0 * d)
       theta * sample-gamma-loop(d, c)
+
+fun sample-log-gamma(alpha : float64) : <div,random> float64
+  if alpha < 1.0
+    then
+      val boosted = sample-gamma(alpha + 1.0, 1.0)
+      // Use (0,1] so the random source's representable zero cannot give
+      // an artificial -infinity before dividing by the shape.
+      ln(boosted) + ln(1.0 - random-float64()) / alpha
+    else ln(sample-gamma(alpha, 1.0))
 
 fun sample-gamma-loop(d : float64, c : float64) : <div,random> float64
   val z = standard-normal()

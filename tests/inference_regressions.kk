@@ -108,6 +108,19 @@ fun test-large-poisson() : <div,exn,random> ()
   val mean = values.foldl(0.0, fn(acc, item){ acc + float64(item.value) }) / float64(values.length)
   ensure("large Poisson sampler must not stop near floating-point underflow", near(mean, 1000.0, 5.0))
 
+fun test-small-distribution-parameters() : <div,exn,random> ()
+  val tiny = pseudo-random(631, fn(){ lw(100, empty(), fn(){ poisson'(1.0e-20) }) })
+  ensure("a tiny positive Poisson rate must not produce negative counts", tiny.all(fn(item){ item.value >= 0 }))
+  [633, 635, 637].foreach fn(seed){
+    val values = pseudo-random(seed, fn(){ lw(2000, empty(), fn(){ beta'(0.001, 0.002) }) })
+    ensure("small-shape Beta draws must remain finite and within support",
+      values.all(fn(item){ is-finite(item.value) && item.value >= 0.0 && item.value <= 1.0 }))
+    val mean = values.foldl(0.0, fn(acc, item){ acc + item.value }) / float64(values.length)
+    val second = values.foldl(0.0, fn(acc, item){ acc + item.value * item.value }) / float64(values.length)
+    ensure("small-shape Beta mean agrees with alpha/(alpha+beta)", near(mean, 1.0 / 3.0, 0.04))
+    ensure("small-shape Beta second moment agrees with the analytic answer", near(second, (1.001 / 1.003) / 3.0, 0.04))
+  }
+
 fun prior-observation-model() : sequential-model<e,bool,int,bool,bool>
   Sequential-model(
     fn(){
@@ -145,5 +158,6 @@ pub fun main() : <console,div,exn,random> ()
   test-nested-inference()
   test-mh-prior-cancellation()
   test-large-poisson()
+  test-small-distribution-parameters()
   test-prior-observations()
   println("inference regression checks passed")
