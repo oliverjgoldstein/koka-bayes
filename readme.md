@@ -37,10 +37,11 @@ The starter prints the estimated probability of heads: approximately **0.553**.
 For the supplied prior and data, the exact posterior mean is **5/9 ≈ 0.556**.
 Changing the model or data changes that answer.
 
-Try another complete model:
+Try the [room-temperature model](docs/TEMPERATURE.md): three noisy thermometer
+readings, with an exact posterior mean of 20.615°C.
 
 ```sh
-make inference MODEL=examples/gaussian.kk
+make inference MODEL=examples/temperature.kk
 ```
 
 Check one inference method with `make test-mh`, or run all tests with `make tests`.

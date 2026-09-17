@@ -24,7 +24,7 @@ export KOKA_BAYES_MODEL = $(MODEL)
 help:
 	@echo make setup       - Install the tools and check the project
 	@echo make inference   - Run model.kk with its chosen inference algorithm
-	@echo make inference MODEL=examples/gaussian.kk
+	@echo make inference MODEL=examples/temperature.kk
 	@echo make test        - Run all tests
 	@echo make check       - Compile, test, and run the starter examples
 	@echo make test-inference - Run all 30 simple inference benchmark cases
