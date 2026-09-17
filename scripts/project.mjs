@@ -133,7 +133,8 @@ export function main(args = process.argv.slice(2)) {
       ? ['+RTS', '-N1', '-RTS', ...arguments_] : arguments_;
     const result = spawnSync(executable, commandArguments, {
       cwd: projectRoot, env, encoding: 'utf8', maxBuffer: 32 * 1024 * 1024,
-      timeout: 10 * 60 * 1000, windowsHide: true,
+      // The full posterior audit can exceed 10 minutes on hosted Intel Macs.
+      timeout: (label === 'inference-audit' ? 20 : 10) * 60 * 1000, windowsHide: true,
     });
     const output = `${result.stdout ?? ''}${result.stderr ?? ''}`;
     const log = path.join(logDirectory, `${label.replace(/[^a-zA-Z0-9_-]/g, '_')}.log`);

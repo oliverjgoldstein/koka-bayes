@@ -12,7 +12,8 @@ jobs:
   install-and-check:
     name: ${{ matrix.os }} / ${{ matrix.arch }}
     runs-on: ${{ matrix.runner }}
-    timeout-minutes: 30
+    # Clean setup and the portable check each run the full inference audit.
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
