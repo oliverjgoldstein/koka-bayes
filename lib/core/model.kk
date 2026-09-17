@@ -2,10 +2,12 @@ module core/model
 
 import std/core/debug
 import std/num/random
+import std/num/float64
 import core/dist
 import core/obsvalue
 import core/obsvar
 
+// Model operations are interpreted independently of the inference algorithm.
 pub alias model<e,a> = () -> <obs-reader,model-dist,div|e> a
 
 pub effect obs-reader
@@ -14,9 +16,21 @@ pub effect obs-reader
 pub effect model-dist
   fun draw(dist : dist) : observable
   fun draw-observable(name : string, dist : dist) : observable
+  fun factor(log-weight : float64) : ()
 
-pub effect val sample-hook : ((maybe<string>, dist) -> <div,random> observable)
-pub effect val observe-hook : ((string, dist, observable) -> <div,random> observable)
+pub effect fun sample-hook(name : maybe<string>, distribution : dist) : observable
+pub effect fun observe-hook(name : string, distribution : dist, value : observable) : observable
+pub effect fun factor-hook(log-weight : float64) : ()
+
+// Score in the log domain. Negative infinity represents zero mass.
+pub fun log-score(log-weight : float64) : <model-dist|e> ()
+  factor(log-weight)
+
+// Multiply the unnormalized measure by a nonnegative finite weight.
+pub fun score(weight : float64) : <model-dist,exn|e> ()
+  if not(is-finite(weight)) || weight < 0.0
+    then throw("A score must be finite and nonnegative.")
+    else log-score(if weight == 0.0 then neginf else ln(weight))
 
 fun expect-float64(value : observable) : float64
   match value

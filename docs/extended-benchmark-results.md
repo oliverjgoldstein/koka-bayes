@@ -1,3 +1,5 @@
+[Docs](README.md) · [Get started](USAGE_GUIDE.md)
+
 # Archived exploratory benchmark results
 
 The [63-row CSV](extended-benchmark-results.csv) is an earlier 2026-09-15

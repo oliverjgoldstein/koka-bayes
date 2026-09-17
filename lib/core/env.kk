@@ -31,8 +31,9 @@ pub fun merge(left : env, right : env) : env
 pub fun get(v : obsvar<a>, environment : env) : list<a>
   decode-all(v.codec, lookup-raw(v.name, environment.entries))
 
-// Focus a sequential environment on one time step. Singleton entries are
-// treated as global bindings and preserved as-is.
+// Select one occurrence from every observation stream. Index zero selects a
+// singleton; later indexes leave it empty. Sequential inference carries a cursor
+// instead of using this raw stream operation to infer model stages.
 pub fun focus-step(index : int, environment : env) : env
   Env(environment.entries.flatmap(fn(entry){
     match focus-values(index, entry.values)
@@ -40,8 +41,8 @@ pub fun focus-step(index : int, environment : env) : env
       values1 -> [Env-entry(entry.name, values1)]
   }))
 
-// Trim a sequential environment to a prefix of the supplied step count.
-// Singleton entries are treated as global bindings and preserved as-is.
+// Keep the first `limit` occurrences of every observation stream. These are
+// occurrence counts, not model time steps (a step can consume several values).
 pub fun take-prefix(limit : int, environment : env) : env
   Env(environment.entries.flatmap(fn(entry){
     match prefix-values(limit, entry.values)
@@ -122,17 +123,15 @@ fun consume-raw(key : string, entries : list<env-entry>) : (maybe<observable>, l
           (found, Cons(entry, rest1))
 
 fun focus-values(index : int, values : list<observable>) : list<observable>
-  if values.length <= 1
-    then values
+  if index < 0
+    then []
     else
       match nth-observable(index, values)
         Just(value) -> [value]
         Nothing     -> []
 
 fun prefix-values(limit : int, values : list<observable>) : list<observable>
-  if values.length <= 1
-    then values
-    else take-observables(max(0, limit), values)
+  take-observables(max(0, limit), values)
 
 fun nth-observable(index : int, values : list<observable>) : maybe<observable>
   match values

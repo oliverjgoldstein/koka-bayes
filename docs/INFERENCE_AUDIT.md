@@ -1,13 +1,38 @@
-# Inference correctness audit — 17 September 2026
+[Docs](README.md) · [Get started](USAGE_GUIDE.md)
 
-The review covers every active module in `lib/alg`, shared distribution sampling,
-observation handling, trace replay and weight normalization. The inference
-implementation is shared by `master` and `feat/handler-autodiff`. Historical code
-under `archive/` is not supported.
+# Inference audit
+
+This audit checks posterior targets, proposal corrections and retained particle state.
+
+```sh
+make test-inference-audit
+```
+
+The tests include 27 joint-posterior comparisons and targeted regressions. The record below gives the assumptions, equations and limits of the review.
+
+<details>
+<summary>Read the audit and its assumptions</summary>
+
+## Inference correctness audit — 17 September 2026
+The review covers the algorithms at its original baseline, shared distribution
+sampling, observation handling, trace replay and weight normalization. Later
+[gradient](GRADIENT_INFERENCE.md), [checkpoint](HANDLER_COMPOSITION.md) and
+[enumeration](EXACT_INFERENCE.md) extensions have separate coverage. The inference
+at the original audit baseline was shared by `master` and
+`feat/handler-autodiff`. The subsequent gradient and handler extensions are
+developed on `feat/handler-autodiff`. Historical code under `archive/` is not
+supported.
 
 The reviewed update equations agree with the intended algorithms under the
 contracts below. Tests give regression evidence on finite models and budgets;
 they do not prove correctness or convergence for arbitrary programs.
+
+The later [handler-composition review](HANDLER_COMPOSITION.md) checks RMSMC,
+PMMH and SMC² more directly. It confirms supported nested-call isolation and
+retained-state behavior. Its subsequent implementation repairs the reproduced
+multi-shot trace-state leak and singleton observation mismatch, and adds reusable
+scoring, tracing, checkpoint and population components. The tests do not establish
+arbitrary handler compositionality.
 
 ## Algorithm review
 
@@ -108,11 +133,10 @@ proposal contract, independently of PMMH/SMC²'s generic acceptance equations.
 
 - Replay must be deterministic conditional on traced choices. Untraced random
   calls or changing external state can invalidate MH and prefix rejuvenation.
-- Sequential observations require distinct prior/initial/step names, singleton
-  prior/initial observations and one occurrence of each step site per step.
-  Reusing a singleton at multiple steps is unsupported: filtering repeats it
-  while replay consumes it once. This restriction is documented, not enforced
-  by the type system.
+- Sequential observations are consumed once in execution order. Each particle
+  retains its remaining stream through propagation, resampling and rejuvenation;
+  direct execution and prefix replay use the same semantics. Repeated equal
+  observations must be supplied explicitly instead of relying on singleton reuse.
 - Custom kernels must supply the complete parameter target and correct proposal
   ratio. Custom SMC² initialization also requires exposed prior latent coordinates;
   hidden or transformed coordinates need additional density accounting.
@@ -130,3 +154,5 @@ proposal contract, independently of PMMH/SMC²'s generic acceptance equations.
 
 Run `make test-inference-audit` (or `./bayes inference-audit`). The audit is also
 included in `make tests`, `make check`, and clean-install CI.
+
+</details>

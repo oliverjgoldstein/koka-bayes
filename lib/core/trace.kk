@@ -8,6 +8,7 @@ import core/obsvalue
 pub type trace-mode
   TraceSampled
   TraceObserved
+  TraceFactor
 
 pub struct trace-entry
   address    : int
@@ -25,6 +26,9 @@ pub fun empty-trace() : run-trace
 pub fun make-entry(address : int, observable : maybe<string>, distribution : dist, value : observable, mode : trace-mode) : <div> trace-entry
   Trace-entry(address, distribution.summary, observable, value, log-prob(distribution, value), mode)
 
+pub fun make-factor-entry(address : int, log-weight : float64) : trace-entry
+  Trace-entry(address, "factor", Nothing, ObsFloat64(log-weight), log-weight, TraceFactor)
+
 pub fun total-log-prob(trace : run-trace) : float64
   trace.foldl(0.0, fn(acc, entry){ acc + entry.log-prob })
 
@@ -32,6 +36,7 @@ pub fun observed-log-prob(trace : run-trace) : float64
   trace.foldl(0.0, fn(acc, entry){
     match entry.mode
       TraceObserved -> acc + entry.log-prob
+      TraceFactor -> acc + entry.log-prob
       TraceSampled  -> acc
   })
 
@@ -40,6 +45,7 @@ pub fun sample-count(trace : run-trace) : int
     match entry.mode
       TraceSampled -> acc + 1
       TraceObserved -> acc
+      TraceFactor -> acc
   })
 
 pub fun sampled-addresses(trace : run-trace) : list<int>
@@ -47,6 +53,7 @@ pub fun sampled-addresses(trace : run-trace) : list<int>
     match entry.mode
       TraceSampled -> [entry.address]
       TraceObserved -> []
+      TraceFactor -> []
   })
 
 pub fun lookup-sampled(target : int, trace : run-trace) : maybe<observable>
@@ -55,6 +62,7 @@ pub fun lookup-sampled(target : int, trace : run-trace) : maybe<observable>
     Cons(entry, rest) ->
       match entry.mode
         TraceObserved -> lookup-sampled(target, rest)
+        TraceFactor -> lookup-sampled(target, rest)
         TraceSampled ->
           if entry.address == target
             then Just(entry.value)
@@ -76,6 +84,7 @@ pub fun show-entry(entry : trace-entry) : string
     match entry.mode
       TraceSampled -> "sample"
       TraceObserved -> "observe"
+      TraceFactor -> "factor"
   val name =
     match entry.observable
       Just(obs) -> obs

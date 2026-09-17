@@ -1,3 +1,5 @@
+[Docs](../README.md) · [Get started](../USAGE_GUIDE.md)
+
 # Migration record
 
 ## Current layout

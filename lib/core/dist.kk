@@ -89,13 +89,21 @@ fun log-prob-valid(primitive : primitive-dist, value : observable) : <div> float
     (PUniform(low, high), ObsFloat64(x)) ->
       if x < low || x > high then neginf else ~(ln(high - low))
     (PBernoulli(p), ObsBool(x)) ->
-      if x then ln(p) else ln(1.0 - p)
+      if x then ln(p) else ln1p(~p)
     (PDiscrete(weights), ObsInt(ix)) ->
       if ix < 0
         then neginf
         else
-          match nth-prob(ix, normalize-weights(weights))
-            Just(p) -> ln(p)
+          match nth-prob(ix, weights)
+            Just(weight) ->
+              if weight == 0.0 then neginf
+              else
+                // Keep rare positive categories finite even when their linear
+                // normalized probability underflows (for example 1e-616).
+                val logs = weights.filter(fn(w){ w > 0.0 }).map(ln)
+                val largest = logs.foldl(neginf, max)
+                val scaled = logs.foldl(0.0, fn(acc, w){ acc + exp(w - largest) })
+                (ln(weight) - largest) - ln(scaled)
             Nothing -> neginf
     (PBinomial(count, p), ObsInt(k)) ->
       if k < 0 || k > count

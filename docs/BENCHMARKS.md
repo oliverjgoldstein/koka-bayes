@@ -1,8 +1,29 @@
-# Simple correctness checks by inference method
+[Docs](README.md) · [Get started](USAGE_GUIDE.md)
+
+# Benchmarks
+
+Run the baseline checks against independent mathematical answers.
+
+```sh
+make test-inference
+```
+
+The suite has 36 runs across five small model families, with three fixed seeds per method/model pair. Use `make test-mh` or another method target for a focused check. Passing these cases does not prove arbitrary-model correctness.
+
+<details>
+<summary>Models, settings and recorded results</summary>
+
+## Simple correctness checks by inference method
+For three example models per method, run `make test-examples`. The
+[multi-model matrix](MULTI_MODEL_VALIDATION.md) adds 90 posterior runs and nine
+prior-simulation checks to the baseline benchmarks described here.
 
 Run `make test-inference`. The suite gives each inference method a small problem
 suited to what it does, with an analytic or exhaustively enumerated answer.
-It contains **30 runs: ten method/model pairs, each with three fixed seeds**.
+It contains **36 runs**: the original ten method/model pairs (30 runs), plus
+HMC and MALA on a correlated Gaussian (six runs). Each pair uses three fixed
+seeds. [Gradient inference](GRADIENT_INFERENCE.md#verification) gives the new
+samplers' equations, settings, tolerances and deterministic checks.
 
 | Methods | Elementary problem | Unknown quantities |
 | --- | --- | --- |
@@ -10,22 +31,27 @@ It contains **30 runs: ten method/model pairs, each with three fixed seeds**.
 | LW, LWIS, MH | Conjugate Gaussian mean | One real mean |
 | SMC, resample-move SMC | Two-step HMM with known parameters | Two binary states |
 | PMMH, SMC² | Two noisy readings of one persistent binary latent variable | One binary parameter and one binary latent variable |
+| HMC, MALA | Correlated Gaussian with known mean and covariance | Two correlated real coordinates |
 
 This is a correctness regression suite. It does not rank systems by speed or
 claim general inference correctness from success on elementary examples.
 
-The fixed test models live in [tests/correctness.kk](../tests/correctness.kk),
+The fixed test models live in [tests/correctness.kk](../tests/correctness.kk)
+and [tests/gradient_samplers.kk](../tests/gradient_samplers.kk),
 independently of the editable starter `model.kk`.
 
 Run only one method with `make test-lw`, `make test-lwis`, `make test-mh`,
-`make test-smc`, `make test-rmsmc`, `make test-pmmh`, or `make test-smc2`.
+`make test-smc`, `make test-rmsmc`, `make test-pmmh`, `make test-smc2`,
+`make test-hmc`, or `make test-mala`.
 Each target runs that method's applicable models with all three seeds. The
 models, particle counts, and tolerances are the same as in the full suite.
-LW, LWIS, and MH each run six checks; SMC, RMSMC, PMMH, and SMC² each run three.
+LW, LWIS, and MH each run six checks; the other methods each run three.
 Use `make tests` to include the separate boundary-condition and runner regressions.
 
 Make commands work on all supported platforms with GNU Make installed. Without
-Make, use `./bayes benchmark` on Linux/macOS or `.\bayes.cmd benchmark` on Windows.
+Make, use `./bayes inference-tests` on Linux/macOS or `.\bayes.cmd inference-tests`
+on Windows. `./bayes benchmark` runs the original 30 cases documented below;
+`./bayes gradient-tests` runs the six new gradient cases and their regressions.
 
 The launcher checks each test suite's exact completion marker and rejects
 uncaught exceptions as well as nonzero exits. Koka 3.2.3's JavaScript main handler
@@ -186,11 +212,13 @@ evidence estimator. Those three methods print `NA` in the evidence column.
 
 ## Recorded results
 
-The [current CSV](benchmark-results.csv) contains the 30 method/model/seed runs
-recorded on 2026-09-15: **30 passed, zero failed**.
+The [recorded CSV](benchmark-results.csv) contains the 30 method/model/seed runs
+from the 2026-09-15 implementation: **30 passed, zero failed**.
 Environment: Koka `3.2.3`, `jsnode` in its default debug configuration, Node.js
-`v24.21.0`, macOS (`Darwin`) on `arm64`. The pinned local toolchain reproduces all
-30 saved rows exactly. An earlier run on Node 24.18.1 took approximately 2.9
+`v24.21.0`, macOS (`Darwin`) on `arm64`. Later sampler and handler changes,
+including uniform MH site selection, can change seeded outputs. Current checks
+compare against the analytic targets and tolerances, not these saved rows.
+An earlier run on Node 24.18.1 took approximately 2.9
 seconds for the already compiled program; compilation is excluded. This is a local
 reproducibility detail, not a performance comparison.
 
@@ -223,3 +251,5 @@ multimodal exploration, long-sequence particle degeneracy, performance rankings,
 parallel safety or differentiable-inference estimators. Hard support, impossible
 observations and dynamic traces have separate regression tests. Differentiation
 checks are also separate from posterior inference checks.
+
+</details>
