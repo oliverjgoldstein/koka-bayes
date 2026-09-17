@@ -1,6 +1,7 @@
 module inference_regressions
 
 import std/num/float64
+import std/num/int32
 import std/num/random
 import alg/lw
 import alg/lwis
@@ -27,6 +28,12 @@ fun near(actual : float64, expected : float64, tolerance : float64 = 1.0e-10) : 
   abs(actual - expected) <= tolerance
 
 fun test-distribution-support() : <div,exn,random> ()
+  val last-category = {
+    // All-one bits give the largest representable random-float64 below 1.
+    with fun random-int32() ~1.int32
+    sample(discrete-dist([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0]))
+  }
+  ensure("categorical rounding must not select trailing zero mass", match last-category { ObsInt(k) -> k == 6; _ -> False })
   ensure("Bernoulli(0) cannot be true", log-prob(bernoulli-dist(0.0), ObsBool(True)) == neginf)
   ensure("Bernoulli(1) cannot be false", log-prob(bernoulli-dist(1.0), ObsBool(False)) == neginf)
   ensure("Binomial boundary mass is exact", log-prob(binomial-dist(4, 0.0), ObsInt(0)) == 0.0)

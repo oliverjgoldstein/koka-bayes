@@ -2,7 +2,7 @@
 
 The [17 September algorithm audit](INFERENCE_AUDIT.md) reviews every inference
 method, adds an exact joint-posterior oracle and asymmetric-kernel checks, and
-records two further shared-sampler repairs.
+records three further shared-sampler repairs.
 
 Assessment date: 2026-09-15. Current test environment: Koka 3.2.3, Node.js
 24.21.0, `jsnode`, macOS arm64. The repository pins the [current official Koka
