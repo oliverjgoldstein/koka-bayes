@@ -125,7 +125,11 @@ export function main(args = process.argv.slice(2)) {
   mkdirSync(logDirectory, { recursive: true });
 
   function execute(label, executable, arguments_, marker = null, showOutput = false, source = null) {
-    const result = spawnSync(executable, arguments_, {
+    // The x64 GHC runtime runs under emulation on Windows ARM64. Use one
+    // capability there; this does not change the native Node execution target.
+    const commandArguments = executable === koka && process.platform === 'win32' && process.arch === 'arm64'
+      ? ['+RTS', '-N1', '-RTS', ...arguments_] : arguments_;
+    const result = spawnSync(executable, commandArguments, {
       cwd: projectRoot, env, encoding: 'utf8', maxBuffer: 32 * 1024 * 1024,
       timeout: 10 * 60 * 1000, windowsHide: true,
     });
