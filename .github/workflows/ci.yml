@@ -41,9 +41,22 @@ jobs:
           # https://github.com/microsoft/winget-pkgs/blob/master/manifests/e/ezwinports/make/4.4.1/ezwinports.make.installer.yaml
           $archive = Join-Path $env:RUNNER_TEMP 'make-4.4.1.zip'
           $directory = Join-Path $env:RUNNER_TEMP 'make-4.4.1'
-          Invoke-WebRequest -UseBasicParsing -Uri 'https://downloads.sourceforge.net/project/ezwinports/make-4.4.1-without-guile-w32-bin.zip' -OutFile $archive
           $expected = 'FB66A02B530F7466F6222CE53C0B602C5288E601547A034E4156A512DD895EE7'
-          if ((Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash -ne $expected) { throw 'GNU Make archive checksum mismatch.' }
+          # Use a direct mirror first: the redirector can return an HTML page
+          # with HTTP 200 on hosted runners. Never install an unverified response.
+          $sources = @(
+            'https://master.dl.sourceforge.net/project/ezwinports/make-4.4.1-without-guile-w32-bin.zip',
+            'https://downloads.sourceforge.net/project/ezwinports/make-4.4.1-without-guile-w32-bin.zip'
+          )
+          $verified = $false
+          foreach ($source in $sources) {
+            & curl.exe --fail --location --silent --show-error --retry 3 --connect-timeout 30 --max-time 180 --output $archive $source
+            if ($LASTEXITCODE -ne 0) { continue }
+            $actual = (Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash
+            if ($actual -eq $expected) { $verified = $true; break }
+            Write-Warning "GNU Make archive checksum mismatch from ${source}: $actual"
+          }
+          if (-not $verified) { throw 'Could not download the checksum-pinned GNU Make archive.' }
           Expand-Archive -LiteralPath $archive -DestinationPath $directory
           & "$directory\bin\make.exe" --version
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
