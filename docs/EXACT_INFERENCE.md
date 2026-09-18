@@ -10,6 +10,9 @@ and [heater](MODELS.md#heater) for the models used in the runnable examples.
 For a small model with finite choices, `enumerate` checks every possible path.
 There is no seed or sampling error; results are exact up to floating-point rounding.
 
+The [enumeration handler reference](ENUMERATION_HANDLERS.md) specifies the
+branching operations, handler order, path measure, normalization and budget rules.
+
 **Works today:** probabilities, expectations and evidence from supported
 finite choices, within the execution budget. Continuous latent integration and
 symbolic inference are unsupported.

@@ -50,6 +50,10 @@ pre-v3 syntax such as `public module`, and deprecated modules such as
 `std/num/double`. It did not compile on Koka 3.2.2. Those sources, climate examples,
 datasets, generated output, and bug notes are preserved under `archive/2019/`.
 
+The [thesis comparison](../PAPER_COMPARISON.md) maps the original effects and
+handlers to their current counterparts, including changes in trace granularity,
+checkpoint placement and the limits of transferring correctness arguments.
+
 The current implementation uses native Koka effects and effect rows. Observable
 identifiers carry codecs into a closed runtime value representation; handlers
 consume the environment and specialize distribution requests into sampling or

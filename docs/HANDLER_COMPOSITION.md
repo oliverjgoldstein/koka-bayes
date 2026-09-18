@@ -6,6 +6,14 @@ A model describes unknown values and the data you observed. Handlers decide
 how to run it: draw weighted samples, resample particles, or enumerate finite
 choices. You can use the same model with different inference methods.
 
+For operation signatures, handler clauses, state scopes and weight equations,
+read the [effects and handlers reference](EFFECTS_AND_HANDLERS.md). The
+[sequential reference](SEQUENTIAL_HANDLERS.md) specifies the particle algorithms'
+transitions, evidence accounting and custom proposal contracts.
+
+The [original-thesis comparison](PAPER_COMPARISON.md) explains which handler
+roles carry over and how the current algorithm compositions differ.
+
 **Specific handler combinations are implemented and tested; arbitrary handler
 composition has no general correctness proof here.** RMSMC, PMMH and SMC²
 share components but still have dedicated algorithm loops. Composing inference

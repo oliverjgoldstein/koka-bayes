@@ -5,6 +5,11 @@
 Start with [model.kk](../../model.kk). This table is an optional guide to the
 library implementation beneath that entrypoint. Paths are relative to the project root.
 
+For operation signatures, handler behavior and equations, use the
+[effects and handlers reference](../EFFECTS_AND_HANDLERS.md), including the
+[sequential](../SEQUENTIAL_HANDLERS.md), [enumeration](../ENUMERATION_HANDLERS.md)
+and [AD](../AD_HANDLERS.md) references.
+
 | Architecture concept | Target Koka module | Status | Notes / deviations |
 | --- | --- | --- | --- |
 | Editable model and inference | `model.kk` | Implemented | Model, data, method selection, and result printing in one file. |

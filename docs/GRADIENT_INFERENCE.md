@@ -8,6 +8,9 @@
 step. Both use reverse AD and a Metropolis correction, retaining the current
 sample when a proposal is rejected.
 
+See the [AD handler reference](AD_HANDLERS.md) for the exact primitive rules,
+Normal-model translation, coordinate contract and handling of invalid targets.
+
 **Works today:** use the gradient of a smooth, fixed-dimensional log density
 to sample its posterior. Sampler settings are manual.
 

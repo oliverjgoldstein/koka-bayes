@@ -48,6 +48,23 @@ make check
 `examples` runs the demonstrations. `check` compiles the project, checks the
 algorithms and runs the examples. Use `make help` for individual commands.
 
+## Understand the implementation
+
+Start with the [effects and handlers reference](EFFECTS_AND_HANDLERS.md).
+It lists every library effect and explains how the model's requests become
+observations, samples, traces and weights.
+
+| Reference | Details |
+| --- | --- |
+| [Relationship to the original thesis](PAPER_COMPARISON.md) | Corresponding handlers, implementation changes, later additions and proof boundaries |
+| [Effects, tracing and weighting](EFFECTS_AND_HANDLERS.md) | Operation types, handler clauses, model measure, replay rules and failure behavior |
+| [Sequential handlers](SEQUENTIAL_HANDLERS.md) | Continuations, populations, evidence equations and RMSMC/PMMH/SMC² contracts |
+| [Enumeration handlers](ENUMERATION_HANDLERS.md) | Finite branching, path masses, normalization, pruning and work budgets |
+| [Differentiation handlers](AD_HANDLERS.md) | Every primitive rule, forward/reverse propagation and probabilistic model interpretation |
+
+Each reference links its claims to implementation and tests, and distinguishes
+mathematical targets from properties actually checked or proved.
+
 <details>
 <summary>Tests, design and reference</summary>
 

@@ -9,6 +9,10 @@ This page describes the current implementation. “Implemented and tested” mea
 checked on the documented examples and budgets, not proved correct or convergent
 for every program.
 
+The [effects and handlers reference](EFFECTS_AND_HANDLERS.md) specifies the
+implemented operations, interpreter behavior and composition contracts, with
+links to source and tests.
+
 ## Available
 
 | Capability | Supported scope |

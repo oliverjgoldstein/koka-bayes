@@ -13,5 +13,8 @@ The current code uses native Koka effects, typed observations, and reusable
 models. Distribution intuition and replay-style MH ideas informed parts of the
 rewrite; the archived code is not the current API.
 
+The [comparison with the original thesis](../docs/PAPER_COMPARISON.md) identifies
+the corresponding effects and handlers, implementation changes and later additions.
+
 [Migration record](../docs/development/MIGRATION_PLAN.md) ·
 [Handler design](../docs/development/DESIGN_NOTES.md)

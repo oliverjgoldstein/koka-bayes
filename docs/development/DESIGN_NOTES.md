@@ -159,7 +159,10 @@ These deviations were chosen to preserve semantics, type clarity, and Koka v3 er
 This repository uses the following source priority:
 
 1. the current `lib/`, `examples/`, and `tests/` trees and repository documentation for the active implementation
-2. the 2024 arXiv release of the 2019 MSc thesis (`arXiv:2412.19826`) for supplementary implementation ideas
+2. the [2024 arXiv release of the 2019 MSc thesis](https://arxiv.org/html/2412.19826v1) for supplementary implementation ideas
 3. the archived 2019 repository only as archaeological context
 
 The thesis is useful when it adds detail about modular inference components or historical algorithm structure, but it must not pull the current codebase back toward the earlier explicit `sample`/`score`-centric design when that conflicts with the active multimodal model architecture.
+
+The [thesis comparison](../PAPER_COMPARISON.md) gives the effect/handler mapping,
+implementation differences, later additions and separate proof obligations.

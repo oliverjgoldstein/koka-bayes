@@ -82,6 +82,8 @@ swap the inference method in the same file.
 | Use HMC or MALA | [Gradient inference](docs/GRADIENT_INFERENCE.md) |
 | Differentiate a Koka program | [Automatic differentiation](docs/AUTODIFF.md) |
 | Combine inference handlers | [Composition](docs/HANDLER_COMPOSITION.md) |
+| Understand each effect and handler | [Implementation reference](docs/EFFECTS_AND_HANDLERS.md) |
+| Compare with the original Koka-Bayes thesis | [What carries over and what changed](docs/PAPER_COMPARISON.md) |
 
 Run `make examples` for the demonstrations, `make check` for all checks,
 or `make help` for commands. [What the tests cover →](docs/MULTI_MODEL_VALIDATION.md)

@@ -8,6 +8,10 @@ Write arithmetic with `ad-*` operations, then choose an evaluation, forward or
 reverse handler. This library computes first derivatives of scalar-valued
 functions using `float64` on Koka 3.2.3.
 
+The [AD handler reference](AD_HANDLERS.md) gives every operation's type and
+derivative rule, explains continuation-based reverse propagation, and specifies
+the probabilistic model adapter's contracts and failure cases.
+
 **Works today:** differentiate smooth functions and fixed-dimensional log
 densities for [HMC and MALA](GRADIENT_INFERENCE.md). The Normal-site model
 adapter requires a fixed number and order of latent sites; it does not convert
