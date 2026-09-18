@@ -8,6 +8,14 @@
 step. Both use reverse AD and a Metropolis correction, retaining the current
 sample when a proposal is rejected.
 
+**Works today:** use the gradient of a smooth, fixed-dimensional log density
+to sample its posterior. Sampler settings are manual.
+
+**Not implemented:** differentiate the sampler's output, posterior estimates
+or evidence. Sampling and resampling have no gradient rules, and arbitrary
+mixed discrete/continuous models are not converted automatically. See
+[what works today](STATUS.md) for implementation and proof limits.
+
 ```sh
 make demo-hmc
 make demo-mala
@@ -18,7 +26,9 @@ The older `examples/autodiff.kk` instead optimizes a posterior mode.
 
 ## One model, probabilistic and differentiable interpretations
 
-The [example](../examples/gradient_inference.kk) uses a Normal-site model:
+The [example](../examples/gradient_inference.kk) uses a Normal-site model with
+`ad-*` arithmetic. Its adapter requires a fixed number and order of scalar Normal
+latent sites. It does not convert arbitrary `core/model` programs.
 
 ```koka
 fun temperature-program() : <continuous<a>,smooth<a>> a

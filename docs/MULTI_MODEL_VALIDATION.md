@@ -4,6 +4,10 @@
 
 Each sampling method runs on three models with three fixed seeds.
 
+The [visual model guide](MODELS.md#which-algorithm-uses-which-model) shows what
+each model means and which methods run on it, including the separate small SIR
+check. This page records the three-model matrix, its budgets and its results.
+
 ```sh
 make test-examples
 ```

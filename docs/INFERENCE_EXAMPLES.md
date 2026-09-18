@@ -7,6 +7,11 @@
 Estimate a room's average temperature from readings of **19, 21 and 22°C**.
 The room fluctuates between readings, and the thermometer adds measurement noise.
 
+![Unknown room average, latent temperature fluctuations and noisy thermometer readings.](assets/models/temperature.svg)
+
+All nine sampler demos below use this model. The [visual model guide](MODELS.md)
+shows the other validation models and maps each one to its inference algorithms.
+
 ```sh
 make examples        # Run every example
 make demo-smc        # Run one sampler
@@ -15,6 +20,11 @@ make demo-smc        # Run one sampler
 The nine samplers below use the same statistical assumptions. Each prints its
 estimate beside the exact posterior mean **20.604°C** and standard deviation
 **0.614°C**.
+
+HMC and MALA use gradients of a model's log density. None of these examples
+differentiates an inference result. These small-model checks also do not resolve
+the [recorded SIR recovery failures for PMMH and SMC²](INFERENCE_AUDIT.md#known-empirical-limitation).
+See [what works today](STATUS.md) for the complete support table.
 
 ## One demonstration per algorithm
 

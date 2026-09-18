@@ -4,6 +4,20 @@
 
 Write a model. Supply observations. Choose how to infer the unknowns.
 
+## What works today
+
+**Gradients can drive HMC and MALA. Automatic gradients of inference results
+are not implemented.** Finite enumeration and the sampling algorithms work
+within their supported model interfaces; enumeration's weights are not connected
+to AD. Arbitrary handler composition has no correctness proof here.
+
+**Known empirical limitation:** recorded SIR runs miss parameter-recovery
+thresholds for PMMH and SMC². This does not by itself establish an algorithm bug
+or support a claim of reliable performance on every model.
+
+Read the [support table and limits](STATUS.md) before choosing an approach,
+and the [recorded SIR limitation](INFERENCE_AUDIT.md#known-empirical-limitation).
+
 ## Start here
 
 1. [Install](INSTALLATION.md) — set up the tools and run the starter.
@@ -12,10 +26,14 @@ Write a model. Supply observations. Choose how to infer the unknowns.
 
 ## Choose an approach
 
+[See the models, illustrated](MODELS.md) — what each model asks and which
+inference algorithms are tested on it.
+
 | I want to… | Read |
 | --- | --- |
 | Compute a posterior over finite choices | [Exact inference](EXACT_INFERENCE.md) |
 | Try the sampling algorithms | [Inference examples](INFERENCE_EXAMPLES.md) |
+| See which model each algorithm uses | [Visual model guide](MODELS.md#which-algorithm-uses-which-model) |
 | Sample using gradients | [HMC and MALA](GRADIENT_INFERENCE.md) |
 | Differentiate a function | [Automatic differentiation](AUTODIFF.md) |
 | Compose inference with handlers | [Handler composition](HANDLER_COMPOSITION.md) |

@@ -306,7 +306,20 @@ checks. It creates `results/` if needed and writes:
 - `results/sir-diagnostics-samples.csv`
 
 The [report](../examples/sir_report.kk) defines its synthetic truth and tolerances.
-It is separate from the elementary analytic tests.
+Each parameter is labelled **recovery within tolerance** or **recovery outside
+tolerance**, based on distance from the generating parameter. These labels do
+not establish inference correctness or convergence.
+
+The dashboard and summary CSV also show retained draw counts, exact distinct-value
+counts and empirical 90% intervals (the 5th and 95th percentiles of those draws).
+Repeated rejected states and resampled duplicates remain in the summaries.
+These intervals describe the draws; they do not measure Monte Carlo error or
+prove convergence. Empty or nonfinite samples are rejected. CSV numeric values
+retain full precision; display labels are rounded.
+
+The generated summary CSV now has separate `beta_recovery_within_tolerance` and
+`report_recovery_within_tolerance` columns in place of the old combined `success`
+column. The historical audit CSV keeps its original schema and results.
 
 The 17 September audit rerun, after repairing the transformed proposal, passed
 SMC and RMSMC recovery thresholds. PMMH and SMC² missed the report-rate threshold:
@@ -315,8 +328,16 @@ absolute errors about `0.148` and `0.151`, against a `0.12` limit.
 
 This compares estimates with generating parameters, not an exact posterior.
 It alone establishes neither an inference-equation bug nor adequate mixing.
-Use the [benchmarks](BENCHMARKS.md) and [inference audit](INFERENCE_AUDIT.md) for
-supported correctness cases.
+The original budgets remain unchanged: 90 PMMH iterations with 30 burn-in and
+48 inner particles; SMC² uses 32 outer and 32 inner particles with two moves.
+The SIR custom parameter kernel holds gamma fixed; supply the known gamma in
+the observation environment when using this kernel.
+
+Run `make test-sir` for a separate small SIR posterior check against exhaustive
+arithmetic, plus regression tests for the report summaries. These tests are
+included in `make check`. See the [inference audit](INFERENCE_AUDIT.md#small-sir-posterior-check)
+for the reference model and budgets. Passing them does not resolve the larger
+SIR report's recovery failures.
 
 </details>
 

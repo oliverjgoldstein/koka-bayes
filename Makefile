@@ -21,7 +21,7 @@ export KOKA_BAYES_MODEL = $(MODEL)
 .PHONY: help setup inference test tests check test-inference test-autodiff test-handlers test-examples \
         test-inference-audit test-lw test-lwis test-mh test-smc test-rmsmc test-pmmh test-smc2 \
         test-hmc test-mala examples demo-lw demo-lwis demo-mh demo-smc demo-rmsmc \
-        demo-pmmh demo-smc2 demo-hmc demo-mala demo-handlers test-enumerate demo-enumerate
+        demo-pmmh demo-smc2 demo-hmc demo-mala demo-handlers test-enumerate demo-enumerate test-sir
 
 help:
 	@echo make setup       - Install the tools and check the project
@@ -37,6 +37,7 @@ help:
 	@echo make demo-handlers - Run a model with checkpoint SMC and likelihood weighting
 	@echo make test-inference - Run all 36 simple inference benchmark cases
 	@echo make test-inference-audit - Check joint posteriors, custom kernels, and particle evidence
+	@echo make test-sir - Check a small exact SIR posterior and report summaries
 	@echo make test-handlers - Check particle inference nesting, weights and retained state
 	@echo Algorithm targets: test-enumerate test-lw test-lwis test-mh test-smc test-rmsmc test-pmmh test-smc2 test-hmc test-mala
 	@echo Example: make test-mh
@@ -59,6 +60,9 @@ test-inference:
 
 test-inference-audit:
 	@$(BAYES) inference-audit
+
+test-sir:
+	@$(BAYES) test-sir
 
 test-handlers:
 	@$(BAYES) handler-composition

@@ -14,7 +14,28 @@
 </p>
 
 Write a model in Koka, add observations, and choose an inference method.
-Use finite enumeration, sampling, or gradients to answer questions about it.
+
+## What works today
+
+**You can use gradients to perform inference. Automatic differentiation of
+inference results is not implemented.**
+
+| Available | Not implemented |
+| --- | --- |
+| LW, LWIS, MH, SMC, RMSMC, PMMH and SMC², tested on multiple examples | Automatic gradients through these inference algorithms |
+| Finite enumeration of supported choices, up to floating-point rounding | Differentiating enumerated posterior probabilities or evidence |
+| Forward/reverse first derivatives and HMC/MALA for smooth, fixed-dimensional log densities | Automatic conversion of arbitrary probabilistic models to differentiable models |
+| A Normal-site model interface with probabilistic and differentiable interpretations | General mixed discrete/continuous gradient inference |
+
+Specific handler combinations are tested. **There is no general denotational
+correctness proof for this implementation, and it does not inherit CHAD's guarantees.**
+
+**Known empirical limitation:** recorded SIR runs miss parameter-recovery
+thresholds for PMMH and SMC². This alone does not establish an algorithm bug;
+reliable performance on every model is not established.
+
+[Full support table and limits →](docs/STATUS.md) ·
+[Recorded SIR results →](docs/INFERENCE_AUDIT.md#known-empirical-limitation)
 
 ## Start
 
@@ -55,6 +76,7 @@ swap the inference method in the same file.
 
 | Try | Guide |
 | --- | --- |
+| See the models and their inference algorithms | [Visual model guide](docs/MODELS.md) |
 | Infer a room's temperature | [A first example](docs/TEMPERATURE.md) |
 | Explore every finite choice | [Exact inference](docs/EXACT_INFERENCE.md) |
 | Use HMC or MALA | [Gradient inference](docs/GRADIENT_INFERENCE.md) |

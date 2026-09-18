@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="320" viewBox="0 0 960 320" role="img" aria-labelledby="title desc">
+  <title id="title">Simple thermometer</title>
+  <desc id="desc">One unknown room temperature determines three observed readings, 19, 21 and 22 degrees Celsius, with independent Normal measurement noise. This model has no intermediate latent fluctuation.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 1 1 L 8 5 L 1 9" fill="none" stroke="#8093a7" stroke-width="1.5"/></marker>
+    <marker id="blue-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 1 1 L 8 5 L 1 9" fill="none" stroke="#3b82f6" stroke-width="1.5"/></marker>
+  </defs>
+  <style>
+    text { font-family: Arial, Helvetica, sans-serif; fill: #172b42; }
+    .heading { font-size: 25px; font-weight: 700; }
+    .subtitle { font-size: 16px; fill: #52657a; }
+    .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 1.1px; }
+    .value { font-size: 23px; font-weight: 700; }
+    .detail { font-size: 16px; fill: #52657a; }
+    .note { font-size: 15px; fill: #52657a; }
+    .small { font-size: 14px; fill: #52657a; }
+    .link { fill: none; stroke: #8093a7; stroke-width: 2; marker-end: url(#arrow); }
+    .parameter-link { fill: none; stroke: #3b82f6; stroke-width: 2; marker-end: url(#blue-arrow); }
+    .unknown { fill: #eff6ff; stroke: #93c5fd; stroke-width: 1.5; }
+    .latent { fill: #f1f5f9; stroke: #cbd5e1; stroke-width: 1.5; }
+    .observed { fill: #ecfdf5; stroke: #5eead4; stroke-width: 1.5; }
+    .derived { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.5; }
+    .blue { fill: #1d4ed8; }
+    .teal { fill: #0f766e; }
+  </style>
+  <rect x="1" y="1" width="958" height="318" rx="20" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="32" y="43" class="heading">Simple thermometer</text>
+  <text x="32" y="72" class="subtitle">Learn a fixed room temperature directly from noisy measurements.</text>
+  <rect x="80" y="119" width="320" height="120" rx="16" class="unknown"/>
+<text x="100" y="146" class="eyebrow blue">UNKNOWN</text>
+<text x="100" y="184" class="value" style="font-size: 23px">Room temperature</text>
+<text x="100" y="213" class="detail">one shared temperature</text>
+<path d="M 416 179 H 543" class="link"/>
+<text x="480" y="152" class="small" text-anchor="middle">measurement noise</text>
+<rect x="560" y="119" width="320" height="120" rx="16" class="observed"/>
+<text x="580" y="146" class="eyebrow teal">OBSERVED</text>
+<text x="580" y="184" class="value" style="font-size: 23px">19°  ·  21°  ·  22°</text>
+<text x="580" y="213" class="detail">three thermometer readings</text>
+  <text x="32" y="291" class="note">This version has one latent temperature; uncertainty in each reading comes from measurement noise.</text>
+</svg>

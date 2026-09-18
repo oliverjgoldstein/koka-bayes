@@ -10,6 +10,57 @@ make test-inference-audit
 
 The tests include 27 joint-posterior comparisons and targeted regressions. The record below gives the assumptions, equations and limits of the review.
 
+## Known empirical limitation
+
+**Recorded SIR runs miss parameter-recovery thresholds for PMMH and SMC²:**
+report-rate errors are about **0.148 and 0.151**, respectively, against a limit
+of **0.12**. The [recorded results](sir-audit-results.csv) preserve these failures.
+
+These compare estimates with generating parameters, not exact posterior means.
+They do not distinguish Monte Carlo error from posterior uncertainty or prior
+influence, so they do not by themselves establish an algorithm bug. They also
+prevent claiming reliable performance on every model. Passing other benchmark
+checks does not resolve these failures.
+
+See [what works today](STATUS.md) for implemented features, missing gradient
+capabilities and the limits of the correctness evidence.
+
+The report now labels recovery separately for each parameter, preserves full
+numeric precision in its CSV files, and shows draw counts, distinct values and
+empirical 90% intervals. Empty or nonfinite samples are rejected. These repairs
+make the diagnostics more informative; they do not fix the recovery failures.
+The original seeds, budgets and tolerances are unchanged.
+
+## Small SIR posterior check
+
+`make test-sir` checks the real SIR transition and observation code against an
+independent exhaustive calculation for five people: four susceptible and one
+infected initially, fixed gamma `0.3`, equal prior probabilities for beta in
+`{0.4, 1.0}` and report rate in `{0.2, 0.7}`, and observations `[0, 1, 1]`.
+
+The reference sums all infection and recovery counts and Poisson observation
+weights. Evidence is `0.026548262947988184`; posterior probabilities are
+`0.5597371636713165` for beta `1.0`, `0.5197103355157454` for report rate `0.7`,
+and `0.2583800924418703` for both. This checks the posterior, rather than recovery
+of a generating parameter.
+
+[The test](../tests/sir_inference.kk) compares all four parameter cells and both
+marginals for SMC, custom PMMH and custom SMC² at seeds `3011`, `3023`, `3037`.
+Budgets and tolerances were set before running: SMC has 4,000 particles; PMMH
+has 3,000 iterations, 600 burn-in and eight inner particles; SMC² has 800 outer
+and eight inner particles with one move per observation. Absolute posterior
+tolerance is `0.075`; relative evidence tolerance for SMC and SMC² is `15%`.
+Asymmetric proposals exercise the Hastings correction. The test also checks
+population conservation, retained output counts and observation consumption.
+
+A local run on 18 September 2026 passed all nine algorithm/seed combinations.
+The largest posterior error was about `0.0393`; the largest relative evidence
+error was about `3.34%`. This records local validation, not a hosted CI result.
+
+These checks and the [report-summary regressions](../tests/sir_report_checks.kk)
+run in `make check` and CI. This small finite-parameter model does not establish
+adequate mixing for the larger continuous-parameter SIR example.
+
 <details>
 <summary>Read the audit and its assumptions</summary>
 
@@ -145,12 +196,8 @@ proposal contract, independently of PMMH/SMC²'s generic acceptance equations.
   rejected; finite scores are required for usable MCMC output.
 - Extreme floating-point ranges beyond the tested cases, arbitrary effect
   composition, long-run mixing and large-scale calibration remain unverified.
-  The SIR rerun after the proposal repair still misses report-rate recovery
-  thresholds for PMMH and SMC² (errors about 0.148 and 0.151; limit 0.12).
-  These compare with generating truth, not exact posterior means, and do not
-  distinguish Monte Carlo error from posterior uncertainty or prior influence.
-  [Recorded results](sir-audit-results.csv) preserve the failures; see the
-  [usage guide](USAGE_GUIDE.md#sir-diagnostics).
+  The [recorded SIR failures](#known-empirical-limitation) remain unresolved;
+  see the [usage guide](USAGE_GUIDE.md#sir-diagnostics) for diagnostic commands.
 
 Run `make test-inference-audit` (or `./bayes inference-audit`). The audit is also
 included in `make tests`, `make check`, and clean-install CI.

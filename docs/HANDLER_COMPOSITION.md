@@ -6,6 +6,12 @@ A model describes unknown values and the data you observed. Handlers decide
 how to run it: draw weighted samples, resample particles, or enumerate finite
 choices. You can use the same model with different inference methods.
 
+**Specific handler combinations are implemented and tested; arbitrary handler
+composition has no general correctness proof here.** RMSMC, PMMH and SMC²
+share components but still have dedicated algorithm loops. Composing inference
+handlers does not supply automatic gradients through sampling or resampling.
+See [what works today](STATUS.md) for the supported combinations and limits.
+
 Start with the example below. `checkpoint()` marks a place where SMC can
 resample. Another handler can simply continue past that checkpoint.
 

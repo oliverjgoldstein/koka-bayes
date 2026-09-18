@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="320" viewBox="0 0 960 320" role="img" aria-labelledby="title desc">
+  <title id="title">Susceptible–infected–recovered (SIR)</title>
+  <desc id="desc">Susceptible people transition to infected with infection parameter beta; infected people transition to recovered with recovery parameter gamma, fixed in the documented checks. The current infected count and a reporting-rate parameter jointly determine a Poisson observed reported count.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 1 1 L 8 5 L 1 9" fill="none" stroke="#8093a7" stroke-width="1.5"/></marker>
+    <marker id="blue-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 1 1 L 8 5 L 1 9" fill="none" stroke="#3b82f6" stroke-width="1.5"/></marker>
+  </defs>
+  <style>
+    text { font-family: Arial, Helvetica, sans-serif; fill: #172b42; }
+    .heading { font-size: 25px; font-weight: 700; }
+    .subtitle { font-size: 16px; fill: #52657a; }
+    .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 1.1px; }
+    .value { font-size: 23px; font-weight: 700; }
+    .detail { font-size: 16px; fill: #52657a; }
+    .note { font-size: 15px; fill: #52657a; }
+    .small { font-size: 14px; fill: #52657a; }
+    .link { fill: none; stroke: #8093a7; stroke-width: 2; marker-end: url(#arrow); }
+    .parameter-link { fill: none; stroke: #3b82f6; stroke-width: 2; marker-end: url(#blue-arrow); }
+    .unknown { fill: #eff6ff; stroke: #93c5fd; stroke-width: 1.5; }
+    .latent { fill: #f1f5f9; stroke: #cbd5e1; stroke-width: 1.5; }
+    .observed { fill: #ecfdf5; stroke: #5eead4; stroke-width: 1.5; }
+    .derived { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.5; }
+    .blue { fill: #1d4ed8; }
+    .teal { fill: #0f766e; }
+  </style>
+  <rect x="1" y="1" width="958" height="318" rx="20" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="32" y="43" class="heading">Susceptible–infected–recovered (SIR)</text>
+  <text x="32" y="72" class="subtitle">Hidden population counts evolve over time; reported counts provide partial observations.</text>
+  <rect x="32" y="103" width="244" height="102" rx="16" class="latent"/>
+<text x="52" y="130" class="eyebrow ">HIDDEN POPULATION</text>
+<text x="52" y="168" class="value" style="font-size: 23px">Susceptible</text>
+<text x="52" y="197" class="detail">can become infected</text>
+<rect x="358" y="103" width="244" height="102" rx="16" class="latent"/>
+<text x="378" y="130" class="eyebrow ">HIDDEN POPULATION</text>
+<text x="378" y="168" class="value" style="font-size: 23px">Infected</text>
+<text x="378" y="197" class="detail">can recover</text>
+<rect x="684" y="103" width="244" height="102" rx="16" class="latent"/>
+<text x="704" y="130" class="eyebrow ">HIDDEN POPULATION</text>
+<text x="704" y="168" class="value" style="font-size: 23px">Recovered</text>
+<text x="704" y="197" class="detail">no longer infected</text>
+<path d="M 289 166 H 342" class="link"/>
+<path d="M 615 166 H 668" class="link"/>
+<text x="316" y="136" class="value blue" text-anchor="middle">β</text>
+<text x="642" y="136" class="detail" text-anchor="middle">γ (fixed)</text>
+<rect x="32" y="235" width="244" height="54" rx="12" class="unknown"/>
+<text x="154" y="269" class="value blue" text-anchor="middle" style="font-size:20px">Reporting rate</text>
+<path d="M 289 262 H 342" class="link"/>
+<path d="M 480 212 V 228" class="link"/>
+<rect x="358" y="235" width="244" height="54" rx="12" class="observed"/>
+<text x="480" y="269" class="value teal" text-anchor="middle" style="font-size:20px">Reported count</text>
+<text x="684" y="256" class="detail">Poisson observations</text>
+<text x="684" y="279" class="small">mean = reporting rate × infected</text>
+
+</svg>

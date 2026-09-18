@@ -4,8 +4,20 @@
 
 # Exact inference
 
+See the [illustrated alarm](MODELS.md#machine-alarm), [two coins](MODELS.md#two-coins)
+and [heater](MODELS.md#heater) for the models used in the runnable examples.
+
 For a small model with finite choices, `enumerate` checks every possible path.
 There is no seed or sampling error; results are exact up to floating-point rounding.
+
+**Works today:** probabilities, expectations and evidence from supported
+finite choices, within the execution budget. Continuous latent integration and
+symbolic inference are unsupported.
+
+**Not implemented:** differentiable enumeration. Branch weights and query
+results use `float64` and are not connected to AD, so probabilities,
+expectations and evidence cannot be differentiated automatically. See
+[what works today](STATUS.md).
 
 ```sh
 make demo-enumerate

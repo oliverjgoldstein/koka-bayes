@@ -108,6 +108,8 @@ pub fun sir-parameter-env(params : hmm-params<trans-params,obs-params>) : env
   set(gamma-var, [params.trans-params.gamma-rate],
   set(beta-var, [params.trans-params.beta], empty())))
 
+// This kernel updates beta and report-rate while gamma remains fixed.
+// Use it only with gamma supplied as known data in the inference environment.
 pub fun sir-parameter-kernel(params : hmm-params<trans-params,obs-params>) : <div,random> (hmm-params<trans-params,obs-params>, env, float64)
   val (beta1, beta-correction) = propose-positive(params.trans-params.beta, 0.18)
   val (report1, report-correction) = propose-rate(params.obs-params.report-rate, 0.45)

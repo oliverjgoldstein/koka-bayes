@@ -34,12 +34,59 @@ pub struct algorithm-report
   name          : string
   beta-samples  : list<float64>
   report-samples: list<float64>
-  beta-mean     : float64
-  report-mean   : float64
-  beta-error    : float64
-  report-error  : float64
-  success       : bool
+  beta-summary  : sample-summary
+  report-summary: sample-summary
   note          : string
+
+pub struct sample-summary
+  count                     : int
+  distinct-count            : int
+  sample-mean               : float64
+  lower90                   : float64
+  upper90                   : float64
+  truth-error               : float64
+  recovery-within-tolerance : bool
+
+// Describes the actual retained draws, including repeated rejected states.
+// The interval is the inverse empirical CDF at 5% and 95%, not a confidence
+// interval for the mean. Counts and distinct values do not establish convergence.
+pub fun summarize-samples(samples : list<float64>, truth : float64,
+                          tolerance : float64) : exn sample-summary
+  if samples.is-empty || not(samples.all(is-finite))
+    then throw("SIR diagnostics require nonempty finite posterior samples")
+  if not(is-finite(truth)) || not(is-finite(tolerance)) || tolerance < 0.0
+    then throw("SIR diagnostics require finite truth and a nonnegative finite tolerance")
+  val count = samples.length
+  val sorted = samples.foldl([], fn(acc, value){ insert-sample(value, acc) })
+  // Divide before adding so ordinary finite large samples do not overflow a sum.
+  val sample-mean = samples.foldl(0.0, fn(acc, value){ acc + value / float64(count) })
+  val truth-error = abs(sample-mean - truth)
+  if not(is-finite(sample-mean)) || not(is-finite(truth-error))
+    then throw("SIR diagnostic summary exceeded finite floating-point range")
+  Sample-summary(count, distinct-samples(sorted), sample-mean,
+    sample-at(sorted, max(0, (count * 5 + 99) / 100 - 1)),
+    sample-at(sorted, max(0, (count * 95 + 99) / 100 - 1)),
+    truth-error, truth-error <= tolerance)
+
+fun insert-sample(value : float64, sorted : list<float64>) : list<float64>
+  match sorted
+    Nil -> [value]
+    Cons(first, rest) ->
+      if value <= first then Cons(value, sorted)
+        else Cons(first, insert-sample(value, rest))
+
+fun distinct-samples(sorted : list<float64>) : int
+  match sorted
+    Nil -> 0
+    Cons(first, rest) ->
+      match rest
+        Cons(next, _) -> (if first == next then 0 else 1) + distinct-samples(rest)
+        Nil -> 1
+
+fun sample-at(sorted : list<float64>, index : int) : float64
+  match sorted
+    Cons(value, rest) -> if index <= 0 then value else sample-at(rest, index - 1)
+    Nil -> impossible("empirical quantile index exceeds sample count")
 
 pub fun write-sir-report(output-prefix : string = "results/sir-diagnostics") : <console,fsys,exn,div,random> ()
   val problem = synthetic-problem()
@@ -61,6 +108,8 @@ pub fun write-sir-report(output-prefix : string = "results/sir-diagnostics") : <
   write-text-file(samples-path, render-samples-csv(reports), False)
   println("SIR particle diagnostics")
   println("  reports = [" ++ problem.observed-reports.map(fn(x){ x.show }).join(", ") ++ "]")
+  println("  Recovery compares sample means with generating parameters; it is not an inference correctness test.")
+  println("  Empirical 90% intervals and distinct counts describe these draws; they do not establish convergence or Monte Carlo error.")
   print-reports(reports)
   println("  wrote " ++ dashboard-path.string)
   println("  wrote " ++ summary-path.string)
@@ -78,7 +127,7 @@ fun synthetic-problem(days : int = 12) : <div,random> sir-problem
     set(gamma-var, [truth.gamma-rate], empty()))
   Sir-problem(truth, synthetic.value.reports, inference-env, days)
 
-fun run-smc-report(problem : sir-problem) : <div,random> algorithm-report
+fun run-smc-report(problem : sir-problem) : <div,random,exn> algorithm-report
   val result = pseudo-random(223, fn(){ smc(96, problem.days, problem.inference-env, sir-sequential()) })
   make-report("SMC",
               get(beta-var, result.posterior-env),
@@ -86,7 +135,7 @@ fun run-smc-report(problem : sir-problem) : <div,random> algorithm-report
               problem.truth,
               "particles=" ++ result.particles.length.show ++ ", logZ=" ++ short-float64(result.log-evidence))
 
-fun run-rmsmc-report(problem : sir-problem) : <div,random> algorithm-report
+fun run-rmsmc-report(problem : sir-problem) : <div,random,exn> algorithm-report
   val result = pseudo-random(227, fn(){ rmsmc(64, problem.days, 2, problem.inference-env, sir-sequential()) })
   make-report("RMSMC",
               get(beta-var, result.posterior-env),
@@ -94,7 +143,7 @@ fun run-rmsmc-report(problem : sir-problem) : <div,random> algorithm-report
               problem.truth,
               "particles=" ++ result.particles.length.show ++ ", logZ=" ++ short-float64(result.log-evidence))
 
-fun run-pmmh-report(problem : sir-problem) : <div,random> algorithm-report
+fun run-pmmh-report(problem : sir-problem) : <div,random,exn> algorithm-report
   val config = default-config(90, 30)
   val result =
     pseudo-random(229, fn(){
@@ -112,7 +161,7 @@ fun run-pmmh-report(problem : sir-problem) : <div,random> algorithm-report
               problem.truth,
               "samples=" ++ result.samples.length.show ++ ", accepted=" ++ result.accepted.show)
 
-fun run-smc2-report(problem : sir-problem) : <div,random> algorithm-report
+fun run-smc2-report(problem : sir-problem) : <div,random,exn> algorithm-report
   val result =
     pseudo-random(233, fn(){
       smc2-with(32,
@@ -134,27 +183,19 @@ fun make-report(name : string,
                 beta-samples : list<float64>,
                 report-samples : list<float64>,
                 truth : sir-truth,
-                note : string) : algorithm-report
-  val beta-mean = mean(beta-samples)
-  val report-mean = mean(report-samples)
-  val beta-error = abs(beta-mean - truth.beta)
-  val report-error = abs(report-mean - truth.report-rate)
-  val success = beta-error <= 0.18 && report-error <= 0.12
+                note : string) : exn algorithm-report
   Algorithm-report(name,
                    beta-samples,
                    report-samples,
-                   beta-mean,
-                   report-mean,
-                   beta-error,
-                   report-error,
-                   success,
+                   summarize-samples(beta-samples, truth.beta, 0.18),
+                   summarize-samples(report-samples, truth.report-rate, 0.12),
                    note)
 
 fun render-dashboard(problem : sir-problem, reports : list<algorithm-report>) : <div> string
   val beta-range = sample-range(reports.flatmap(fn(report){ report.beta-samples }), problem.truth.beta)
   val rate-range = sample-range(reports.flatmap(fn(report){ report.report-samples }), problem.truth.report-rate)
   val width = 1320
-  val height = 860
+  val height = 920
   val header =
     "<text x='40' y='46' font-family='Menlo, monospace' font-size='28' font-weight='700' fill='#18222c'>SIR Inference Diagnostics</text>" ++
     "<text x='40' y='76' font-family='Menlo, monospace' font-size='14' fill='#405060'>Synthetic truth: beta=" ++ short-float64(problem.truth.beta) ++
@@ -162,10 +203,12 @@ fun render-dashboard(problem : sir-problem, reports : list<algorithm-report>) : 
     ", report-rate=" ++ short-float64(problem.truth.report-rate) ++
     " | days=" ++ problem.days.show ++ "</text>" ++
     "<text x='40' y='102' font-family='Menlo, monospace' font-size='12' fill='#5f6b76'>Observed reports: [" ++ problem.observed-reports.map(fn(x){ x.show }).join(", ") ++ "]</text>"
-  val beta-panels = render-panels(reports, "beta", problem.truth.beta, beta-range, 40, 140, "#0f766e", fn(report){ report.beta-samples }, fn(report){ report.beta-mean }, fn(report){ report.beta-error })
-  val rate-panels = render-panels(reports, "report-rate", problem.truth.report-rate, rate-range, 40, 460, "#9a3412", fn(report){ report.report-samples }, fn(report){ report.report-mean }, fn(report){ report.report-error })
+  val beta-panels = render-panels(reports, "beta", problem.truth.beta, beta-range, 40, 140, "#0f766e", fn(report){ report.beta-samples }, fn(report){ report.beta-summary })
+  val rate-panels = render-panels(reports, "report-rate", problem.truth.report-rate, rate-range, 40, 500, "#9a3412", fn(report){ report.report-samples }, fn(report){ report.report-summary })
   val legend =
-    "<text x='40' y='820' font-family='Menlo, monospace' font-size='12' fill='#5f6b76'>Red line = truth, black line = posterior mean, green panel = within tolerance, red panel = outside tolerance.</text>"
+    text(40, 850, "Red line = generating parameter; black line = sample mean. Recovery tolerances: beta 0.18, report-rate 0.12.", 12, "#5f6b76") ++
+    text(40, 874, "Recovery within tolerance is not an inference correctness or convergence test.", 12, "#5f6b76") ++
+    text(40, 898, "Empirical 90% intervals and distinct counts describe retained draws; they do not measure Monte Carlo error.", 12, "#5f6b76")
   svg(width, height, header ++ beta-panels ++ rate-panels ++ legend)
 
 fun render-panels(reports : list<algorithm-report>,
@@ -176,9 +219,8 @@ fun render-panels(reports : list<algorithm-report>,
                   y0 : int,
                   color : string,
                   select-samples : algorithm-report -> list<float64>,
-                  select-mean : algorithm-report -> float64,
-                  select-error : algorithm-report -> float64) : <div> string
-  render-panels-at(reports, parameter, truth, range, x0, y0, color, select-samples, select-mean, select-error, 0)
+                  select-summary : algorithm-report -> sample-summary) : <div> string
+  render-panels-at(reports, parameter, truth, range, x0, y0, color, select-samples, select-summary, 0)
 
 fun render-panels-at(reports : list<algorithm-report>,
                      parameter : string,
@@ -188,8 +230,7 @@ fun render-panels-at(reports : list<algorithm-report>,
                      y0 : int,
                      color : string,
                      select-samples : algorithm-report -> list<float64>,
-                     select-mean : algorithm-report -> float64,
-                     select-error : algorithm-report -> float64,
+                     select-summary : algorithm-report -> sample-summary,
                      index : int) : <div> string
   match reports
     Nil -> ""
@@ -202,12 +243,11 @@ fun render-panels-at(reports : list<algorithm-report>,
                              panel-x,
                              y0,
                              290,
-                             260,
+                             320,
                              color,
                              select-samples(report),
-                             select-mean(report),
-                             select-error(report)) ++
-      render-panels-at(rest, parameter, truth, range, x0, y0, color, select-samples, select-mean, select-error, index + 1)
+                             select-summary(report)) ++
+      render-panels-at(rest, parameter, truth, range, x0, y0, color, select-samples, select-summary, index + 1)
 
 fun render-histogram-panel(report : algorithm-report,
                            parameter : string,
@@ -219,24 +259,25 @@ fun render-histogram-panel(report : algorithm-report,
                            height : int,
                            color : string,
                            samples : list<float64>,
-                           sample-mean : float64,
-                           sample-error : float64) : <div> string
-  val background = if report.success then "#ecfdf5" else "#fef2f2"
-  val border = if report.success then "#16a34a" else "#dc2626"
+                           summary : sample-summary) : <div> string
+  val background = if summary.recovery-within-tolerance then "#ecfdf5" else "#fff7ed"
+  val border = if summary.recovery-within-tolerance then "#0f766e" else "#c2410c"
   val plot-x = x + 18
-  val plot-y = y + 70
+  val plot-y = y + 110
   val plot-width = width - 36
-  val plot-height = height - 110
+  val plot-height = height - 180
   val bins = histogram(samples, 14, fst(range), snd(range))
   val max-bin = max-int(bins, 1)
   val bars = render-bars(bins, plot-x, plot-y, plot-width, plot-height, max-bin, color, bins.length, 0)
   val truth-line = render-marker(truth, fst(range), snd(range), plot-x, plot-y, plot-width, plot-height, "#dc2626", "4,4")
-  val mean-line = render-marker(sample-mean, fst(range), snd(range), plot-x, plot-y, plot-width, plot-height, "#111827", "none")
+  val mean-line = render-marker(summary.sample-mean, fst(range), snd(range), plot-x, plot-y, plot-width, plot-height, "#111827", "none")
   rect(x, y, width, height, background, border, 2) ++
   text(x + 14, y + 26, report.name ++ " · " ++ parameter, 18, "#18222c", True) ++
   text(x + 14, y + 48, report.note, 12, "#4b5563") ++
-  text(x + 14, y + height - 26, "mean=" ++ short-float64(sample-mean) ++ ", err=" ++ short-float64(sample-error), 12, "#374151") ++
-  text(x + width - 84, y + height - 26, if report.success then "PASS" else "FAIL", 12, border, True) ++
+  text(x + 14, y + 68, "draws=" ++ summary.count.show ++ ", distinct=" ++ summary.distinct-count.show, 12, "#4b5563") ++
+  text(x + 14, y + 88, "empirical 90%=[" ++ short-float64(summary.lower90) ++ ", " ++ short-float64(summary.upper90) ++ "]", 12, "#4b5563") ++
+  text(x + 14, y + height - 28, "mean=" ++ short-float64(summary.sample-mean) ++ ", truth error=" ++ short-float64(summary.truth-error), 12, "#374151") ++
+  text(x + 14, y + height - 8, "Recovery: " ++ recovery-status(summary), 12, border, True) ++
   rect(plot-x, plot-y, plot-width, plot-height, "#ffffff", "#d1d5db", 1) ++
   bars ++ truth-line ++ mean-line ++
   text(plot-x, plot-y + plot-height + 18, short-float64(fst(range)), 11, "#6b7280") ++
@@ -278,25 +319,32 @@ fun render-marker(value : float64,
     else line(px, y, px, y + height, stroke, 2.5, dash)
 
 fun render-summary-csv(problem : sir-problem, reports : list<algorithm-report>) : string
-  "algorithm,beta_truth,beta_mean,beta_error,report_truth,report_mean,report_error,success,note\n" ++
+  "algorithm,beta_truth,beta_mean,beta_error,beta_count,beta_distinct,beta_lower90,beta_upper90,beta_recovery_within_tolerance," ++
+  "report_truth,report_mean,report_error,report_count,report_distinct,report_lower90,report_upper90,report_recovery_within_tolerance,note\n" ++
   reports.map(fn(report){
     report.name ++ "," ++
-    short-float64(problem.truth.beta) ++ "," ++
-    short-float64(report.beta-mean) ++ "," ++
-    short-float64(report.beta-error) ++ "," ++
-    short-float64(problem.truth.report-rate) ++ "," ++
-    short-float64(report.report-mean) ++ "," ++
-    short-float64(report.report-error) ++ "," ++
-    (if report.success then "true" else "false") ++ "," ++
+    csv-float(problem.truth.beta) ++ "," ++ summary-fields(report.beta-summary) ++ "," ++
+    csv-float(problem.truth.report-rate) ++ "," ++ summary-fields(report.report-summary) ++ "," ++
     quote-csv(report.note)
   }).join("\n") ++ "\n"
+
+fun summary-fields(summary : sample-summary) : string
+  csv-float(summary.sample-mean) ++ "," ++ csv-float(summary.truth-error) ++ "," ++
+  summary.count.show ++ "," ++ summary.distinct-count.show ++ "," ++
+  csv-float(summary.lower90) ++ "," ++ csv-float(summary.upper90) ++ "," ++
+  (if summary.recovery-within-tolerance then "true" else "false")
 
 fun render-samples-csv(reports : list<algorithm-report>) : string
   "algorithm,parameter,value\n" ++ reports.flatmap(render-sample-lines).join("\n") ++ "\n"
 
 fun render-sample-lines(report : algorithm-report) : list<string>
-  report.beta-samples.map(fn(value){ report.name ++ ",beta," ++ short-float64(value) }) ++
-  report.report-samples.map(fn(value){ report.name ++ ",report-rate," ++ short-float64(value) })
+  report.beta-samples.map(fn(value){ report.name ++ ",beta," ++ csv-float(value) }) ++
+  report.report-samples.map(fn(value){ report.name ++ ",report-rate," ++ csv-float(value) })
+
+// Default fixed formatting uses 17 decimal places and can lose significant
+// digits for small values. Exponential formatting preserves float64 precision.
+pub fun csv-float(value : float64) : string
+  show-exp(value)
 
 fun svg(width : int, height : int, content : string) : string
   "<svg xmlns='http://www.w3.org/2000/svg' width='" ++ width.show ++ "' height='" ++ height.show ++ "' viewBox='0 0 " ++ width.show ++ " " ++ height.show ++ "'>" ++
@@ -371,11 +419,6 @@ fun max-sample(values : list<float64>, current : float64) : <div> float64
     Nil -> current
     Cons(value, rest) -> max-sample(rest, max(current, value))
 
-fun mean(values : list<float64>) : float64
-  match values
-    Nil -> 0.0
-    _   -> values.sum / float64(values.length)
-
 fun position(value : float64, lo : float64, hi : float64) : float64
   if hi <= lo
     then 0.5
@@ -397,16 +440,23 @@ fun quote-csv(text : string) : string
 fun short-float64(value : float64) : string
   show-fixed(value, 3)
 
+fun recovery-status(summary : sample-summary) : string
+  if summary.recovery-within-tolerance then "within tolerance" else "outside tolerance"
+
+fun print-summary(parameter : string, summary : sample-summary) : console ()
+  println("    " ++ parameter ++ ": mean=" ++ short-float64(summary.sample-mean) ++
+    ", truth error=" ++ short-float64(summary.truth-error) ++
+    ", recovery " ++ recovery-status(summary) ++
+    ", draws=" ++ summary.count.show ++ ", distinct=" ++ summary.distinct-count.show ++
+    ", empirical 90%=[" ++ short-float64(summary.lower90) ++ ", " ++ short-float64(summary.upper90) ++ "]")
+
 fun print-reports(reports : list<algorithm-report>) : console ()
   match reports
     Nil -> ()
     Cons(report, rest) ->
-      println("  " ++ report.name ++
-              ": beta mean=" ++ short-float64(report.beta-mean) ++
-              " (err " ++ short-float64(report.beta-error) ++ ")" ++
-              ", report mean=" ++ short-float64(report.report-mean) ++
-              " (err " ++ short-float64(report.report-error) ++ ")" ++
-              ", " ++ (if report.success then "PASS" else "FAIL"))
+      println("  " ++ report.name ++ " (" ++ report.note ++ ")")
+      print-summary("beta", report.beta-summary)
+      print-summary("report-rate", report.report-summary)
       print-reports(rest)
 
 // Run with: ./bayes run examples/sir_report.kk

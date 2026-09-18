@@ -1,4 +1,16 @@
-# Logo
+# Documentation images
+
+## Model diagrams
+
+The SVG files in [models/](models/) illustrate the models in the
+[visual model guide](../MODELS.md). They are original, editable vector diagrams
+with accessible titles and descriptions. Labels describe model structure and
+example observations; the images do not plot inference results.
+
+These diagrams are self-contained and need no external fonts, scripts or image
+services. Keep their labels and the guide consistent with the linked Koka models.
+
+## Logo
 
 [koka-bayes-logo.png](koka-bayes-logo.png) is the square repository mark.
 It has a transparent background and can be used for a GitHub avatar or README.

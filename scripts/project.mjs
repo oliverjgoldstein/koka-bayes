@@ -102,6 +102,8 @@ const suites = {
   enumeration: ['tests/enumeration_checks.kk', 'Finite enumeration checks passed.'],
   'inference-regressions': ['tests/inference_regressions.kk', 'inference regression checks passed'],
   'inference-audit': ['tests/inference_audit.kk', 'inference audit passed: exact joint marginals, asymmetric kernels, rejection, particle evidence'],
+  'sir-inference': ['tests/sir_inference.kk', 'SIR inference checks passed.'],
+  'sir-report-checks': ['tests/sir_report_checks.kk', 'SIR report checks passed.'],
   'smc-regressions': ['tests/smc_incremental.kk', 'incremental SMC regression checks passed'],
   'rmsmc-handlers': ['tests/handler_composition_rmsmc.kk', 'RMSMC handler composition checks passed.'],
   'pmmh-handlers': ['tests/handler_composition_pmmh.kk', 'PMMH handler composition checks passed.'],
@@ -164,6 +166,7 @@ export function main(args = process.argv.slice(2)) {
     console.log('bayes examples                 Demonstrate sampling methods and finite enumeration');
     console.log('bayes example-matrix           Check sampling methods on three models and three seeds');
     console.log('bayes test-enumerate           Check finite supports, exact posteriors and composition');
+    console.log('bayes test-sir                 Check a small exact SIR posterior and report summaries');
     console.log('bayes demo-enumerate           Run three finite enumeration examples');
     console.log('bayes demo-hmc                 Run one demonstration (also demo-mala, demo-lw, etc.)');
     console.log('More checks: test, inference-tests, handler-composition, benchmark, gradient-tests, autodiff, compile, doctor');
@@ -249,7 +252,7 @@ export function main(args = process.argv.slice(2)) {
   function test() {
     execute('runner-tests', process.execPath, ['--test', '--test-concurrency=1', 'tests/runner.test.mjs', 'tests/workflow.test.mjs']);
     for (const name of Object.keys(suites)) suite(name);
-    console.log('All tests passed (finite enumeration, 36 baseline inference benchmark runs, 99 multi-model runs, 27 joint-posterior comparisons, plus regression, model-handler and AD checks).');
+    console.log('All tests passed (finite enumeration, 36 baseline inference benchmark runs, 99 multi-model runs, 27 joint-posterior comparisons, plus SIR, regression, model-handler and AD checks).');
   }
   function runFile(file, { base = projectRoot, marker = null, entry = 'main' } = {}) {
     const resolved = resolveModelFile(projectRoot, file, base);
@@ -272,6 +275,7 @@ export function main(args = process.argv.slice(2)) {
   else if (command === 'correctness' || command === 'benchmark') suite('benchmark', true);
   else if (command === 'inference-tests') { suite('benchmark', true); suite('gradient-tests', true); }
   else if (command === 'test-enumerate') { suite('finite-support', true); suite('enumeration', true); }
+  else if (command === 'test-sir') { suite('sir-report-checks', true); suite('sir-inference', true); }
   else if (command === 'example-matrix') {
     for (const name of Object.keys(exampleMatrices)) suite(name, true);
     console.log('Multi-model validation passed (90 posterior runs and 9 simulation runs).');

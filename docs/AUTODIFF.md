@@ -5,8 +5,20 @@
 # Differentiate a Koka program
 
 Write arithmetic with `ad-*` operations, then choose an evaluation, forward or
-reverse handler. This library computes scalar first derivatives using `float64`
-on Koka 3.2.3.
+reverse handler. This library computes first derivatives of scalar-valued
+functions using `float64` on Koka 3.2.3.
+
+**Works today:** differentiate smooth functions and fixed-dimensional log
+densities for [HMC and MALA](GRADIENT_INFERENCE.md). The Normal-site model
+adapter requires a fixed number and order of latent sites; it does not convert
+arbitrary `core/model` programs.
+
+**Not implemented:** automatic gradients of inferred probabilities, evidence
+or sampled expectations; differentiation through sampling or resampling;
+higher-order derivatives. Enumeration's `float64` weights are not connected to AD.
+
+This is a tested handler implementation, with no formal composition proof and
+no inherited CHAD correctness guarantees. See [what works today](STATUS.md).
 
 For `f(x,y) = 1 + x³ − y²`:
 
