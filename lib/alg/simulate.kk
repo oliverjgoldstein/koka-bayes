@@ -1,34 +1,21 @@
 module alg/simulate
 
 import std/num/random
-import std/core/unsafe
 import core/dist
 import core/env
 import core/model
 import core/trace
-import handlers/core
+import handlers/trace
 
 pub struct simulate-result<a>
   value      : a
   trace      : run-trace
   output-env : env
 
-// Simulation is a handler composition over the core specialisation pass.
+// Simulation reifies the same trace while leaving the caller to use its score.
 pub fun simulate(environment : env, action : model<e,a>) : <div,random|e> simulate-result<a>
-  val sim-address : ref<global,int> = unsafe-total{ ref(0) }
-  val sim-trace : ref<global,run-trace> = unsafe-total{ ref([]) }
-  with val sample-hook = fn(observable, distribution)
-    val address = unsafe-total(fn(){ !sim-address })
-    val value = sample(distribution)
-    val entry = make-entry(address, observable, distribution, value, TraceSampled)
-    unsafe-total(fn(){ sim-address := address + 1; sim-trace := !sim-trace ++ [entry] })
-    value
-  with val observe-hook = fn(name, distribution, value)
-    val address = unsafe-total(fn(){ !sim-address })
-    val entry = make-entry(address, Just(name), distribution, value, TraceObserved)
-    unsafe-total(fn(){ sim-address := address + 1; sim-trace := !sim-trace ++ [entry] })
-    value
-  val value = handle-core(environment, action)
-  val trace = unsafe-total(fn(){ !sim-trace })
-  val output = to-output-env(trace)
-  Simulate-result(value, trace, output)
+  fst(simulate-state(environment, action))
+
+pub fun simulate-state(environment : env, action : model<e,a>) : <div,random|e> (simulate-result<a>,env)
+  val result = run-traced(environment, action)
+  (Simulate-result(result.value, result.trace, to-output-env(result.trace)), result.remaining-env)

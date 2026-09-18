@@ -1,6 +1,7 @@
 module core/sequential
 
 import core/model
+import handlers/sequential
 
 pub struct step-output<s,o>
   state       : s
@@ -40,7 +41,14 @@ pub fun as-model-given<p,s,o,a,e>(steps : int, parameter : p, spec : sequential-
   }
 
 pub fun prefix-run<p,s,o,a,e>(steps : int, parameter : p, spec : sequential-model<e,p,s,o,a>) : <obs-reader,model-dist,div|e> prefix-output<p,s,o>
-  val start = initial(spec)(parameter)
+  run-sequential(fn(){ checkpointed-prefix(steps, parameter, spec) })
+
+// Expose the same sequential model as a resumable effectful computation. The
+// first checkpoint follows initialization; each later one follows a model step.
+// The ordinary prefix API uses the handler that runs every checkpoint to completion.
+pub fun checkpointed-prefix<p,s,o,a,e>(steps : int, parameter : p, spec : sequential-model<e,p,s,o,a>) : <checkpoint,obs-reader,model-dist,div|e> prefix-output<p,s,o>
+  val start = mask<checkpoint>{ initial(spec)(parameter) }
+  checkpoint()
   run-steps(max(0, steps), parameter, spec, 0, start, [], [])
 
 fun run-steps<p,s,o,a,e>(remaining : int,
@@ -49,11 +57,12 @@ fun run-steps<p,s,o,a,e>(remaining : int,
                              index : int,
                              current : s,
                              states : list<s>,
-                             observations : list<o>) : <obs-reader,model-dist,div|e> prefix-output<p,s,o>
+                             observations : list<o>) : <checkpoint,obs-reader,model-dist,div|e> prefix-output<p,s,o>
   if remaining <= 0
     then Prefix-output(parameter, current, states, observations)
     else
-      val step1 = step(spec)(parameter, index, current)
+      val step1 = mask<checkpoint>{ step(spec)(parameter, index, current) }
+      checkpoint()
       run-steps(remaining - 1,
                 parameter,
                 spec,

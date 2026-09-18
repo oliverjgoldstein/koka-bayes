@@ -3,7 +3,7 @@ module handlers/dist
 import std/num/random
 import core/model
 
-pub fun handle-dist(action : () -> <obs-reader,model-dist,sample-hook,observe-hook,div,random|e> a) : <obs-reader,sample-hook,observe-hook,div,random|e> a
+pub fun handle-dist(action : () -> <obs-reader,model-dist,sample-hook,observe-hook,factor-hook,div,random|e> a) : <obs-reader,sample-hook,observe-hook,factor-hook,div,random|e> a
   handle(action)
     return(x) x
     fun draw(distribution)
@@ -12,3 +12,5 @@ pub fun handle-dist(action : () -> <obs-reader,model-dist,sample-hook,observe-ho
       match read-observation(name)
         Just(value) -> observe-hook(name, distribution, value)
         Nothing     -> sample-hook(Just(name), distribution)
+    fun factor(log-weight)
+      factor-hook(log-weight)

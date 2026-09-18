@@ -6,6 +6,7 @@ import test from 'node:test';
 
 import {
   assertCompleted,
+  assertExampleCoverage,
   collectModules,
   parseCommand,
   parseVersion,
@@ -30,6 +31,21 @@ test('completion requires a successful process and an executed whole-line marker
   assert.throws(() => assertCompleted(`${marker}\n`, marker, 1));
   assert.throws(() => assertCompleted(`${marker}\n`, marker, null));
   assert.throws(() => assertCompleted(`${marker}\nuncaught exception: failed assertion\n`, marker, 0));
+});
+
+test('example coverage requires every declared cell and rejects missing, duplicate or invalid results', () => {
+  const expected = ['trace', ['LW', 'MH'], ['coin', 'normal'], [101, 103]];
+  const rows = expected[1].flatMap(algorithm => expected[2].flatMap(model =>
+    expected[3].map(seed => `example,trace,${model},${algorithm},${seed},0.25,PASS`)));
+  const output = rows.join('\n');
+  assert.doesNotThrow(() => assertExampleCoverage(output, ...expected));
+  assert.throws(() => assertExampleCoverage(rows.slice(1).join('\n'), ...expected), /Incomplete/);
+  assert.throws(() => assertExampleCoverage(`${output}\n${rows[0]}`, ...expected), /duplicate/);
+  for (const replacement of ['NaN,PASS', 'Infinity,PASS', '1.01,PASS', '-0.1,PASS', ',PASS', '0.25,FAIL']) {
+    assert.throws(() => assertExampleCoverage(output.replace('0.25,PASS', replacement), ...expected), /tolerance/);
+  }
+  assert.throws(() => assertExampleCoverage(output.replace('example,trace,', 'example,gradient,'), ...expected), /Unexpected/);
+  assert.throws(() => assertExampleCoverage(output.replace(',101,', ',107,'), ...expected), /Unexpected/);
 });
 
 test('local executable paths preserve spaces and use the proper archive layouts', () => {

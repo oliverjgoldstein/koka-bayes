@@ -1,13 +1,89 @@
-# Inference correctness audit — 17 September 2026
+[Docs](README.md) · [Get started](USAGE_GUIDE.md)
 
-The review covers every active module in `lib/alg`, shared distribution sampling,
-observation handling, trace replay and weight normalization. The inference
-implementation is shared by `master` and `feat/handler-autodiff`. Historical code
-under `archive/` is not supported.
+# Inference audit
+
+This audit checks posterior targets, proposal corrections and retained particle state.
+
+```sh
+make test-inference-audit
+```
+
+The tests include 27 joint-posterior comparisons and targeted regressions. The record below gives the assumptions, equations and limits of the review.
+
+## Known empirical limitation
+
+**Recorded SIR runs miss parameter-recovery thresholds for PMMH and SMC²:**
+report-rate errors are about **0.148 and 0.151**, respectively, against a limit
+of **0.12**. The [recorded results](sir-audit-results.csv) preserve these failures.
+
+These compare estimates with generating parameters, not exact posterior means.
+They do not distinguish Monte Carlo error from posterior uncertainty or prior
+influence, so they do not by themselves establish an algorithm bug. They also
+prevent claiming reliable performance on every model. Passing other benchmark
+checks does not resolve these failures.
+
+See [what works today](STATUS.md) for implemented features, missing gradient
+capabilities and the limits of the correctness evidence.
+
+The report now labels recovery separately for each parameter, preserves full
+numeric precision in its CSV files, and shows draw counts, distinct values and
+empirical 90% intervals. Empty or nonfinite samples are rejected. These repairs
+make the diagnostics more informative; they do not fix the recovery failures.
+The original seeds, budgets and tolerances are unchanged.
+
+## Small SIR posterior check
+
+`make test-sir` checks the real SIR transition and observation code against an
+independent exhaustive calculation for five people: four susceptible and one
+infected initially, fixed gamma `0.3`, equal prior probabilities for beta in
+`{0.4, 1.0}` and report rate in `{0.2, 0.7}`, and observations `[0, 1, 1]`.
+
+The reference sums all infection and recovery counts and Poisson observation
+weights. Evidence is `0.026548262947988184`; posterior probabilities are
+`0.5597371636713165` for beta `1.0`, `0.5197103355157454` for report rate `0.7`,
+and `0.2583800924418703` for both. This checks the posterior, rather than recovery
+of a generating parameter.
+
+[The test](../tests/sir_inference.kk) compares all four parameter cells and both
+marginals for SMC, custom PMMH and custom SMC² at seeds `3011`, `3023`, `3037`.
+Budgets and tolerances were set before running: SMC has 4,000 particles; PMMH
+has 3,000 iterations, 600 burn-in and eight inner particles; SMC² has 800 outer
+and eight inner particles with one move per observation. Absolute posterior
+tolerance is `0.075`; relative evidence tolerance for SMC and SMC² is `15%`.
+Asymmetric proposals exercise the Hastings correction. The test also checks
+population conservation, retained output counts and observation consumption.
+
+A local run on 18 September 2026 passed all nine algorithm/seed combinations.
+The largest posterior error was about `0.0393`; the largest relative evidence
+error was about `3.34%`. This records local validation, not a hosted CI result.
+
+These checks and the [report-summary regressions](../tests/sir_report_checks.kk)
+run in `make check` and CI. This small finite-parameter model does not establish
+adequate mixing for the larger continuous-parameter SIR example.
+
+<details>
+<summary>Read the audit and its assumptions</summary>
+
+## Inference correctness audit — 17 September 2026
+The review covers the algorithms at its original baseline, shared distribution
+sampling, observation handling, trace replay and weight normalization. Later
+[gradient](GRADIENT_INFERENCE.md), [checkpoint](HANDLER_COMPOSITION.md) and
+[enumeration](EXACT_INFERENCE.md) extensions have separate coverage. The inference
+at the original audit baseline was shared by `master` and
+`feat/handler-autodiff`. The subsequent gradient and handler extensions are
+developed on `feat/handler-autodiff`. Historical code under `archive/` is not
+supported.
 
 The reviewed update equations agree with the intended algorithms under the
 contracts below. Tests give regression evidence on finite models and budgets;
 they do not prove correctness or convergence for arbitrary programs.
+
+The later [handler-composition review](HANDLER_COMPOSITION.md) checks RMSMC,
+PMMH and SMC² more directly. It confirms supported nested-call isolation and
+retained-state behavior. Its subsequent implementation repairs the reproduced
+multi-shot trace-state leak and singleton observation mismatch, and adds reusable
+scoring, tracing, checkpoint and population components. The tests do not establish
+arbitrary handler compositionality.
 
 ## Algorithm review
 
@@ -108,11 +184,10 @@ proposal contract, independently of PMMH/SMC²'s generic acceptance equations.
 
 - Replay must be deterministic conditional on traced choices. Untraced random
   calls or changing external state can invalidate MH and prefix rejuvenation.
-- Sequential observations require distinct prior/initial/step names, singleton
-  prior/initial observations and one occurrence of each step site per step.
-  Reusing a singleton at multiple steps is unsupported: filtering repeats it
-  while replay consumes it once. This restriction is documented, not enforced
-  by the type system.
+- Sequential observations are consumed once in execution order. Each particle
+  retains its remaining stream through propagation, resampling and rejuvenation;
+  direct execution and prefix replay use the same semantics. Repeated equal
+  observations must be supplied explicitly instead of relying on singleton reuse.
 - Custom kernels must supply the complete parameter target and correct proposal
   ratio. Custom SMC² initialization also requires exposed prior latent coordinates;
   hidden or transformed coordinates need additional density accounting.
@@ -121,12 +196,10 @@ proposal contract, independently of PMMH/SMC²'s generic acceptance equations.
   rejected; finite scores are required for usable MCMC output.
 - Extreme floating-point ranges beyond the tested cases, arbitrary effect
   composition, long-run mixing and large-scale calibration remain unverified.
-  The SIR rerun after the proposal repair still misses report-rate recovery
-  thresholds for PMMH and SMC² (errors about 0.148 and 0.151; limit 0.12).
-  These compare with generating truth, not exact posterior means, and do not
-  distinguish Monte Carlo error from posterior uncertainty or prior influence.
-  [Recorded results](sir-audit-results.csv) preserve the failures; see the
-  [usage guide](USAGE_GUIDE.md#sir-diagnostics).
+  The [recorded SIR failures](#known-empirical-limitation) remain unresolved;
+  see the [usage guide](USAGE_GUIDE.md#sir-diagnostics) for diagnostic commands.
 
 Run `make test-inference-audit` (or `./bayes inference-audit`). The audit is also
 included in `make tests`, `make check`, and clean-install CI.
+
+</details>

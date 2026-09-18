@@ -19,6 +19,28 @@ export function assertCompleted(output, marker, exitCode) {
   }
 }
 
+// A completion marker alone cannot establish coverage: every declared
+// algorithm/model/seed cell must actually report a finite passing measurement.
+export function assertExampleCoverage(output, family, algorithms, models, seeds) {
+  const expected = new Set(algorithms.flatMap(algorithm => models.flatMap(model =>
+    seeds.map(seed => `${model},${algorithm},${seed}`))));
+  const seen = new Set();
+  for (const line of output.split(/\r?\n/).filter(line => line.startsWith('example,'))) {
+    const [prefix, actualFamily, model, algorithm, seed, ratio, status, ...extra] = line.split(',');
+    const key = `${model},${algorithm},${seed}`;
+    if (actualFamily !== family || extra.length || !expected.has(key) || seen.has(key)) {
+      throw new Error(`Unexpected or duplicate example result: ${line}`);
+    }
+    if (!ratio?.trim() || !Number.isFinite(Number(ratio)) || Number(ratio) < 0 || Number(ratio) > 1 || status !== 'PASS') {
+      throw new Error(`Example did not meet its declared tolerance: ${line}`);
+    }
+    seen.add(key);
+  }
+  if (seen.size !== expected.size) {
+    throw new Error(`Incomplete ${family} example matrix: ${seen.size}/${expected.size} cells reported.`);
+  }
+}
+
 export function toolPaths(root, platform = process.platform) {
   return {
     node: path.join(root, '.tools', 'node', ...(platform === 'win32' ? ['node.exe'] : ['bin', 'node'])),
@@ -76,11 +98,38 @@ function modelSource(file) {
 
 const suites = {
   smoke: ['tests/smoke.kk', 'smoke checks passed'],
+  'finite-support': ['tests/finite_support.kk', 'Finite support checks passed.'],
+  enumeration: ['tests/enumeration_checks.kk', 'Finite enumeration checks passed.'],
   'inference-regressions': ['tests/inference_regressions.kk', 'inference regression checks passed'],
   'inference-audit': ['tests/inference_audit.kk', 'inference audit passed: exact joint marginals, asymmetric kernels, rejection, particle evidence'],
+  'sir-inference': ['tests/sir_inference.kk', 'SIR inference checks passed.'],
+  'sir-report-checks': ['tests/sir_report_checks.kk', 'SIR report checks passed.'],
   'smc-regressions': ['tests/smc_incremental.kk', 'incremental SMC regression checks passed'],
+  'rmsmc-handlers': ['tests/handler_composition_rmsmc.kk', 'RMSMC handler composition checks passed.'],
+  'pmmh-handlers': ['tests/handler_composition_pmmh.kk', 'PMMH handler composition checks passed.'],
+  'smc2-handlers': ['tests/handler_composition_smc2.kk', 'SMC2 handler composition checks passed.'],
+  'handler-multishot': ['tests/handler_multishot.kk', 'Multi-shot handler checks passed.'],
+  'handler-laws': ['tests/handler_laws.kk', 'Handler scoring laws passed.'],
+  'sequential-observations': ['tests/sequential_observations.kk', 'Sequential observation stream checks passed.'],
+  'inference-transformations': ['tests/inference_transformations.kk', 'Inference transformation checks passed.'],
+  'handler-smc': ['tests/handler_smc_checks.kk', 'Checkpoint SMC checks passed.'],
   benchmark: ['tests/correctness.kk', 'inference correctness checks passed (30 runs; 3 fixed seeds per model/algorithm)'],
+  'autodiff-test': ['tests/autodiff_checks.kk', 'autodiff checks passed: analytic values/gradients, sharing, Gaussian density, finite differences, isolation'],
+  'gradient-tests': ['tests/gradient_samplers.kk', 'Gradient inference checks passed.'],
+  'differentiable-model': ['tests/differentiable_model.kk', 'Differentiable model checks passed.'],
   'model-api': ['tests/model_api.kk', 'Model API tests passed.'],
+  'trace-examples': ['tests/trace_examples.kk', 'Trace example matrix passed (36 runs).'],
+  'particle-examples': ['tests/particle_examples.kk', 'Particle example matrix passed (45 runs).'],
+  'gradient-examples': ['tests/gradient_examples.kk', 'Gradient example matrix passed (18 runs).'],
+};
+
+const exampleMatrices = {
+  'trace-examples': ['trace', ['simulate', 'LW', 'LWIS', 'MH'],
+    ['beta-binomial', 'gamma-poisson', 'finite-mixture'], [1301, 1303, 1307]],
+  'particle-examples': ['particle', ['SMC', 'RMSMC', 'PMMH', 'SMC2', 'checkpoint-SMC'],
+    ['classification', 'hidden-process', 'sensor-calibration'], [3011, 3023, 3037]],
+  'gradient-examples': ['gradient', ['HMC', 'MALA'],
+    ['thermometer', 'linear-regression', 'logistic-intercept'], [1201, 1213, 1217]],
 };
 
 const algorithmSuites = {
@@ -91,6 +140,8 @@ const algorithmSuites = {
   'test-rmsmc': 'RMSMC inference checks passed (3 runs).',
   'test-pmmh': 'PMMH inference checks passed (3 runs).',
   'test-smc2': 'SMC2 inference checks passed (3 runs).',
+  'test-hmc': 'HMC gradient inference checks passed (3 posterior runs).',
+  'test-mala': 'MALA gradient inference checks passed (3 posterior runs).',
 };
 
 export function main(args = process.argv.slice(2)) {
@@ -112,7 +163,13 @@ export function main(args = process.argv.slice(2)) {
     console.log('bayes                          Run model.kk');
     console.log('bayes run examples/temperature.kk  Run the thermometer example');
     console.log('bayes check                    Compile, test, and run the starter models');
-    console.log('More checks: test, benchmark, compile, doctor');
+    console.log('bayes examples                 Demonstrate sampling methods and finite enumeration');
+    console.log('bayes example-matrix           Check sampling methods on three models and three seeds');
+    console.log('bayes test-enumerate           Check finite supports, exact posteriors and composition');
+    console.log('bayes test-sir                 Check a small exact SIR posterior and report summaries');
+    console.log('bayes demo-enumerate           Run three finite enumeration examples');
+    console.log('bayes demo-hmc                 Run one demonstration (also demo-mala, demo-lw, etc.)');
+    console.log('More checks: test, inference-tests, handler-composition, benchmark, gradient-tests, autodiff, compile, doctor');
     return 0;
   }
 
@@ -183,17 +240,19 @@ export function main(args = process.argv.slice(2)) {
   function suite(name, show = false) {
     const [file, marker] = suites[name];
     console.log(`Checking ${name}...`);
-    execute(name, koka, [...baseFlags, '-e', file], marker, show);
+    const output = execute(name, koka, [...baseFlags, '-e', file], marker, show);
+    if (Object.hasOwn(exampleMatrices, name)) assertExampleCoverage(output, ...exampleMatrices[name]);
     console.log(`${name}: passed.`);
   }
   function algorithmSuite(name) {
     console.log(`Checking ${name.slice(5).toUpperCase()} inference...`);
-    execute(name, koka, [...baseFlags, `--main-entry=${name}`, '-e', 'tests/correctness.kk'], algorithmSuites[name], true);
+    const file = ['test-hmc', 'test-mala'].includes(name) ? 'tests/gradient_samplers.kk' : 'tests/correctness.kk';
+    execute(name, koka, [...baseFlags, `--main-entry=${name}`, '-e', file], algorithmSuites[name], true);
   }
   function test() {
     execute('runner-tests', process.execPath, ['--test', '--test-concurrency=1', 'tests/runner.test.mjs', 'tests/workflow.test.mjs']);
     for (const name of Object.keys(suites)) suite(name);
-    console.log('All tests passed (30 inference benchmark runs, 27 joint-posterior comparisons, plus regression checks).');
+    console.log('All tests passed (finite enumeration, 36 baseline inference benchmark runs, 99 multi-model runs, 27 joint-posterior comparisons, plus SIR, regression, model-handler and AD checks).');
   }
   function runFile(file, { base = projectRoot, marker = null, entry = 'main' } = {}) {
     const resolved = resolveModelFile(projectRoot, file, base);
@@ -202,20 +261,40 @@ export function main(args = process.argv.slice(2)) {
       [...baseFlags, ...source.includes.map(directory => `--include=${directory}`), `--main-entry=${entry}`, '-e', source.file],
       marker, true, { compiled: source.file, original: resolved });
   }
+  function examples() {
+    runFile('examples/exact_inference.kk', { marker: 'Finite enumeration examples passed.' });
+    runFile('examples/inference.kk', { marker: 'Finite inference budgets produce approximate posterior estimates.' });
+    runFile('examples/gradient_inference.kk', { marker: 'Gradient inference examples completed.' });
+    runFile('examples/compositional_inference.kk', { marker: 'Compositional inference example passed.' });
+  }
 
   doctor(command !== 'run');
   if (command === 'doctor') return 0;
   if (command === 'compile') compile();
   else if (command === 'test') test();
   else if (command === 'correctness' || command === 'benchmark') suite('benchmark', true);
+  else if (command === 'inference-tests') { suite('benchmark', true); suite('gradient-tests', true); }
+  else if (command === 'test-enumerate') { suite('finite-support', true); suite('enumeration', true); }
+  else if (command === 'test-sir') { suite('sir-report-checks', true); suite('sir-inference', true); }
+  else if (command === 'example-matrix') {
+    for (const name of Object.keys(exampleMatrices)) suite(name, true);
+    console.log('Multi-model validation passed (90 posterior runs and 9 simulation runs).');
+  }
+  else if (command === 'handler-composition') {
+    for (const name of ['rmsmc-handlers', 'pmmh-handlers', 'smc2-handlers', 'handler-multishot', 'handler-laws', 'sequential-observations', 'inference-transformations', 'handler-smc']) suite(name, true);
+  }
   else if (Object.hasOwn(algorithmSuites, command)) algorithmSuite(command);
   else if (Object.hasOwn(suites, command)) suite(command);
   else if (command === 'run') runFile(request.file, { base: request.explicitFile ? process.cwd() : projectRoot });
+  else if (command === 'autodiff') runFile('examples/autodiff.kk');
+  else if (command === 'examples') examples();
   else if (command === 'check') {
     compile(); test();
     runFile('model.kk');
     runFile('examples/gaussian.kk');
     runFile('examples/temperature.kk', { marker: 'Room temperature from noisy thermometer readings' });
+    runFile('examples/autodiff.kk', { marker: 'This example optimizes a log density; it does not draw posterior samples.' });
+    examples();
     console.log('End-to-end check passed.');
   } else {
     // Existing shortcuts still select an entry function in the model file.
@@ -226,6 +305,17 @@ export function main(args = process.argv.slice(2)) {
       'sir-infer': ['examples/sir.kk', 'run-sir-infer'],
       'sir-bootstrap': ['examples/sir.kk', 'run-sir-bootstrap'],
       'sir-report': ['examples/sir_report.kk', 'main'],
+      'demo-lw': ['examples/inference.kk', 'run-lw'],
+      'demo-lwis': ['examples/inference.kk', 'run-lwis'],
+      'demo-mh': ['examples/inference.kk', 'run-mh'],
+      'demo-smc': ['examples/inference.kk', 'run-smc'],
+      'demo-rmsmc': ['examples/inference.kk', 'run-rmsmc'],
+      'demo-pmmh': ['examples/inference.kk', 'run-pmmh'],
+      'demo-smc2': ['examples/inference.kk', 'run-smc2'],
+      'demo-hmc': ['examples/gradient_inference.kk', 'run-hmc'],
+      'demo-mala': ['examples/gradient_inference.kk', 'run-mala'],
+      'demo-handlers': ['examples/compositional_inference.kk', 'main'],
+      'demo-enumerate': ['examples/exact_inference.kk', 'main'],
     };
     if (!Object.hasOwn(demos, command)) throw new Error(`Unknown command: ${command}. Run bayes help.`);
     const [file, entry] = demos[command];

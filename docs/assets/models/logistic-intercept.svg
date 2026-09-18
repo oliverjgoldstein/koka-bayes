@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="320" viewBox="0 0 960 320" role="img" aria-labelledby="title desc">
+  <title id="title">Logistic intercept</title>
+  <desc id="desc">An unknown real log-odds intercept a maps through the sigmoid function to a success probability p between zero and one. Ten observed Bernoulli outcomes contain nine successes and one failure.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 1 1 L 8 5 L 1 9" fill="none" stroke="#8093a7" stroke-width="1.5"/></marker>
+    <marker id="blue-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 1 1 L 8 5 L 1 9" fill="none" stroke="#3b82f6" stroke-width="1.5"/></marker>
+  </defs>
+  <style>
+    text { font-family: Arial, Helvetica, sans-serif; fill: #172b42; }
+    .heading { font-size: 25px; font-weight: 700; }
+    .subtitle { font-size: 16px; fill: #52657a; }
+    .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 1.1px; }
+    .value { font-size: 23px; font-weight: 700; }
+    .detail { font-size: 16px; fill: #52657a; }
+    .note { font-size: 15px; fill: #52657a; }
+    .small { font-size: 14px; fill: #52657a; }
+    .link { fill: none; stroke: #8093a7; stroke-width: 2; marker-end: url(#arrow); }
+    .parameter-link { fill: none; stroke: #3b82f6; stroke-width: 2; marker-end: url(#blue-arrow); }
+    .unknown { fill: #eff6ff; stroke: #93c5fd; stroke-width: 1.5; }
+    .latent { fill: #f1f5f9; stroke: #cbd5e1; stroke-width: 1.5; }
+    .observed { fill: #ecfdf5; stroke: #5eead4; stroke-width: 1.5; }
+    .derived { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.5; }
+    .blue { fill: #1d4ed8; }
+    .teal { fill: #0f766e; }
+  </style>
+  <rect x="1" y="1" width="958" height="318" rx="20" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="32" y="43" class="heading">Logistic intercept</text>
+  <text x="32" y="72" class="subtitle">Learn a shared success probability through a continuous log-odds parameter.</text>
+  <rect x="32" y="119" width="244" height="120" rx="16" class="unknown"/>
+<text x="52" y="146" class="eyebrow blue">UNKNOWN</text>
+<text x="52" y="184" class="value" style="font-size: 23px">Log-odds, a</text>
+<text x="52" y="213" class="detail">a continuous parameter</text>
+<rect x="358" y="119" width="244" height="120" rx="16" class="derived"/>
+<text x="378" y="146" class="eyebrow ">SUCCESS PROBABILITY</text>
+<text x="378" y="184" class="value" style="font-size: 21px">p = sigmoid(a)</text>
+<text x="378" y="213" class="detail">the same p for every trial</text>
+<rect x="684" y="119" width="244" height="120" rx="16" class="observed"/>
+<text x="704" y="146" class="eyebrow teal">OBSERVED</text>
+<text x="704" y="184" class="value" style="font-size: 23px">9 successes</text>
+<text x="704" y="213" class="detail">and 1 failure</text>
+<path d="M 289 179 H 342" class="link"/>
+<path d="M 615 179 H 668" class="link"/>
+  <text x="32" y="291" class="note">The sigmoid maps any real-valued intercept to a probability between zero and one.</text>
+</svg>

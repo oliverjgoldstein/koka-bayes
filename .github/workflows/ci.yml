@@ -91,7 +91,7 @@ jobs:
           ./bayes doctor
           make inference
           make inference MODEL=examples/gaussian.kk
-          make test-lw test-lwis test-mh test-smc test-rmsmc test-pmmh test-smc2
+          make test-enumerate test-lw test-lwis test-mh test-smc test-rmsmc test-pmmh test-smc2 test-hmc test-mala
 
       - name: Repeat setup without replacing installed tools (Windows PowerShell)
         if: runner.os == 'Windows'
@@ -107,12 +107,12 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           & make inference MODEL=examples/gaussian.kk
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          & make test-lw test-lwis test-mh test-smc test-rmsmc test-pmmh test-smc2
+          & make test-enumerate test-lw test-lwis test-mh test-smc test-rmsmc test-pmmh test-smc2 test-hmc test-mala
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       # JS execution requires neither a system Node installation nor a C compiler.
       # Check performs compilation, verifies every test completion marker, and
-      # runs model.kk and the Gaussian example.
+      # runs model.kk and the Gaussian and differentiation examples.
       - name: Portable checks with managed tools on PATH (Linux and macOS)
         if: runner.os != 'Windows'
         shell: bash

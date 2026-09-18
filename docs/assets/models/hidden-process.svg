@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="320" viewBox="0 0 960 320" role="img" aria-labelledby="title desc">
+  <title id="title">Hidden binary process</title>
+  <desc id="desc">An unknown persistence class controls the transitions of four hidden states, state zero through state three. Each state may be on or off. Noisy observations positive, negative and positive attach to states one, two and three respectively; state zero has no observation.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 1 1 L 8 5 L 1 9" fill="none" stroke="#8093a7" stroke-width="1.5"/></marker>
+    <marker id="blue-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 1 1 L 8 5 L 1 9" fill="none" stroke="#3b82f6" stroke-width="1.5"/></marker>
+  </defs>
+  <style>
+    text { font-family: Arial, Helvetica, sans-serif; fill: #172b42; }
+    .heading { font-size: 25px; font-weight: 700; }
+    .subtitle { font-size: 16px; fill: #52657a; }
+    .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 1.1px; }
+    .value { font-size: 23px; font-weight: 700; }
+    .detail { font-size: 16px; fill: #52657a; }
+    .note { font-size: 15px; fill: #52657a; }
+    .small { font-size: 14px; fill: #52657a; }
+    .link { fill: none; stroke: #8093a7; stroke-width: 2; marker-end: url(#arrow); }
+    .parameter-link { fill: none; stroke: #3b82f6; stroke-width: 2; marker-end: url(#blue-arrow); }
+    .unknown { fill: #eff6ff; stroke: #93c5fd; stroke-width: 1.5; }
+    .latent { fill: #f1f5f9; stroke: #cbd5e1; stroke-width: 1.5; }
+    .observed { fill: #ecfdf5; stroke: #5eead4; stroke-width: 1.5; }
+    .derived { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.5; }
+    .blue { fill: #1d4ed8; }
+    .teal { fill: #0f766e; }
+  </style>
+  <rect x="1" y="1" width="958" height="318" rx="20" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="32" y="43" class="heading">Hidden binary process</text>
+  <text x="32" y="72" class="subtitle">Learn how persistent a hidden on/off process is from noisy readings.</text>
+  <rect x="32" y="124" width="214" height="120" rx="16" class="unknown"/>
+<text x="52" y="151" class="eyebrow blue">UNKNOWN</text>
+<text x="52" y="189" class="value" style="font-size: 23px">Persistence</text>
+<text x="52" y="218" class="detail">0.55 or 0.80</text>
+<path d="M 260 180 H 285 V 105 H 754" class="parameter-link"/>
+<path d="M 455 105 V 146" class="parameter-link"/>
+<path d="M 605 105 V 146" class="parameter-link"/>
+<path d="M 755 105 V 146" class="parameter-link"/>
+<rect x="320" y="130" width="120" height="62" rx="12" class="latent"/>
+<text x="380" y="151" class="eyebrow" text-anchor="middle">State 0</text>
+<text x="380" y="177" class="detail" text-anchor="middle">on / off</text>
+<path d="M 443 161 H 464" class="link"/>
+<rect x="470" y="130" width="120" height="62" rx="12" class="latent"/>
+<text x="530" y="151" class="eyebrow" text-anchor="middle">State 1</text>
+<text x="530" y="177" class="detail" text-anchor="middle">on / off</text>
+<path d="M 593 161 H 614" class="link"/>
+<path d="M 530 197 V 216" class="link"/>
+<rect x="470" y="224" width="120" height="38" rx="10" class="observed"/>
+<text x="530" y="249" class="detail teal" text-anchor="middle">positive</text>
+<rect x="620" y="130" width="120" height="62" rx="12" class="latent"/>
+<text x="680" y="151" class="eyebrow" text-anchor="middle">State 2</text>
+<text x="680" y="177" class="detail" text-anchor="middle">on / off</text>
+<path d="M 743 161 H 764" class="link"/>
+<path d="M 680 197 V 216" class="link"/>
+<rect x="620" y="224" width="120" height="38" rx="10" class="observed"/>
+<text x="680" y="249" class="detail teal" text-anchor="middle">negative</text>
+<rect x="770" y="130" width="120" height="62" rx="12" class="latent"/>
+<text x="830" y="151" class="eyebrow" text-anchor="middle">State 3</text>
+<text x="830" y="177" class="detail" text-anchor="middle">on / off</text>
+<path d="M 830 197 V 216" class="link"/>
+<rect x="770" y="224" width="120" height="38" rx="10" class="observed"/>
+<text x="830" y="249" class="detail teal" text-anchor="middle">positive</text>
+  <text x="32" y="291" class="note">Blue arrows set transition probabilities. The three readings are observed; the states are hidden.</text>
+</svg>

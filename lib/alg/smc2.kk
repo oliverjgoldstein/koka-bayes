@@ -4,12 +4,14 @@ import std/num/float64
 import std/num/random
 
 import alg/mcmc
+import alg/parameter
 import alg/simulate
 import alg/smc
 import core/env
 import core/sequential
 import core/trace
-import core/weights
+import handlers/population
+import handlers/weight
 
 pub struct smc2-particle<p,a>
   parameter     : p
@@ -29,12 +31,14 @@ struct filter-particle<p,s,o>
   parameter-env : env
   inner-state   : smc-state<p,s,o>
   parameter-score : float64
+  remaining-env : env
 
 struct parameter-candidate<p>
   parameter      : p
   parameter-env  : env
   log-target     : float64
   log-correction : float64
+  remaining-env  : env
 
 struct weighted-particle<p,s,o>
   particle        : filter-particle<p,s,o>
@@ -47,23 +51,27 @@ pub fun smc2<p,s,o,a,e>(outer-particles : int,
                         environment : env,
                         spec : sequential-model<e,p,s,o,a>) : <div,random|e> smc2-result<p,a>
   smc2-engine(outer-particles, inner-particles, steps, rejuvenation-steps,
-               environment, spec,
+               spec,
                fn(){
                  val candidate = prior-candidate(environment, spec)
                  (candidate, candidate.log-target)
                },
-               fn(_parameter){ prior-candidate(environment, spec) })
+               fn(_parameter, _remaining){ prior-candidate(environment, spec) })
 
 fun prior-candidate<p,s,o,a,e>(environment : env,
                                spec : sequential-model<e,p,s,o,a>) : <div,random|e> parameter-candidate<p>
-  val proposal = simulate(environment, prior(spec))
+  val (proposal, after-prior) = simulate-state(environment, prior(spec))
   // The independent sampled prior cancels in MH. Its observed factors do not.
-  Parameter-candidate(proposal.value, proposal.output-env, observed-log-prob(proposal.trace), 0.0)
+  Parameter-candidate(proposal.value, proposal.output-env, observed-log-prob(proposal.trace), 0.0, after-prior)
 
 // Custom parameter-score is the complete parameter-level log target (including
 // prior density and observed prior sites). The prior must return those latent
 // coordinates directly: its sampled trace density is the initial proposal density.
 // The kernel correction is log q(current | proposed) - log q(proposed | current).
+// parameter-score must be deterministic for a fixed parameter; random log scores
+// or changing external state do not satisfy this contract despite the effect row.
+// This compatibility API requires a fixed prior observation-consumption pattern.
+// Use smc2-with-state when proposed parameters need different input cursors.
 pub fun smc2-with<p,s,o,a,e>(outer-particles : int,
                              inner-particles : int,
                              steps : int,
@@ -72,97 +80,121 @@ pub fun smc2-with<p,s,o,a,e>(outer-particles : int,
                              spec : sequential-model<e,p,s,o,a>,
                              parameter-score : p -> <div,random|e> float64,
                              parameter-kernel : p -> <div,random|e> (p, env, float64)) : <div,random|e> smc2-result<p,a>
+  custom-smc2(outer-particles, inner-particles, steps, rejuvenation-steps,
+    environment, spec, parameter-score,
+    fn(parameter, remaining){
+      val (proposed, output, correction) = parameter-kernel(parameter)
+      Parameter-proposal(proposed, output, remaining, correction)
+    })
+
+pub fun smc2-with-state<p,s,o,a,e>(outer-particles : int,
+                                   inner-particles : int,
+                                   steps : int,
+                                   rejuvenation-steps : int,
+                                   environment : env,
+                                   spec : sequential-model<e,p,s,o,a>,
+                                   parameter-score : p -> <div,random|e> float64,
+                                   parameter-kernel : p -> <div,random|e> parameter-proposal<p>) : <div,random|e> smc2-result<p,a>
+  custom-smc2(outer-particles, inner-particles, steps, rejuvenation-steps,
+    environment, spec, parameter-score,
+    fn(parameter, _remaining){ parameter-kernel(parameter) })
+
+fun custom-smc2<p,s,o,a,e>(outer-particles : int,
+                            inner-particles : int,
+                            steps : int,
+                            rejuvenation-steps : int,
+                            environment : env,
+                            spec : sequential-model<e,p,s,o,a>,
+                            parameter-score : p -> <div,random|e> float64,
+                            parameter-kernel : (p,env) -> <div,random|e> parameter-proposal<p>) : <div,random|e> smc2-result<p,a>
   smc2-engine(outer-particles, inner-particles, steps, rejuvenation-steps,
-               environment, spec,
+               spec,
                fn(){
-                 val proposal = simulate(environment, prior(spec))
+                 val (proposal, after-prior) = simulate-state(environment, prior(spec))
                  val score = parameter-score(proposal.value)
                  val sampled-score = proposal.trace.foldl(0.0, fn(acc, entry){
                    match entry.mode
                      TraceSampled -> acc + entry.log-prob
                      TraceObserved -> acc
+                     TraceFactor -> acc
                  })
-                 (Parameter-candidate(proposal.value, proposal.output-env, score, 0.0), score - sampled-score)
+                 (Parameter-candidate(proposal.value, proposal.output-env, score, 0.0, after-prior), score - sampled-score)
                },
-               fn(current){
-                 val (parameter, parameter-env, correction) = parameter-kernel(current)
-                 Parameter-candidate(parameter, parameter-env, parameter-score(parameter), correction)
+               fn(current, remaining){
+                 val proposal = parameter-kernel(current, remaining)
+                 Parameter-candidate(proposal.parameter, proposal.parameter-env,
+                   parameter-score(proposal.parameter), proposal.log-correction, proposal.remaining-env)
                })
 
 fun smc2-engine<p,s,o,a,e>(outer-particles : int,
                             inner-particles : int,
                             steps : int,
                             rejuvenation-steps : int,
-                            environment : env,
                             spec : sequential-model<e,p,s,o,a>,
                             initial-parameter : () -> <div,random|e> (parameter-candidate<p>,float64),
-                            parameter-kernel : p -> <div,random|e> parameter-candidate<p>) : <div,random|e> smc2-result<p,a>
+                            parameter-kernel : (p,env) -> <div,random|e> parameter-candidate<p>) : <div,random|e> smc2-result<p,a>
   if outer-particles <= 0 || inner-particles <= 0
     then Smc2-result([], neginf, empty())
     else
-      val initial = initialise-particles(outer-particles, inner-particles, environment, spec, initial-parameter)
-      val initial-logz = log-mean-weight(initial.map(fn(item){ item.step-log-weight }))
-      val resampled = resample-particles(outer-particles, initial)
-      val (particles, log-evidence) =
+      val initial = initialise-particles(outer-particles, inner-particles, spec, initial-parameter)
+      val initial-population = resample-population(outer-particles, initial, fn(item){ item.step-log-weight })
+      val (particles, total-evidence) = handle-weight(fn(){
+        val resampled = push-population(initial-population).map(fn(item){ item.particle })
         run-smc2(steps, outer-particles, inner-particles, rejuvenation-steps,
-                 environment, spec, parameter-kernel, 0,
-                 resampled, initial-logz)
-      finalize-result(spec, particles, log-evidence)
+                 spec, parameter-kernel, 0, resampled)
+      })
+      finalize-result(spec, particles, total-evidence)
 
 fun initialise-particles<p,s,o,a,e>(count : int,
                                      inner-particles : int,
-                                     environment : env,
                                      spec : sequential-model<e,p,s,o,a>,
                                      initial-parameter : () -> <div,random|e> (parameter-candidate<p>,float64)) : <div,random|e> list<weighted-particle<p,s,o>>
   if count <= 0
     then []
     else
       val (proposal, weight) = initial-parameter()
-      val filter = start-smc-given(inner-particles, environment, proposal.parameter, spec)
-      val particle = Filter-particle(proposal.parameter, proposal.parameter-env, filter, proposal.log-target)
+      val filter = start-smc-given(inner-particles, proposal.remaining-env, proposal.parameter, spec)
+      val particle = Filter-particle(proposal.parameter, proposal.parameter-env, filter, proposal.log-target, proposal.remaining-env)
       Cons(Weighted-particle(particle, weight + filter.log-evidence),
-           initialise-particles(count - 1, inner-particles, environment, spec, initial-parameter))
+           initialise-particles(count - 1, inner-particles, spec, initial-parameter))
 
 fun run-smc2<p,s,o,a,e>(remaining : int,
                         outer-particles : int,
                         inner-particles : int,
                         rejuvenation-steps : int,
-                        environment : env,
                         spec : sequential-model<e,p,s,o,a>,
-                        parameter-kernel : p -> <div,random|e> parameter-candidate<p>,
+                        parameter-kernel : (p,env) -> <div,random|e> parameter-candidate<p>,
                         index : int,
-                        particles : list<filter-particle<p,s,o>>,
-                        log-evidence : float64) : <div,random|e> (list<filter-particle<p,s,o>>, float64)
+                        particles : list<filter-particle<p,s,o>>) : <accumulate-weight,div,random|e> list<filter-particle<p,s,o>>
   if remaining <= 0 || particles.is-empty
-    then (particles, log-evidence)
+    then particles
     else
-      val weighted = update-particles(environment, spec, particles)
-      val step-logz = log-mean-weight(weighted.map(fn(item){ item.step-log-weight }))
-      val resampled = resample-particles(outer-particles, weighted)
-      val moved = resampled.map(fn(particle){
-        rejuvenate-particle(index + 1, inner-particles, rejuvenation-steps,
-                            environment, spec, parameter-kernel, particle)
-      })
+      val weighted = mask<accumulate-weight>{ update-particles(spec, particles) }
+      val step-population = resample-population(outer-particles, weighted, fn(item){ item.step-log-weight })
+      val resampled = push-population(step-population).map(fn(item){ item.particle })
+      val moved = mask<accumulate-weight>{
+        resampled.map(fn(particle){
+          rejuvenate-particle(index + 1, inner-particles, rejuvenation-steps,
+                              spec, parameter-kernel, particle)
+        })
+      }
       run-smc2(remaining - 1, outer-particles, inner-particles, rejuvenation-steps,
-               environment, spec, parameter-kernel,
-               index + 1, moved, log-evidence + step-logz)
+               spec, parameter-kernel,
+               index + 1, moved)
 
-fun update-particles<p,s,o,a,e>(environment : env,
-                                spec : sequential-model<e,p,s,o,a>,
+fun update-particles<p,s,o,a,e>(spec : sequential-model<e,p,s,o,a>,
                                 particles : list<filter-particle<p,s,o>>) : <div,random|e> list<weighted-particle<p,s,o>>
   particles.map(fn(particle){
-    val filter = advance-smc(environment, spec, particle.inner-state)
-    val increment = if filter.log-evidence <= neginf then neginf
-                    else filter.log-evidence - particle.inner-state.log-evidence
-    Weighted-particle(Filter-particle(particle.parameter, particle.parameter-env, filter, particle.parameter-score), increment)
+    val filter = advance-smc-state(spec, particle.inner-state)
+    val increment = evidence-increment(particle.inner-state.log-evidence, filter.log-evidence)
+    Weighted-particle(Filter-particle(particle.parameter, particle.parameter-env, filter, particle.parameter-score, particle.remaining-env), increment)
   })
 
 fun rejuvenate-particle<p,s,o,a,e>(prefix-steps : int,
                                    inner-particles : int,
                                    rejuvenation-steps : int,
-                                   environment : env,
                                    spec : sequential-model<e,p,s,o,a>,
-                                   parameter-kernel : p -> <div,random|e> parameter-candidate<p>,
+                                   parameter-kernel : (p,env) -> <div,random|e> parameter-candidate<p>,
                                    particle : filter-particle<p,s,o>) : <div,random|e> filter-particle<p,s,o>
   if rejuvenation-steps <= 0
     then particle
@@ -170,11 +202,11 @@ fun rejuvenate-particle<p,s,o,a,e>(prefix-steps : int,
       val initial = Scored(particle, particle.parameter-score + particle.inner-state.log-evidence)
       val kernel = fn(state){
         val Scored(current-particle, _) = state
-        val Filter-particle(current-parameter, _, _, _) = current-particle
-        val proposed = parameter-kernel(current-parameter)
-        val filter = extend-smc(prefix-steps, environment, spec,
-                                start-smc-given(inner-particles, environment, proposed.parameter, spec))
-        val candidate = Filter-particle(proposed.parameter, proposed.parameter-env, filter, proposed.log-target)
+        val Filter-particle(current-parameter, _, _, _, current-remaining) = current-particle
+        val proposed = parameter-kernel(current-parameter, current-remaining)
+        val filter = extend-smc-state(prefix-steps, spec,
+                                start-smc-given(inner-particles, proposed.remaining-env, proposed.parameter, spec))
+        val candidate = Filter-particle(proposed.parameter, proposed.parameter-env, filter, proposed.log-target, proposed.remaining-env)
         Mh-candidate(Scored(candidate, proposed.log-target + filter.log-evidence), proposed.log-correction)
       }
       // On rejection retain the entire old filter, not just its likelihood.
@@ -200,6 +232,3 @@ fun last-sample<a>(default : a, samples : list<a>) : a
       match rest
         Nil -> sample
         _   -> last-sample(sample, rest)
-
-fun resample-particles<p,s,o>(count : int, particles : list<weighted-particle<p,s,o>>) : <div,random> list<filter-particle<p,s,o>>
-  resample-log-weighted(count, particles, fn(item){ item.step-log-weight }).map(fn(item){ item.particle })

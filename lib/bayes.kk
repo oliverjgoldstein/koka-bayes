@@ -9,6 +9,7 @@ pub import core/env
 pub import alg/lw
 pub import alg/lwis
 pub import alg/mh
+pub import alg/enumerate
 
 import std/num/random
 import core/weights

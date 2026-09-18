@@ -2,13 +2,12 @@ module alg/mh
 
 import std/num/float64
 import std/num/random
-import std/core/unsafe
 import core/dist
 import core/env
 import core/model
 import core/obsvalue
 import core/trace
-import handlers/core
+import handlers/trace
 
 import alg/simulate
 
@@ -80,30 +79,16 @@ fun run-mh-proposal(environment : env,
                     previous : run-trace,
                     proposal : maybe<int>,
                     action : model<e,a>) : <div,random|e> simulate-result<a>
-  val mh-address : ref<global,int> = unsafe-total{ ref(0) }
-  val mh-trace : ref<global,run-trace> = unsafe-total{ ref([]) }
-  val mh-diverged : ref<global,bool> = unsafe-total{ ref(False) }
-  with val sample-hook = fn(observable, distribution)
-    val address = unsafe-total(fn(){ !mh-address })
-    val value = choose-sample(mh-diverged, address, proposal, previous, distribution)
-    val entry = make-entry(address, observable, distribution, value, TraceSampled)
-    unsafe-total(fn(){ mh-address := address + 1; mh-trace := !mh-trace ++ [entry] })
-    value
-  with val observe-hook = fn(name, distribution, value)
-    val address = unsafe-total(fn(){ !mh-address })
-    val entry = make-entry(address, Just(name), distribution, value, TraceObserved)
-    unsafe-total(fn(){ mh-address := address + 1; mh-trace := !mh-trace ++ [entry] })
-    value
-  val value = handle-core(environment, action)
-  val trace = unsafe-total(fn(){ !mh-trace })
-  val output = to-output-env(trace)
-  Simulate-result(value, trace, output)
+  val result = run-traced(environment, action, previous, proposal)
+  Simulate-result(result.value, result.trace, to-output-env(result.trace))
 
 fun choose-proposal(addresses : list<int>) : random maybe<int>
   match addresses
     Nil -> Nothing
     _   ->
-      val ix = int(random-float64() * float64(addresses.length))
+      // float64.int rounds to nearest in Koka; floor preserves the uniform
+      // half-open index intervals and never selects past the final address.
+      val ix = int(floor(random-float64() * float64(addresses.length)))
       nth-int(ix, addresses)
 
 fun nth-int(index : int, values : list<int>) : maybe<int>
@@ -112,34 +97,4 @@ fun nth-int(index : int, values : list<int>) : maybe<int>
     Cons(value, rest) ->
       if index <= 0
         then Just(value)
-        else nth-int(index - 1, rest)
-
-fun choose-sample(mh-diverged : ref<global,bool>,
-                  address : int,
-                  proposal : maybe<int>,
-                  previous : run-trace,
-                  distribution : dist) : <div,random> observable
-  val diverged = unsafe-total(fn(){ !mh-diverged })
-  if diverged
-    then sample(distribution)
-    else
-      match proposal
-        Just(ix) ->
-          if address < ix
-            then
-              match lookup-sampled(address, previous)
-                Just(value) -> value
-                Nothing ->
-                  unsafe-total(fn(){ mh-diverged := True })
-                  sample(distribution)
-            elif address == ix
-              then
-                unsafe-total(fn(){ mh-diverged := True })
-                sample(distribution)
-              else
-                unsafe-total(fn(){ mh-diverged := True })
-                sample(distribution)
-        Nothing ->
-          match lookup-sampled(address, previous)
-            Just(value) -> value
-            Nothing     -> sample(distribution)
+            else nth-int(index - 1, rest)

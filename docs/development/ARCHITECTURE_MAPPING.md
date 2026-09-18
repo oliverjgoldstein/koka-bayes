@@ -1,3 +1,5 @@
+[Docs](../README.md) · [Get started](../USAGE_GUIDE.md)
+
 # Architecture Mapping
 
 Start with [model.kk](../../model.kk). This table is an optional guide to the
@@ -13,16 +15,20 @@ library implementation beneath that entrypoint. Paths are relative to the projec
 | Primitive distributions | `lib/core/dist.kk` | Implemented | Includes observable and primed/sample-only variants. |
 | Sequential model layer | `lib/core/sequential.kk` | Implemented | Provides reusable step-wise models for particle algorithms. |
 | Observation reader effect | `lib/handlers/read.kk` | Implemented | Ordered consumption of repeated observations. |
+| Factors and weights | `lib/core/model.kk`, `lib/handlers/weight.kk` | Implemented | General scores, branch-local accumulation and explicit evidence transfer. |
+| Suspension and populations | `lib/handlers/sequential.kk`, `lib/handlers/population.kk` | Implemented | Checkpoint continuations, resampling and incremental normalizers. |
 | Distribution interpretation effect | `lib/handlers/dist.kk` | Implemented | Defers sample-vs-observe interpretation. |
 | Specialization pipeline | `lib/handlers/core.kk` | Implemented | Composes environment reads with distribution interpretation. |
 | Sample trace | `lib/core/trace.kk` | Implemented | Uses deterministic linear execution addresses. |
-| Log-probability trace | `lib/core/trace.kk`, `lib/alg/lw.kk`, `lib/alg/mh.kk` | Implemented | Stored alongside runtime events for LW and MH. |
+| Log-probability trace | `lib/core/trace.kk`, `lib/handlers/trace.kk` | Implemented | Scoped trace construction, separate sampling/replay, observed and explicit factors. |
 | Generic MCMC wrappers | `lib/alg/mcmc.kk` | Implemented | Shared MH chain used by particle MCMC layers. |
 | Simulation | `lib/alg/simulate.kk` | Implemented | Returns model output, trace, and reified output environment. |
+| Finite enumeration | `lib/core/finite.kk`, `lib/handlers/enumerate.kk`, `lib/alg/enumerate.kk` | Implemented | Bounded continuation branching, branch-local observations and traces, normalized finite posteriors and log evidence. |
 | Likelihood weighting | `lib/alg/lw.kk` | Implemented | Iterative weighted samples over the same model. |
 | Likelihood weighting with resampling | `lib/alg/lwis.kk` | Implemented | Resamples the empirical posterior induced by `lw`. |
 | Metropolis Hastings | `lib/alg/mh.kk` | Implemented | Single-site replay MH with trace-prefix reuse and suffix regeneration. |
 | Sequential Monte Carlo | `lib/alg/smc.kk` | Implemented | Step-wise particle filtering over `sequential-model`. |
+| Checkpoint Monte Carlo | `lib/alg/handler_smc.kk` | Implemented | SMC over ordinary model code; resampled continuations retain independent reader, trace and local state. |
 | Particle marginal Metropolis-Hastings | `lib/alg/pmmh.kk` | Implemented | Independent-prior PMMH over parameter particles with inner SMC estimates. |
 | Resample-move SMC | `lib/alg/rmsmc.kk` | Implemented | Resampled particles are rejuvenated by prefix-model MH moves. |
 | SMC2 | `lib/alg/smc2.kk` | Implemented | Outer parameter particles retain and extend inner SMC filters; rejuvenation proposes a fresh prefix filter. |

@@ -1,3 +1,5 @@
+[Docs](../README.md) · [Get started](../USAGE_GUIDE.md)
+
 # Migration record
 
 ## Current layout
@@ -14,7 +16,8 @@ model, data, inference method, and result printing are in one file. Run
 | `examples/` | Complete runnable model files, including their inference |
 | `lib/bayes.kk` | Public import and beginner inference helpers |
 | `lib/core/`, `lib/handlers/`, `lib/alg/` | Modeling and inference implementation |
-| `tests/` | Independent inference and runner checks |
+| `lib/autodiff/` | Scalar differentiation handlers |
+| `tests/` | Independent inference, differentiation, and runner checks |
 | `scripts/` | Local tool installation and portable runner |
 | `results/` | Generated reports, excluded from version control |
 | `docs/` | Usage, evidence, and optional development notes |

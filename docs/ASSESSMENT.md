@@ -1,11 +1,23 @@
-# Correctness assessment and development priorities
+[Docs](README.md) · [Get started](USAGE_GUIDE.md)
 
-The [17 September algorithm audit](INFERENCE_AUDIT.md) reviews every inference
-method, adds an exact joint-posterior oracle and asymmetric-kernel checks, and
-records three further shared-sampler repairs.
+# Correctness history
+
+A record of repaired inference bugs, the tests that found them and remaining limitations.
+
+For running the current checks, start with [multiple models](MULTI_MODEL_VALIDATION.md) or [benchmarks](BENCHMARKS.md). The detailed record preserves its original dates and test environments.
+
+<details>
+<summary>Repairs, evidence and development priorities</summary>
+
+## Correctness assessment and development priorities
+The [17 September algorithm audit](INFERENCE_AUDIT.md) reviews the seven original
+inference methods, adds an exact joint-posterior oracle and asymmetric-kernel
+checks, and records three further shared-sampler repairs. The subsequent
+[gradient inference extension](GRADIENT_INFERENCE.md) adds HMC, MALA and six
+correlated-Gaussian posterior checks, bringing the simple benchmark total to 36.
 
 Assessment date: 2026-09-15. Current test environment: Koka 3.2.3, Node.js
-24.21.0, `jsnode`, macOS arm64. The repository pins the [current official Koka
+24.21.0, `jsnode`, macOS arm64. The repository uses the [pinned Koka
 release](https://github.com/koka-lang/koka/releases/tag/v3.2.3) in `.koka-version`.
 The installed compiler was already 3.2.3; the build checks, installer URL, and
 documented baseline have been updated to match it. The subsequent dependency
@@ -36,12 +48,12 @@ protocol for sample budgets, tolerances, results, and statistical limitations.
 Additional regression tests target defects that these small positive-density
 benchmarks do not necessarily reveal.
 
-The complete [CSV results](benchmark-results.csv) record every current benchmark
-run; the [protocol](BENCHMARKS.md) gives budgets, tolerances, and maximum errors.
-All **30/30** cases pass on the pinned tools. The fixed test models live under
+The [CSV results](benchmark-results.csv) record the original 30 benchmark runs;
+the [protocol](BENCHMARKS.md) gives budgets, tolerances, and maximum errors.
+All **30/30** original cases pass on the pinned tools. The fixed test models live under
 `tests/`, independently of the editable starter `model.kk`. `./bayes check`
-compiles the active modules, runs the runner, inference, and
-regression tests, and runs the starter and small examples. On Windows use `.\bayes.cmd check`.
+compiles the active modules, runs the runner, inference, regression, and
+differentiation tests, and runs the starter and small examples. On Windows use `.\bayes.cmd check`.
 
 The test wrapper requires each suite's exact completion marker as well as a zero
 command exit status. This matters because Koka's Node exception handler can print
@@ -140,30 +152,48 @@ trajectories, evidence, and output observations.
 These changes deliberately alter edge-case behavior. An empty result can indicate
 impossible observations or particle depletion; it is not a posterior sample.
 
+## Differentiable programming
+
+The new `smooth<a>` effect supports evaluation, forward AD, and reverse AD over
+scalar arithmetic. The reverse handler resumes the rest of the program, then
+accumulates derivative contributions while returning through the handlers. The
+implementation uses Koka's continuation handlers and has no global AD state.
+
+Analytic tests cover the paper's polynomial, shared expressions, every supported
+primitive, Gaussian densities, and Gaussian posterior gradients. The Gaussian
+MAP example recovers the known optimum within `9.4e-10`. Full API details and
+limits are in the [AD guide](AUTODIFF.md). MAP estimates a mode; it does not sample
+posterior uncertainty.
+
+The later [gradient inference extension](GRADIENT_INFERENCE.md) connects one
+fixed-dimensional Normal-site model to probabilistic execution and differentiable
+log-joint evaluation. HMC and MALA use reverse AD to draw posterior samples.
+Tests check agreement between the two model interpretations, analytic gradients,
+proposal corrections, leapfrog reversibility and correlated-Gaussian moments.
+
 ## What remains before claiming broad leadership
 
 This remains a research library embedded in Koka. Passing these checks does not
 prove general inference correctness or make it the best PPL or differentiable
 language. The next priorities have explicit acceptance criteria:
 
-1. **Connect model densities to AD.** Introduce continuous latent coordinates,
-   parameter transforms and log-Jacobians, and differentiable log-joint evaluation.
-   Require agreement with existing model log probabilities and analytic gradients
-   before adding gradient-based samplers.
-2. **Add HMC, then NUTS.** Test leapfrog reversibility and energy error, Gaussian
-   posterior moments, constrained parameters, and a difficult geometry such as
-   a funnel. Report divergences, effective sample size, and multiple-chain
+1. **Broaden the model-to-AD interface.** Extend the current Normal-site adapter
+   with more distributions, parameter transforms and log-Jacobians. Require
+   agreement with existing model log probabilities and analytic gradients.
+2. **Extend gradient inference.** Add adaptation and NUTS beyond fixed-setting
+   HMC and MALA. Test constrained parameters and difficult geometry such as a
+   funnel. Report divergences, effective sample size, and multiple-chain
    convergence diagnostics.
 3. **Broaden calibration.** Add simulation-based calibration, longer state-space
    models, multimodal posteriors, more seeds, and comparisons with independently
    implemented reference systems. Fixed-seed tolerances are regression checks,
    not confidence intervals or a universal convergence guarantee.
-4. **Improve composition.** Replace remaining `unsafe-total` inference state,
-   introduce explicit sequential observation roles and structured trace addresses,
-   and test nested/mixed inference beyond the covered cases. Supported sequential
-   environments use distinct names per stage, singleton prior/initial observations,
-   and one occurrence per step with per-step observation lists. Singleton reuse
-   across multiple steps is unsupported.
+4. **Broaden composition proofs and tests.** Inference trace and weight state now
+   uses scoped handlers, observation streams travel with each particle, and the
+   multi-shot and singleton failures have regression coverage. Extend the
+   [handler laws](HANDLER_COMPOSITION.md) to more mixed inference programs and
+   add structured trace addresses. General composition needs semantic arguments
+   beyond the currently tested cases.
 5. **Measure and optimize.** Benchmark runtime and memory at matched statistical
    accuracy. Add efficient resampling, ESS-triggered resampling, and adaptive
    particle counts before claiming speed. Current list-based traces, population
@@ -177,3 +207,5 @@ Extreme floating-point parameter ranges, native C performance, large reverse
 continuations, distributed execution, and arbitrary custom proposal kernels have
 not been validated by this assessment. Custom kernel score/proposal contracts are
 documented in the source and [usage guide](USAGE_GUIDE.md).
+
+</details>

@@ -1,3 +1,5 @@
+[Docs](../README.md) · [Get started](../USAGE_GUIDE.md)
+
 # Design Notes
 
 User programs start with [model.kk](../../model.kk): one file for the model, data,
@@ -12,7 +14,7 @@ Earlier Haskell-style effect encodings use `Prog`, effect sums, and membership p
 
 - `obs-reader` for looking up optional observations
 - `model-dist` for deferred probabilistic requests
-- effect values `sample-hook` and `observe-hook` for algorithm-specific execution
+- operation effects `sample-hook`, `observe-hook` and `factor-hook` for interpretation
 
 This keeps the semantics of deferred interpretation without importing that extra encoding machinery into Koka.
 
@@ -34,10 +36,10 @@ The environment semantics are:
 - missing values fall back to sampling
 - extra observations are ignored
 
-For sequential algorithms, `lib/core/env.kk` also exposes:
-
-- `focus-step` to project an environment onto one time step
-- `take-prefix` to project an environment onto a sequential prefix while preserving singleton global bindings
+Sequential algorithms carry a remaining environment with every particle. Prior,
+initialization, propagation and replay consume that same ordered stream. The
+`focus-step` and `take-prefix` utilities perform ordinary list slicing, including
+singletons; inference does not use them to guess observation roles.
 
 ## 3. The Handler Pipeline
 
@@ -53,6 +55,13 @@ The specialization pipeline is implemented as three Koka modules:
 - `sample-hook(Just(name), dist)` when the environment is exhausted
 
 `handle-core` composes those passes so user models remain reusable across execution modes.
+
+`handlers/trace` interprets the hooks with scoped trace/address state, while
+`handlers/weight` accumulates scores independently. Sample selection has its own
+operation, interpreted by ordinary sampling or trace-prefix replay. The public
+`score(weight)` and `log-score(log-weight)` operations add explicit factors, which
+are retained in traces and included by the trace-based inference algorithms.
+HMC and MALA instead evaluate the target log density supplied to their gradient API.
 
 ## 4. Distribution Representation
 
@@ -85,7 +94,7 @@ The trace layer in `lib/core/trace.kk` records:
 - distribution summary
 - sampled or observed value
 - log-probability contribution
-- sample vs observe mode
+- sample, observe or factor mode
 
 The addressing strategy is deliberately simple: addresses are deterministic linear integers assigned in execution order. This is weaker than a richer tree or stack address scheme, but it is stable for deterministic execution structure and easy to reason about in the current Koka implementation.
 
@@ -98,6 +107,7 @@ The public algorithms are:
 - `lwis` in `lib/alg/lwis.kk`
 - `mh` in `lib/alg/mh.kk`
 - `smc` in `lib/alg/smc.kk`
+- `smc-model` in `lib/alg/handler_smc.kk`
 - `pmmh` in `lib/alg/pmmh.kk`
 - `rmsmc` in `lib/alg/rmsmc.kk`
 - `smc2` in `lib/alg/smc2.kk`
@@ -107,12 +117,12 @@ The particle family is organized around two extra layers:
 - `lib/core/sequential.kk` for step-wise models
 - `lib/alg/mcmc.kk` for shared MH-chain logic
 
-The intended design was to thread all runtime state through local handlers, but Koka v3’s current interaction between local mutable state, closures, and the algorithm-specific effect rows made that route fragile for this repository. The current implementation therefore uses:
-
-- effect values to connect the specialization pipeline to the active algorithm
-- references allocated separately for each execution's runtime trace state
-
-The hooks still encapsulate mutation with `unsafe-total`, but executions no longer share module-level trace counters or weights. Nested LW and simulation are covered by regression tests.
+Runtime reading, tracing, replay and weighting now use scoped handler state.
+Changing the old effect-value callbacks to operation handlers removes the need
+for `unsafe-total` trace references. Local state is preserved independently for
+each resumed branch, including copied continuations. `handlers/sequential`
+reifies checkpoint continuations, and `handlers/population` resamples those
+continuations or explicit particle values while accounting for evidence.
 
 The current MH proposal kernel also incorporates a thesis-derived replay refinement from the archived Bristol implementation: once a proposal address is selected, the run reuses only the trace prefix before that address and regenerates the suffix. This avoids stale downstream reuse when later distributions depend on the proposed value.
 

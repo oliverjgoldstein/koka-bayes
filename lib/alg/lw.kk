@@ -1,13 +1,12 @@
 module alg/lw
 
 import std/num/random
-import std/core/unsafe
 import std/num/float64
 import core/dist
 import core/env
 import core/model
 import core/trace
-import handlers/core
+import handlers/trace
 
 pub struct weighted-sample<a>
   value      : a
@@ -15,31 +14,13 @@ pub struct weighted-sample<a>
   output-env : env
   log-weight : float64
 
-// Likelihood weighting accumulates observed log-probability contributions.
+// Compose branch-local reading, tracing, sampling and weight accumulation.
 pub fun run-lw(environment : env, action : model<e,a>) : <div,random|e> weighted-sample<a>
-  val lw-address : ref<global,int> = unsafe-total{ ref(0) }
-  val lw-trace : ref<global,run-trace> = unsafe-total{ ref([]) }
-  val lw-weight : ref<global,float64> = unsafe-total{ ref(0.0) }
-  with val sample-hook = fn(observable, distribution)
-    val address = unsafe-total(fn(){ !lw-address })
-    val value = sample(distribution)
-    val entry = make-entry(address, observable, distribution, value, TraceSampled)
-    unsafe-total(fn(){ lw-address := address + 1; lw-trace := !lw-trace ++ [entry] })
-    value
-  with val observe-hook = fn(name, distribution, value)
-    val address = unsafe-total(fn(){ !lw-address })
-    val entry = make-entry(address, Just(name), distribution, value, TraceObserved)
-    unsafe-total(fn(){
-      lw-address := address + 1
-      lw-trace := !lw-trace ++ [entry]
-      lw-weight := !lw-weight + entry.log-prob
-    })
-    value
-  val value = handle-core(environment, action)
-  val trace = unsafe-total(fn(){ !lw-trace })
-  val weight = unsafe-total(fn(){ !lw-weight })
-  val output = to-output-env(trace)
-  Weighted-sample(value, trace, output, weight)
+  fst(run-lw-state(environment, action))
+
+pub fun run-lw-state(environment : env, action : model<e,a>) : <div,random|e> (weighted-sample<a>,env)
+  val result = run-traced(environment, action)
+  (Weighted-sample(result.value, result.trace, to-output-env(result.trace), result.log-weight), result.remaining-env)
 
 pub fun lw(iterations : int, environment : env, action : model<e,a>) : <div,random|e> list<weighted-sample<a>>
   if iterations <= 0
